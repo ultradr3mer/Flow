@@ -44,6 +44,9 @@ MeshData::MeshData(void)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, dataLenghtIndex * sizeof(GLuint), indexBuffer, GL_STATIC_DRAW);
 
 	Length = dataLenghtIndex;
+
+	dataLenght = 0;
+	dataLenghtIndex = 0;
 }
 
 MeshData* MeshData::FromObj(char* source)

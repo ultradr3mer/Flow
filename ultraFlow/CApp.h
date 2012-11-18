@@ -20,6 +20,7 @@ class CApp {
 		long frame;
 		int timebase;
 		Model* mod;
+		Model* floor;
 		ViewPort* viewPort;
 		SDL_Surface* Surf_Display;
 

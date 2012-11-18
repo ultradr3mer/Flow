@@ -52,9 +52,14 @@ bool CApp::OnInit(int argc, char **argv) {
 	mod->Mesh = MeshData::FromObj("monkey.obj");
 	mod->Shader = ShaderData::FromPlainText("tutorial2.vert","tutorial2.frag");
 	mod->AppendTextureData(TextureData::FromDDS("monkey.dds")->SetTarget(TexDiffuse));
-	//mod->TextureData->Target = TexDiffuse;
 
-	//DDSLoader::loadDds("test.dds");
+	floor = new Model();
+	floor->Mesh = MeshData::FromObj("floor.obj");
+	floor->Shader = ShaderData::FromPlainText("tutorial2.vert","tutorial2.frag");
+	floor->AppendTextureData(TextureData::FromDDS("floor.dds")->SetTarget(TexDiffuse));
+	floor->Position->y = -1.0f;
+	floor->Update();
+
 	SDL_WarpMouse(screenX/2,screenY/2);
 
 	return true;

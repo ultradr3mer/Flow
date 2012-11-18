@@ -11,6 +11,7 @@ void CApp::OnRender() {
 
 	viewPort->Bind();
 	mod->Draw();
+	floor->Draw();
 
 	SDL_GL_SwapBuffers();
 
