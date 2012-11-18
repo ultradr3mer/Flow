@@ -15,6 +15,9 @@ using namespace std;
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#include <btBulletDynamicsCommon.h>
+
 using namespace glm;
 
 #include "GameBase.h"

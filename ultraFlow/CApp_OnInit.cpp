@@ -45,6 +45,8 @@ bool CApp::OnInit(int argc, char **argv) {
 	}
 	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 
+	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+
 	viewPort = new ViewPort();
 	viewPort->Position->z = 4;
 
@@ -57,7 +59,7 @@ bool CApp::OnInit(int argc, char **argv) {
 	floor->Mesh = MeshData::FromObj("floor.obj");
 	floor->Shader = ShaderData::FromPlainText("tutorial2.vert","tutorial2.frag");
 	floor->AppendTextureData(TextureData::FromDDS("floor.dds")->SetTarget(TexDiffuse));
-	floor->Position->y = -1.0f;
+	floor->Position->y = -1.2f;
 	floor->Update();
 
 	SDL_WarpMouse(screenX/2,screenY/2);
