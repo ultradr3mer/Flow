@@ -6,9 +6,10 @@ void CApp::OnRender() {
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glEnable(GL_DEPTH_TEST); 
-	//glDepthMask(GL_TRUE); 
+	glDepthMask(GL_TRUE); 
 	glDepthFunc(GL_LEQUAL); 
 
+	viewPort->Bind();
 	mod->Draw();
 
 	SDL_GL_SwapBuffers();

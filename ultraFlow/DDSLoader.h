@@ -1,4 +1,5 @@
-#include "CApp.h"
+#include "Base.h"
+#include "GenFunc.h"
 
 /* DDS loader written by Jon Watte 2002 */
 /* Permission granted to use freely, as long as Jon Watte */

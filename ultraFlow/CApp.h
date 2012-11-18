@@ -1,23 +1,16 @@
 #ifndef _CAPP_H_
     #define _CAPP_H_
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <utility>
-#include <iostream>
-using namespace std;
-/* Ensure we are using opengl's core profile only */
-#define GL3_PROTOTYPES 1
-//#include <gl3.h>
-
-#include <GL/glew.h> 
-#include <SDL.h>
+#include "Base.h"
 #include "GenFunc.h"
 #include "MeshData.h"
 #include "ShaderData.h"
 #include "DDSLoader.h"
-#include "Texture.h"
+#include "TextureData.h"
 #include "Model.h"
+#include "MatrixGenerator.h"
+#include "ViewPort.h"
+#include "GameBase.h"
  
 #define PROGRAM_NAME "Tutorial2"
 
@@ -27,6 +20,7 @@ class CApp {
 		long frame;
 		int timebase;
 		Model* mod;
+		ViewPort* viewPort;
 		SDL_Surface* Surf_Display;
 
     public:
@@ -42,7 +36,5 @@ class CApp {
         void OnRender();
  
         void OnCleanup();
-
-		static void updateError();
 };
 #endif

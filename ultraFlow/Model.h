@@ -1,14 +1,22 @@
-#include "CApp.h"
+#include "Base.h"
+#include "MeshData.h"
+#include "TextureData.h"
+#include "ShaderData.h"
+#include "MatrixGenerator.h"
+
 #pragma once
-class Model
+class Model : public GameBase
 {
+private:
+	MatrixGenerator* innerMatrixGenerator;
 public:
 	MeshData *Mesh;
 	ShaderData *Shader;
-	Texture** Textures;
+	TextureData** Textures;
 	Model(void);
 	~Model(void);
 	void Draw(void);
-	void AppendTexture(Texture* newTex);
+	virtual void Update(void);
+	void AppendTextureData(TextureData* newTex);
 };
 

@@ -1,4 +1,3 @@
-#include "CApp.h"
 #include "MeshData.h"
 
 const int buffersize =128000;
@@ -17,7 +16,7 @@ int dataLenghtIndex = 0;
 MeshData::MeshData(void)
 {
 
-	GLchar *vertexsource, *fragmentsource;
+	//GLchar *vertexsource, *fragmentsource;
 
     /* Allocate and assign a Vertex Array Object to our handle */
     glGenVertexArrays(1, &vao);
@@ -51,8 +50,8 @@ MeshData* MeshData::FromObj(char* source)
 {
 	char* data = FileToBuf(FullFileName(source));
 
-	int readerPos;
-	int length;
+	//int readerPos;
+	//int length;
 	char line[256];
 	char subline[128];
 	char subline2[64];
@@ -77,11 +76,11 @@ MeshData* MeshData::FromObj(char* source)
 		if (!strcmp(subline,"v"))
 		{
 			cutFromChar(subline,' ', line, &lineIndex);
-			indexedPositionBuffer[curPos] = strtod(subline,NULL);
+			indexedPositionBuffer[curPos] = (float)strtod(subline,NULL);
 			cutFromChar(subline,' ', line, &lineIndex);
-			indexedPositionBuffer[curPos+1] = strtod(subline,NULL);
+			indexedPositionBuffer[curPos+1] = (float)strtod(subline,NULL);
 			cutFromChar(subline,' ', line, &lineIndex);
-			indexedPositionBuffer[curPos+2] = strtod(subline,NULL);
+			indexedPositionBuffer[curPos+2] = (float)strtod(subline,NULL);
 
 			curPos += 3;
 		}
@@ -89,9 +88,9 @@ MeshData* MeshData::FromObj(char* source)
 		else if(!strcmp(subline,"vt"))
 		{
 			cutFromChar(subline,' ', line, &lineIndex);
-			indexedtextureBuffer[curTex] = strtod(subline,NULL);
+			indexedtextureBuffer[curTex] = (float)strtod(subline,NULL);
 			cutFromChar(subline,' ', line, &lineIndex);
-			indexedtextureBuffer[curTex+1] = 1-strtod(subline,NULL);
+			indexedtextureBuffer[curTex+1] = 1-(float)strtod(subline,NULL);
 
 			curTex += 2;
 		}
@@ -99,11 +98,11 @@ MeshData* MeshData::FromObj(char* source)
 		else if(!strcmp(subline,"vn"))
 		{
 			cutFromChar(subline,' ', line, &lineIndex);
-			indexedNormalBuffer[curNor] = strtod(subline,NULL);
+			indexedNormalBuffer[curNor] = (float)strtod(subline,NULL);
 			cutFromChar(subline,' ', line, &lineIndex);
-			indexedNormalBuffer[curNor+1] = strtod(subline,NULL);
+			indexedNormalBuffer[curNor+1] = (float)strtod(subline,NULL);
 			cutFromChar(subline,' ', line, &lineIndex);
-			indexedNormalBuffer[curNor+2] = strtod(subline,NULL);
+			indexedNormalBuffer[curNor+2] = (float)strtod(subline,NULL);
 
 			curNor += 3;
 		}
@@ -117,16 +116,16 @@ MeshData* MeshData::FromObj(char* source)
 
 				//parse position/texture/normal
 				cutFromChar(subline2,'/', subline, &sublineIndex);
-				tmpIndex = strtod(subline2,NULL)-1;
+				tmpIndex = (int)strtod(subline2,NULL)-1;
 				tmpPos[0] = indexedPositionBuffer[tmpIndex*3];
 				tmpPos[1] = indexedPositionBuffer[tmpIndex*3+1];
 				tmpPos[2] = indexedPositionBuffer[tmpIndex*3+2];
 				cutFromChar(subline2,'/', subline, &sublineIndex);
-				tmpIndex = strtod(subline2,NULL)-1;
+				tmpIndex = (int)strtod(subline2,NULL)-1;
 				tmpTex[0] = indexedtextureBuffer[tmpIndex*2];
 				tmpTex[1] = indexedtextureBuffer[tmpIndex*2+1];
 				cutFromChar(subline2,'/', subline, &sublineIndex);
-				tmpIndex = strtod(subline2,NULL)-1;
+				tmpIndex = (int)strtod(subline2,NULL)-1;
 				tmpNor[0] = indexedNormalBuffer[tmpIndex*3];
 				tmpNor[1] = indexedNormalBuffer[tmpIndex*3+1];
 				tmpNor[2] = indexedNormalBuffer[tmpIndex*3+2];

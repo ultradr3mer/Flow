@@ -1,11 +1,15 @@
-#include "CApp.h"
+#include "ShaderData.h"
+#include "GenFunc.h"
+#include "TextureData.h"
 
 static ShaderData* curShader;
 
-//Don't forget to update enum Un iforms
+//Don't forget to update enum Uniforms
 const GLchar* UniformsStrings[] = {
 	"Diffuse",
-	"Normal"
+	"Normal",
+	"ModelView",
+	"ViewProjection"
 };
 
 //generates a list with all existing Uniforms and their locations
@@ -29,7 +33,7 @@ void ShaderData::generateLocations()
 	}
 
 	UniformLocations = new pair <enum Uniforms,GLint>[uniformLocationsLength];
-	for (int i = 0; i < uniformLocationsLength; i++)
+	for (int i = 0; i < maxLength; i++)
 	{
 		curPair = tmpUniformLocations[i];
 		if(curPair.second != -1)
@@ -140,6 +144,12 @@ void ShaderData::Uniform1i(enum Uniforms target, GLint i)
 	glUniform1i(location, i);
 }
 
+void ShaderData::UniformMatrix4fv(enum Uniforms target, mat4 const & matrix)
+{
+	GLuint location = curShader->getLocation(target);
+	glUniformMatrix4fv(location, 1,GL_FALSE, value_ptr(matrix));
+}
+
 GLint ShaderData::getLocation(enum Uniforms target)
 {
 	for (int i = 0; i < uniformLocationsLength; i++)
@@ -163,6 +173,6 @@ ShaderData::~ShaderData(void)
 void ShaderData::Bind(void)
 {
 	curShader = this;
-	Texture::resetTextureUnit();
+	CurTexUnit = 0;
     glUseProgram(shaderprogram);
 }

@@ -1,4 +1,4 @@
-#include "CApp.h"
+#include "Base.h"
 
 char* FullFileName(char* file);
 char* FileToBuf(char *file);

@@ -1,3 +1,6 @@
+#include "Base.h"
+#include "GenFunc.h"
+
 #pragma once
 class MeshData
 {

@@ -1,8 +1,12 @@
-#include "CApp.h"
+#include "Model.h"
+#include "ViewPort.h"
 
 Model::Model(void)
 {
 	Textures = nullptr;
+	innerMatrixGenerator = new MatrixGenerator();
+	Position = innerMatrixGenerator->Position;
+	Rotation = innerMatrixGenerator->Rotation;
 }
 
 
@@ -11,6 +15,7 @@ Model::~Model(void)
 	delete Mesh;
 	delete Shader;
 	delete[] Textures;
+	delete innerMatrixGenerator;
 }
 
 void Model::Draw(void)
@@ -23,17 +28,20 @@ void Model::Draw(void)
 		Textures[i]->Bind();
 	}
 
+	ShaderData::UniformMatrix4fv(MatModelView, innerMatrixGenerator->Matrix);
+	ShaderData::UniformMatrix4fv(MatViewProjection, curViewPort->ViewProjectionMatrix);
+
 	glDrawElements(GL_TRIANGLES, Mesh->Length, GL_UNSIGNED_INT, 0);
 }
 
-void Model::AppendTexture(Texture* newTex)
+void Model::AppendTextureData(TextureData* newTex)
 {
 	int oldLength = 0;
 	if(Textures != nullptr)
 		oldLength = sizeof(Textures)/sizeof(Textures[0]);
 
 	int newLength = oldLength+1;
-	Texture** newTextures = new Texture*[oldLength+1];
+	TextureData** newTextures = new TextureData*[oldLength+1];
 	for (int i = 0; i < oldLength; i++)
 	{
 		newTextures[i] = Textures[i];
@@ -41,4 +49,9 @@ void Model::AppendTexture(Texture* newTex)
 	newTextures[oldLength] = newTex;
 	delete[] Textures;
 	Textures = newTextures;
+}
+
+void Model::Update()
+{
+	innerMatrixGenerator->Update();
 }

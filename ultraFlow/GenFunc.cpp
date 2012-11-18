@@ -1,4 +1,5 @@
-#include "CApp.h"
+#include "GenFunc.h"
+
 /* A simple function that will read a file into an allocated char pointer buffer */
 char* FileToBuf(char *file)
 {

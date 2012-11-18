@@ -14,6 +14,7 @@ bool CApp::OnInit(int argc, char **argv) {
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         return false;
     }
+
  
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE,            8);
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE,          8);
@@ -29,10 +30,9 @@ bool CApp::OnInit(int argc, char **argv) {
     SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE,    8);
  
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,  1);
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,  8);
  
-    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,  2);
- 
-    if((Surf_Display = SDL_SetVideoMode(640, 480, 32, SDL_HWSURFACE | SDL_GL_DOUBLEBUFFER | SDL_OPENGL)) == NULL) {
+    if((Surf_Display = SDL_SetVideoMode(screenX, screenY, 32, SDL_HWSURFACE | SDL_GL_DOUBLEBUFFER | SDL_OPENGL)) == NULL) {
         return false;
     }
 
@@ -45,13 +45,17 @@ bool CApp::OnInit(int argc, char **argv) {
 	}
 	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 
+	viewPort = new ViewPort();
+	viewPort->Position->z = 4;
+
 	mod = new Model();
 	mod->Mesh = MeshData::FromObj("monkey.obj");
 	mod->Shader = ShaderData::FromPlainText("tutorial2.vert","tutorial2.frag");
-	mod->AppendTexture(Texture::FromDDS("monkey.dds")->SetTarget(TexDiffuse));
-	//mod->Texture->Target = TexDiffuse;
+	mod->AppendTextureData(TextureData::FromDDS("monkey.dds")->SetTarget(TexDiffuse));
+	//mod->TextureData->Target = TexDiffuse;
 
 	//DDSLoader::loadDds("test.dds");
+	SDL_WarpMouse(screenX/2,screenY/2);
 
 	return true;
 }

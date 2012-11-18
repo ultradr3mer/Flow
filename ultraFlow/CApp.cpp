@@ -32,7 +32,7 @@ int CApp::OnExecute(int argc, char **argv) {
 void preparePath(char* rawpath)
 {
 	int length = 0;
-	int i;
+	//int i;
 	char* tmpPointer;
 	tmpPointer = rawpath;
 	while (tmpPointer[length]!='\0')
@@ -60,13 +60,4 @@ int main(int argc, char **argv) {
     CApp theApp;
  
     return theApp.OnExecute(argc, argv);
-}
-
-void CApp::updateError(void)
-{
-	GLint error;
-	while((error = glGetError()) != GL_NO_ERROR)
-	{
-		fprintf(stderr, "Error: %s\n", glewGetErrorString(error));
-	}
 }

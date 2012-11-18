@@ -116,7 +116,7 @@ bool DDSLoader::loadDds( char* source )
     hasMipmaps_ = true;
   }
   if( li->compressed ) {
-    size_t size = max( li->divSize, x )/li->divSize * max( li->divSize, y )/li->divSize * li->blockBytes;
+    size_t size = std::max( li->divSize, x )/li->divSize * std::max( li->divSize, y )/li->divSize * li->blockBytes;
     assert( size == hdr.dwPitchOrLinearSize );
     assert( hdr.dwFlags & DDSD_LINEARSIZE );
     unsigned char * data = (unsigned char *)malloc( size );
@@ -127,10 +127,10 @@ bool DDSLoader::loadDds( char* source )
     for( unsigned int ix = 0; ix < mipMapCount; ++ix ) {
       fread( data, 1, size, f );
       glCompressedTexImage2D( GL_TEXTURE_2D, ix, li->internalFormat, x, y, 0, size, data );
-      CApp::updateError();
+      updateError();
       x = (x+1)>>1;
       y = (y+1)>>1;
-      size = max( li->divSize, x )/li->divSize * max( li->divSize, y )/li->divSize * li->blockBytes;
+      size = std::max( li->divSize, x )/li->divSize * std::max( li->divSize, y )/li->divSize * li->blockBytes;
     }
     free( data );
   }
@@ -155,7 +155,7 @@ bool DDSLoader::loadDds( char* source )
       }
       glPixelStorei( GL_UNPACK_ROW_LENGTH, y );
       glTexImage2D( GL_TEXTURE_2D, ix, li->internalFormat, x, y, 0, li->externalFormat, li->type, unpacked );
-      CApp::updateError();
+      updateError();
       x = (x+1)>>1;
       y = (y+1)>>1;
       size = x * y * li->blockBytes;
@@ -176,17 +176,17 @@ bool DDSLoader::loadDds( char* source )
       fread( data, 1, size, f );
       glPixelStorei( GL_UNPACK_ROW_LENGTH, y );
       glTexImage2D( GL_TEXTURE_2D, ix, li->internalFormat, x, y, 0, li->externalFormat, li->type, data );
-      CApp::updateError();
+      updateError();
       x = (x+1)>>1;
       y = (y+1)>>1;
       size = x * y * li->blockBytes;
     }
     free( data );
     glPixelStorei( GL_UNPACK_SWAP_BYTES, GL_FALSE );
-    CApp::updateError();
+    updateError();
   }
   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, mipMapCount-1 );
-  CApp::updateError();
+  updateError();
 
   return true;
 

@@ -1,11 +1,14 @@
-#include "CApp.h"
+#include "Base.h"
+
 #pragma once
 
 //Don't forget to update UniformsStrings
 enum Uniforms
 {
 	TexDiffuse,
-	TexNormal
+	TexNormal,
+	MatModelView,
+	MatViewProjection
 };
 
 class ShaderData
@@ -17,6 +20,7 @@ public:
 	void Bind(void);
 	static ShaderData* FromPlainText(char* vertexSource, char* fragmentSource);
 	static void Uniform1i(enum Uniforms, GLint i);
+	static void UniformMatrix4fv(enum Uniforms target, mat4 const & matrix);
 private:
 	int uniformLocationsLength;
 	pair <enum Uniforms,GLint>* UniformLocations;
