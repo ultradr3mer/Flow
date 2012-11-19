@@ -15,15 +15,15 @@ void CApp::OnRender() {
 
 	SDL_GL_SwapBuffers();
 
-	//frame++;
-	//int time=glutGet(GLUT_ELAPSED_TIME);
-	//float fps = 0;
-	//if (time - timebase > 1000) {
-	//	fps = frame*1000.0f/(time-timebase);
-	// 	timebase = time;
-	//	frame = 0;
-	//	printf("%f\n",fps);
-	//}
+	frame++;
+	int time= SDL_GetTicks(); 
+	float fps = 0;
+	if (time - timebase > 1000) {
+		fps = frame*1000.0f/(time-timebase);
+	 	timebase = time;
+		frame = 0;
+		printf("FPS: %f\n",fps);
+	}
 
     /* Cleanup all the things we bound and allocated */
 	//delete md;

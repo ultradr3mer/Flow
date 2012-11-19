@@ -47,6 +47,9 @@ bool CApp::OnInit(int argc, char **argv) {
 
 	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
 
+	//float m[16];
+	//body->getWorldTransform ().getOpenGLMatrix(m);
+
 	viewPort = new ViewPort();
 	viewPort->Position->z = 4;
 
@@ -63,6 +66,7 @@ bool CApp::OnInit(int argc, char **argv) {
 	floor->Update();
 
 	SDL_WarpMouse(screenX/2,screenY/2);
+	SDL_ShowCursor(0);
 
 	return true;
 }
