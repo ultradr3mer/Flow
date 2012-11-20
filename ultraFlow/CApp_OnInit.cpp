@@ -45,15 +45,39 @@ bool CApp::OnInit(int argc, char **argv) {
 	}
 	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 
-	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-
 	//float m[16];
 	//body->getWorldTransform ().getOpenGLMatrix(m);
+	btBroadphaseInterface* broadphase = new btDbvtBroadphase();
+    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+    btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+    dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
+    dynamicsWorld->setGravity(btVector3(0,-10,0));
+ 
+    btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0,1,0),1);
+    btCollisionShape* fallShape = new btSphereShape(1.0f);
+
+	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(0,-1.5,0)));
+    btRigidBody::btRigidBodyConstructionInfo
+            groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
+    btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
+    dynamicsWorld->addRigidBody(groundRigidBody);
+ 
+ 
+    btDefaultMotionState* fallMotionState =
+            new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(0,50,0)));
+    btScalar mass = 1;
+    btVector3 fallInertia(0,0,0);
+    fallShape->calculateLocalInertia(mass,fallInertia);
+    btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass,fallMotionState,fallShape,fallInertia);
+    btRigidBody* fallRigidBody = new btRigidBody(fallRigidBodyCI);
+    dynamicsWorld->addRigidBody(fallRigidBody);
 
 	viewPort = new ViewPort();
 	viewPort->Position->z = 4;
 
-	mod = new Model();
+	mod = new PhysicsModel();
+	mod->Body = fallRigidBody;
 	mod->Mesh = MeshData::FromObj("monkey.obj");
 	mod->Shader = ShaderData::FromPlainText("tutorial2.vert","tutorial2.frag");
 	mod->AppendTextureData(TextureData::FromDDS("monkey.dds")->SetTarget(TexDiffuse));

@@ -21,6 +21,7 @@ public:
 	static ShaderData* FromPlainText(char* vertexSource, char* fragmentSource);
 	static void Uniform1i(enum Uniforms, GLint i);
 	static void UniformMatrix4fv(enum Uniforms target, mat4 const & matrix);
+	static void ShaderData::UniformMatrix4fv(enum Uniforms target, GLfloat* matrix );
 private:
 	int uniformLocationsLength;
 	pair <enum Uniforms,GLint>* UniformLocations;

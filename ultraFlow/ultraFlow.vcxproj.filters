@@ -48,6 +48,9 @@
     <ClInclude Include="GameBase.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="PhysicsModel.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CApp.cpp">
@@ -96,6 +99,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="GameBase.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsModel.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

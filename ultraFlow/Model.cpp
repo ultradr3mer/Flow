@@ -28,10 +28,15 @@ void Model::Draw(void)
 		Textures[i]->Bind();
 	}
 
-	ShaderData::UniformMatrix4fv(MatModelView, innerMatrixGenerator->Matrix);
-	ShaderData::UniformMatrix4fv(MatViewProjection, curViewPort->ViewProjectionMatrix);
+	setupMatrices();
 
 	glDrawElements(GL_TRIANGLES, Mesh->Length, GL_UNSIGNED_INT, 0);
+}
+
+void Model::setupMatrices()
+{
+	ShaderData::UniformMatrix4fv(MatModelView, innerMatrixGenerator->Matrix);
+	ShaderData::UniformMatrix4fv(MatViewProjection, curViewPort->ViewProjectionMatrix);
 }
 
 void Model::AppendTextureData(TextureData* newTex)

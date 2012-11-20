@@ -11,6 +11,7 @@
 #include "MatrixGenerator.h"
 #include "ViewPort.h"
 #include "GameBase.h"
+#include "PhysicsModel.h"
  
 #define PROGRAM_NAME "Tutorial2"
 
@@ -19,7 +20,10 @@ class CApp {
         bool Running;
 		long frame;
 		int timebase;
-		Model* mod;
+		long curFrameTime;
+		int lastFrameDuration;
+		btDiscreteDynamicsWorld* dynamicsWorld;
+		PhysicsModel* mod;
 		Model* floor;
 		ViewPort* viewPort;
 		SDL_Surface* Surf_Display;

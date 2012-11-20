@@ -90,6 +90,7 @@
     <ClInclude Include="MatrixGenerator.h" />
     <ClInclude Include="MeshData.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="PhysicsModel.h" />
     <ClInclude Include="ShaderData.h" />
     <ClInclude Include="TextureData.h" />
     <ClInclude Include="ViewPort.h" />
@@ -108,6 +109,7 @@
     <ClCompile Include="MatrixGenerator.cpp" />
     <ClCompile Include="MeshData.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="PhysicsModel.cpp" />
     <ClCompile Include="ShaderData.cpp" />
     <ClCompile Include="TextureData.cpp" />
     <ClCompile Include="ViewPort.cpp" />

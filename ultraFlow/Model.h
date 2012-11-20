@@ -9,6 +9,7 @@ class Model : public GameBase
 {
 private:
 	MatrixGenerator* innerMatrixGenerator;
+	virtual void setupMatrices(void);
 public:
 	MeshData *Mesh;
 	ShaderData *Shader;
