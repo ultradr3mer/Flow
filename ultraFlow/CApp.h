@@ -12,6 +12,7 @@
 #include "ViewPort.h"
 #include "GameBase.h"
 #include "PhysicsModel.h"
+#include "BodyGenerator.h"
  
 #define PROGRAM_NAME "Tutorial2"
 
@@ -22,8 +23,8 @@ class CApp {
 		int timebase;
 		long curFrameTime;
 		int lastFrameDuration;
-		btDiscreteDynamicsWorld* dynamicsWorld;
-		PhysicsModel* mod;
+		PhysicsModel** objects;
+		int objectCount;
 		Model* floor;
 		ViewPort* viewPort;
 		SDL_Surface* Surf_Display;

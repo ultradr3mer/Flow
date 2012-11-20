@@ -4,7 +4,7 @@ void CApp::OnCleanup() {
 
 	//md->~MeshData();
 	//sd->~ShaderData();
-	delete mod;
+	delete[] objects;
 
     SDL_Quit();
 }

@@ -10,7 +10,10 @@ void CApp::OnRender() {
 	glDepthFunc(GL_LEQUAL); 
 
 	viewPort->Bind();
-	mod->Draw();
+	for (int i = 0; i < objectCount; i++)
+	{
+		objects[i]->Draw();
+	}
 	floor->Draw();
 
 	SDL_GL_SwapBuffers();

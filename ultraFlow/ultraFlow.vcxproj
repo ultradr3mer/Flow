@@ -83,6 +83,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Base.h" />
+    <ClInclude Include="BodyGenerator.h" />
     <ClInclude Include="CApp.h" />
     <ClInclude Include="DDSLoader.h" />
     <ClInclude Include="GameBase.h" />
@@ -90,6 +91,7 @@
     <ClInclude Include="MatrixGenerator.h" />
     <ClInclude Include="MeshData.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="ObjLoader.h" />
     <ClInclude Include="PhysicsModel.h" />
     <ClInclude Include="ShaderData.h" />
     <ClInclude Include="TextureData.h" />
@@ -97,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Base.cpp" />
+    <ClCompile Include="BodyGenerator.cpp" />
     <ClCompile Include="CApp.cpp" />
     <ClCompile Include="CApp_OnCleanup.cpp" />
     <ClCompile Include="CApp_OnEvent.cpp" />
@@ -109,6 +112,7 @@
     <ClCompile Include="MatrixGenerator.cpp" />
     <ClCompile Include="MeshData.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="ObjLoader.cpp" />
     <ClCompile Include="PhysicsModel.cpp" />
     <ClCompile Include="ShaderData.cpp" />
     <ClCompile Include="TextureData.cpp" />

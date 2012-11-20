@@ -13,21 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Quelldateien\Loader">
+      <UniqueIdentifier>{e8b87516-bbef-46ac-aa96-8bf345a26de8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Loader">
+      <UniqueIdentifier>{2714464d-a1f5-4b1b-ab5c-19e9ddbe5b55}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CApp.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="GenFunc.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshData.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderData.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="DDSLoader.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">
@@ -39,9 +36,6 @@
     <ClInclude Include="Base.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="TextureData.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="ViewPort.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -50,6 +44,24 @@
     </ClInclude>
     <ClInclude Include="PhysicsModel.h">
       <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="BodyGenerator.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSLoader.h">
+      <Filter>Headerdateien\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshData.h">
+      <Filter>Headerdateien\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjLoader.h">
+      <Filter>Headerdateien\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderData.h">
+      <Filter>Headerdateien\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureData.h">
+      <Filter>Headerdateien\Loader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -74,15 +86,6 @@
     <ClCompile Include="GenFunc.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="MeshData.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderData.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="DDSLoader.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -90,9 +93,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Base.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureData.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="ViewPort.cpp">
@@ -103,6 +103,24 @@
     </ClCompile>
     <ClCompile Include="PhysicsModel.cpp">
       <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="BodyGenerator.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSLoader.cpp">
+      <Filter>Quelldateien\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshData.cpp">
+      <Filter>Quelldateien\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjLoader.cpp">
+      <Filter>Quelldateien\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderData.cpp">
+      <Filter>Quelldateien\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureData.cpp">
+      <Filter>Quelldateien\Loader</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
