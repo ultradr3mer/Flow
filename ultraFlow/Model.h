@@ -10,6 +10,7 @@ class Model : public GameBase
 private:
 	MatrixGenerator* innerMatrixGenerator;
 	virtual void setupMatrices(void);
+	int texCount;
 public:
 	MeshData *Mesh;
 	ShaderData *Shader;

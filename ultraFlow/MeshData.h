@@ -5,6 +5,8 @@ const int buffersize =128000;
 extern GLfloat positionBuffer[buffersize][3];
 extern GLfloat textureBuffer[buffersize][2];
 extern GLfloat normalBuffer[buffersize][3];
+extern GLfloat tangentBuffer[buffersize][3];
+extern GLfloat biNormalBuffer[buffersize][3];
 extern GLuint indexBuffer[buffersize];
 extern float indexedPositionBuffer[buffersize*3];
 extern float indexedtextureBuffer[buffersize*2];
@@ -23,9 +25,10 @@ public:
 	void Bind(void);
 	static MeshData* FromObj(char* source);
 	static void Clear(void);
+	static void GenerateTangent(void);
 	int Length;
 private:
-	GLuint vbo[4],vao;
+	GLuint vbo[6],vao;
 };
 	//GLfloat **positions;
 	//GLfloat **normals;

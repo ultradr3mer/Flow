@@ -116,8 +116,10 @@ ShaderData::ShaderData(char* vertexsource, char* fragmentsource)
     glAttachShader(shaderprogram, fragmentshader);
 
 	glBindAttribLocation(shaderprogram, 0, "in_Position");
-    glBindAttribLocation(shaderprogram, 1, "in_Color");
+    glBindAttribLocation(shaderprogram, 1, "in_Normal");
 	glBindAttribLocation(shaderprogram, 2, "in_TexCoord");
+	glBindAttribLocation(shaderprogram, 3, "in_Tangent");
+	glBindAttribLocation(shaderprogram, 4, "in_BiNormal");
 
     glLinkProgram(shaderprogram);
 

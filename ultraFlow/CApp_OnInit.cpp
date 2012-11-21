@@ -73,13 +73,22 @@ bool CApp::OnInit(int argc, char **argv) {
 	viewPort->Position->z = 2;
 	viewPort->Position->y = 4;
 
+	floor = new Model();
+	floor->Mesh = MeshData::FromObj("floor.obj");
+	floor->Shader = ShaderData::FromPlainText("simpleLight.vert","simpleLight.frag");
+	floor->AppendTextureData(TextureData::FromDDS("floor.dds")->SetTarget(TexDiffuse));
+	floor->AppendTextureData(TextureData::FromDDS("floor_n.dds")->SetTarget(TexNormal));
+	//floor->Position->y = 1.0f;
+	floor->Update();
+
 	objectCount = 20;
 	objects = new PhysicsModel* [objectCount];
 	PhysicsModel* mod;
 
 	MeshData* mesh = MeshData::FromObj("monkey.obj");
-	ShaderData* shader = ShaderData::FromPlainText("tutorial2.vert","tutorial2.frag");
+	ShaderData* shader = ShaderData::FromPlainText("simpleLight.vert","simpleLight.frag");
 	TextureData* texture = TextureData::FromDDS("monkey.dds")->SetTarget(TexDiffuse);
+	TextureData* normal = TextureData::FromDDS("monkey_n.dds")->SetTarget(TexNormal);
 
 	for (int i = 0; i < objectCount; i++)
 	{
@@ -89,16 +98,10 @@ bool CApp::OnInit(int argc, char **argv) {
 		mod->Mesh = mesh;
 		mod->Shader = shader;
 		mod->AppendTextureData(texture);
+		mod->AppendTextureData(normal);
 
 		objects[i] = mod;
 	}
-
-	floor = new Model();
-	floor->Mesh = MeshData::FromObj("floor.obj");
-	floor->Shader = ShaderData::FromPlainText("tutorial2.vert","tutorial2.frag");
-	floor->AppendTextureData(TextureData::FromDDS("floor.dds")->SetTarget(TexDiffuse));
-	//floor->Position->y = 1.0f;
-	floor->Update();
 
 	SDL_WarpMouse(screenX/2,screenY/2);
 	SDL_ShowCursor(0);
