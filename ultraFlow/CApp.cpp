@@ -16,12 +16,21 @@ int CApp::OnExecute(int argc, char **argv) {
 		return -1;
 	}
 
+
 	SDL_Event Event;
     while(Running) {
-       while(SDL_PollEvent(&Event)) {
-            OnEvent(&Event);
-        }
-        OnLoop();
+		while(SDL_PollEvent(&Event)) 
+		{
+			OnEvent(&Event);
+		}
+		while ((SDL_GetTicks() - GameBaseTime) > GameTickLength)
+		{
+			GameBaseTime += GameTickLength;
+			OnLoop();
+		}
+
+		BodyGenerator::Step();
+
         OnRender();
     }
  

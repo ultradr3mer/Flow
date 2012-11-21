@@ -8,6 +8,8 @@ const int cacheSize = 32;
 int writerPos;
 btCollisionShape* shapeCache[cacheSize];
 char shapeCacheNames[cacheSize][32];
+long curFrameTime;
+int lastFrameDuration;
 
 void BodyGenerator::Init(void)
 {
@@ -77,4 +79,12 @@ btCollisionShape* BodyGenerator::ShapeFromObj(char* source)
 	writerPos++;
 
 	return fallShape;
+}
+
+void BodyGenerator::Step()
+{
+	long newFrameTime = SDL_GetTicks();
+	lastFrameDuration = newFrameTime - curFrameTime;
+	curFrameTime = newFrameTime;
+	dynamicsWorld->stepSimulation(lastFrameDuration/1000.0f, 7);
 }

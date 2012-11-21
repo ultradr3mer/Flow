@@ -69,6 +69,9 @@ bool CApp::OnInit(int argc, char **argv) {
 
 	BodyGenerator::Init();
 
+	GameTickLength = 1000 / 100;
+	GameBaseTime = 0;
+
 	viewPort = new ViewPort();
 	viewPort->Position->z = 2;
 	viewPort->Position->y = 4;

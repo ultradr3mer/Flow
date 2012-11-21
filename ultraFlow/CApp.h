@@ -19,13 +19,13 @@ class CApp {
         bool Running;
 		long frame;
 		int timebase;
-		long curFrameTime;
-		int lastFrameDuration;
 		PhysicsModel** objects;
 		int objectCount;
 		Model* floor;
 		ViewPort* viewPort;
 		SDL_Surface* Surf_Display;
+		long GameBaseTime;
+		int GameTickLength;
 
     public:
         CApp();
