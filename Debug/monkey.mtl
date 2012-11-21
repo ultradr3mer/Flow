@@ -1,13 +1,12 @@
 # Blender MTL File: 'None'
 # Material Count: 1
-newmtl Material.001_untitled.002_monkey.png
-Ns 92.156863
+newmtl _untitled
+Ns 0
 Ka 0.000000 0.000000 0.000000
-Kd 0.512000 0.512000 0.512000
-Ks 0.250000 0.250000 0.250000
-Ni 1.000000
-d 1.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
 illum 2
-map_Kd monkey.png
+map_Kd .
 
 
