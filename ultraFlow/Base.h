@@ -25,6 +25,7 @@ using namespace glm;
 const float pi = 3.1415926535897932384626433832795f;
 const int screenX = 640;
 const int screenY = 480;
+extern bool useVertexArrays;
 
 void updateError();
 

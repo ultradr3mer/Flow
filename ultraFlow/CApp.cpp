@@ -3,6 +3,7 @@
 char execPath[512];
 int execPathLenght;
 void preparePath(char*);
+bool useVertexArrays = false;
 
 CApp::CApp() {
     Running = true;

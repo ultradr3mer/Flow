@@ -14,8 +14,6 @@
 #include "PhysicsModel.h"
 #include "BodyGenerator.h"
  
-#define PROGRAM_NAME "Tutorial2"
-
 class CApp {
     private:
         bool Running;
