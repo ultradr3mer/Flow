@@ -73,7 +73,7 @@ bool CApp::OnInit(int argc, char **argv) {
 	GameBaseTime = 0;
 
 	viewPort = new ViewPort();
-	viewPort->Position->z = 2;
+	//viewPort->Position->z = 2;
 	viewPort->Position->y = 4;
 
 	floor = new Model();
@@ -84,27 +84,46 @@ bool CApp::OnInit(int argc, char **argv) {
 	//floor->Position->y = 1.0f;
 	floor->Update();
 
-	objectCount = 20;
-	objects = new PhysicsModel* [objectCount];
-	PhysicsModel* mod;
+	objectCount = 100;
+	int size = (int)sqrt((float)objectCount);
+	objects = new GameTile*[objectCount];
+	GameTile* gametile;
 
-	MeshData* mesh = MeshData::FromObj("monkey.obj");
-	ShaderData* shader = ShaderData::FromPlainText("simpleLight.vert","simpleLight.frag");
-	TextureData* texture = TextureData::FromDDS("monkey.dds")->SetTarget(TexDiffuse);
-	TextureData* normal = TextureData::FromDDS("monkey_n.dds")->SetTarget(TexNormal);
+	MeshData* mesh = MeshData::FromObj("plane.obj");
+	ShaderData* shader = ShaderData::FromPlainText("textureSimple.vert","textureSimple.frag");
+	TextureData* texture = TextureData::FromDDS("none.dds")->SetTarget(TexDiffuse);
+	//TextureData* normal = TextureData::FromDDS("monkey_n.dds")->SetTarget(TexNormal);
 
+	int posy, posx;
 	for (int i = 0; i < objectCount; i++)
 	{
-		mod = new PhysicsModel();
-		mod->Body = BodyGenerator::FromObj("monkey_pbox.obj");
-		mod->Body->getWorldTransform().setOrigin(btVector3(0.0f,i+1.0f,0.0f));
-		mod->Mesh = mesh;
-		mod->Shader = shader;
-		mod->AppendTextureData(texture);
-		mod->AppendTextureData(normal);
+		posy = i / size;
+		posx = i - size * posy;
 
-		objects[i] = mod;
+		gametile = new GameTile();
+		//mod->Body = BodyGenerator::FromObj("monkey_pbox.obj");
+		//mod->Body->getWorldTransform().setOrigin(btVector3(0.0f,i+1.0f,0.0f));
+		//mod.Mesh = mesh;
+		//mod.Shader = shader;
+		//mod.AppendTextureData(texture);
+		//mod->AppendTextureData(normal);
+
+		gametile->Position.x = posx - size/2;
+		gametile->Position.y = posy - size/2;
+		//mod->Update();
+
+		objects[i] = gametile;
 	}
+
+	crosshair = new Model();
+	crosshair->Mesh = mesh;
+	crosshair->Shader = shader;
+	crosshair->AppendTextureData(TextureData::FromDDS("crosshair.dds")->SetTarget(TexDiffuse));
+	crosshair->Position->y = -0.01f;
+	crosshair->Update();
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE,GL_ONE);
 
 	SDL_WarpMouse(screenX/2,screenY/2);
 	SDL_ShowCursor(0);

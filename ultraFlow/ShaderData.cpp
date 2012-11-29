@@ -12,6 +12,10 @@ const GLchar* UniformsStrings[] = {
 	"ViewProjection"
 };
 
+ShaderData* ShaderCache[4096];
+char* ShaderNames[4096];
+int ShaderCachePosition;
+
 //generates a list with all existing Uniforms and their locations
 void ShaderData::generateLocations()
 {
@@ -133,11 +137,25 @@ ShaderData::ShaderData(char* vertexsource, char* fragmentsource)
 
 ShaderData* ShaderData::FromPlainText(char* vertexSource, char* fragmentSource)
 {
+	char* name = new char[strlen(vertexSource)+strlen(fragmentSource)];
+	strcpy(name,vertexSource);
+	strcat(name,fragmentSource);
+
+	for (int i = 0; i < ShaderCachePosition; i++)
+	{
+		if(strcmp(ShaderNames[i],name) == 0)
+			return ShaderCache[i];
+	}
+
+	ShaderNames[ShaderCachePosition] = name;
+
 	/* Read our shaders into the appropriate buffers */
     char* vertexsource = FileToBuf(FullFileName(vertexSource));
 	char* fragmentsource = FileToBuf(FullFileName(fragmentSource));
 
-	return new ShaderData(vertexsource,fragmentsource);
+	ShaderCache[ShaderCachePosition] = new ShaderData(vertexsource,fragmentsource);
+
+	return ShaderCache[ShaderCachePosition++];
 }
 
 void ShaderData::Uniform1i(enum Uniforms target, GLint i)

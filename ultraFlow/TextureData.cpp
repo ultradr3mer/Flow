@@ -4,6 +4,10 @@
 
 int CurTexUnit;
 
+TextureData* TextureCache[4096];
+char* TextureNames[4096];
+int TextureCachePosition;
+
 TextureData::TextureData(void)
 {
 	// allocate a texture name
@@ -30,9 +34,20 @@ void TextureData::Bind(void)
 
 TextureData* TextureData::FromDDS(char* source)
 {
-	TextureData* tx = new TextureData();
+	for (int i = 0; i < TextureCachePosition; i++)
+	{
+		if(strcmp(TextureNames[i],source) == 0)
+			return TextureCache[i];
+	}
+
+	char* name = new char[strlen(source)];
+	strcpy(name,source);
+	TextureNames[TextureCachePosition] = name;
+
+	TextureCache[TextureCachePosition] = new TextureData();
 	DDSLoader::loadDds(source);
-	return tx;
+
+	return TextureCache[TextureCachePosition++];
 }
 
 TextureData* TextureData::SetTarget(enum Uniforms target)

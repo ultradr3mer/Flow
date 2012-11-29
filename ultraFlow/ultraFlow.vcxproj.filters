@@ -63,6 +63,9 @@
     <ClInclude Include="TextureData.h">
       <Filter>Headerdateien\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="GameTile.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CApp.cpp">
@@ -121,6 +124,9 @@
     </ClCompile>
     <ClCompile Include="TextureData.cpp">
       <Filter>Quelldateien\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTile.cpp">
+      <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

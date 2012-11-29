@@ -13,13 +13,15 @@
 #include "GameBase.h"
 #include "PhysicsModel.h"
 #include "BodyGenerator.h"
+#include "GameTile.h"
  
 class CApp {
     private:
         bool Running;
 		long frame;
 		int timebase;
-		PhysicsModel** objects;
+		GameTile** objects;
+		Model* crosshair;
 		int objectCount;
 		Model* floor;
 		ViewPort* viewPort;
