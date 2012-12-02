@@ -15,7 +15,7 @@ void CApp::OnRender() {
 		objects[i]->Draw();
 	}
 	crosshair->Draw();
-	//floor->Draw();
+	ps->Draw();
 
 	SDL_GL_SwapBuffers();
 

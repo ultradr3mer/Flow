@@ -17,6 +17,7 @@ private:
 	Model* Back;
 	float rotVec;
 	enum GameTileType oldStatus;
+	vec2 PositionOld;
 	void Switch();
 
 public:

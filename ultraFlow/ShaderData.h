@@ -8,7 +8,11 @@ enum Uniforms
 	TexDiffuse,
 	TexNormal,
 	MatModelView,
-	MatViewProjection
+	MatViewProjection,
+	VecOrigin,
+	FltSize,
+	FltAspect,
+	FltAlpha
 };
 
 class ShaderData
@@ -20,6 +24,8 @@ public:
 	void Bind(void);
 	static ShaderData* FromPlainText(char* vertexSource, char* fragmentSource);
 	static void Uniform1i(enum Uniforms, GLint i);
+	static void Uniform1f(enum Uniforms, GLfloat f);
+	static void Uniform3fv(enum Uniforms, vec3 const & vec);
 	static void UniformMatrix4fv(enum Uniforms target, mat4 const & matrix);
 	static void ShaderData::UniformMatrix4fv(enum Uniforms target, GLfloat* matrix );
 private:

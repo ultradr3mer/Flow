@@ -8,7 +8,8 @@ ViewPort::ViewPort(void)
 	Position = innerMatrixGenerator->Position;
 	Rotation = innerMatrixGenerator->Rotation;
 
-	ProjectrionMatrix = perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.f);
+	Aspect = 4.0f / 3.0f;
+	ProjectrionMatrix = perspective(45.0f, Aspect, 0.1f, 100.f);
 }
 
 

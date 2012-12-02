@@ -93,6 +93,7 @@
     <ClInclude Include="MeshData.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ObjLoader.h" />
+    <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="PhysicsModel.h" />
     <ClInclude Include="ShaderData.h" />
     <ClInclude Include="TextureData.h" />
@@ -115,6 +116,7 @@
     <ClCompile Include="MeshData.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ObjLoader.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="PhysicsModel.cpp" />
     <ClCompile Include="ShaderData.cpp" />
     <ClCompile Include="TextureData.cpp" />

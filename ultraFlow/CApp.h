@@ -14,6 +14,7 @@
 #include "PhysicsModel.h"
 #include "BodyGenerator.h"
 #include "GameTile.h"
+#include "ParticleSystem.h"
  
 const int ShipCount = 10;
 
@@ -29,10 +30,11 @@ class CApp {
 		ViewPort* viewPort;
 		SDL_Surface* Surf_Display;
 		long GameBaseTime;
-		int GameTickLength;
+		uint GameTickLength;
 		int shipPositions[ShipCount];
 		int hitCounter;
 		int resettingPos;
+		ParticleSystem* ps;
 
     public:
         CApp();

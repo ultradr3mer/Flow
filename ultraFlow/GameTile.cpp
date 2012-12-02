@@ -30,7 +30,10 @@ GameTile::~GameTile(void)
 void GameTile::Draw()
 {
 	Front->Draw();
-	Back->Draw();
+
+	if(Front->Rotation->z > 0.001f || 
+		Front->Rotation->z < -0.001f)
+		Back->Draw();
 }
 
 void GameTile::Update()
@@ -38,16 +41,25 @@ void GameTile::Update()
 	if(oldStatus != Status)
 		Switch();
 
-	rotVec += -Front->Rotation->z * 0.007;
-	rotVec *= 0.9f;
+	if(Front->Rotation->z > 0.001f || 
+		Front->Rotation->z < -0.001f ||
+		rotVec > 0.001f || 
+		rotVec < -0.001f || 
+		PositionOld != Position)
+	{
+		rotVec += -Front->Rotation->z * 0.007f;
+		rotVec *= 0.9f;
 
-	Front->Rotation->z += rotVec;
-	*Front->Position = vec3(Position.x*2.0f,0.0f,Position.y*2.0f);
-	Front->Update();
+		Front->Rotation->z += rotVec;
+		*Front->Position = vec3(Position.x*2.0f,0.0f,Position.y*2.0f);
+		Front->Update();
 
-	Back->Rotation->z = Front->Rotation->z + 0.5f;
-	*Back->Position = *Front->Position;
-	Back->Update();
+		Back->Rotation->z = Front->Rotation->z + 0.5f;
+		*Back->Position = *Front->Position;
+		Back->Update();
+
+		PositionOld = Position;
+	}
 }
 
 void GameTile::Switch()

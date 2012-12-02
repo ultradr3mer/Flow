@@ -9,7 +9,11 @@ const GLchar* UniformsStrings[] = {
 	"Diffuse",
 	"Normal",
 	"ModelView",
-	"ViewProjection"
+	"ViewProjection",
+	"Origin",
+	"Size",
+	"Aspect",
+	"Alpha"
 };
 
 ShaderData* ShaderCache[4096];
@@ -162,6 +166,18 @@ void ShaderData::Uniform1i(enum Uniforms target, GLint i)
 {
 	GLuint location = curShader->getLocation(target);
 	glUniform1i(location, i);
+}
+
+void ShaderData::Uniform1f(enum Uniforms target, GLfloat f)
+{
+	GLuint location = curShader->getLocation(target);
+	glUniform1f(location, f);
+}
+
+void ShaderData::Uniform3fv(enum Uniforms target, vec3 const & vec)
+{
+	GLuint location = curShader->getLocation(target);
+	glUniform3fv(location, 1, value_ptr(vec));
 }
 
 void ShaderData::UniformMatrix4fv(enum Uniforms target, GLfloat* matrix )

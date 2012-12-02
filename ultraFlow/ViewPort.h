@@ -16,6 +16,7 @@ public:
 	virtual void Update(void);
 	void Bind(void);
 	vec3 movingVec;
+	float Aspect;
 };
 extern ViewPort* curViewPort;
 

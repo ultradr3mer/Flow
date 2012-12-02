@@ -99,8 +99,8 @@ bool CApp::OnInit(int argc, char **argv) {
 
 		gametile = new GameTile();
 
-		gametile->Position.x = posx - size/2;
-		gametile->Position.y = posy - size/2;
+		gametile->Position.x = (float)posx - size/2;
+		gametile->Position.y = (float)posy - size/2;
 		//mod->Update();
 
 		objects[i] = gametile;
@@ -116,6 +116,18 @@ bool CApp::OnInit(int argc, char **argv) {
 	crosshair->AppendTextureData(TextureData::FromDDS("crosshair.dds")->SetTarget(TexDiffuse));
 	crosshair->Position->y = -0.01f;
 	crosshair->Update();
+
+	//setup Particle System
+	ps = new ParticleSystem();
+	ps->AppendTextureData(TextureData::FromDDS("particle.dds")->SetTarget(TexDiffuse));
+	
+	ParticleAffectorSpawner* spawner = new ParticleAffectorSpawner();
+	spawner->Position = viewPort->Position;
+	ps->AppendAffector(spawner);
+
+	ParticleAffectorGravity* grav = new ParticleAffectorGravity();
+	grav->Strength = 0.00001f;
+	ps->AppendAffector(grav);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE,GL_ONE);

@@ -10,6 +10,7 @@ class Model : public GameBase
 private:
 	MatrixGenerator* innerMatrixGenerator;
 	virtual void setupMatrices(void);
+protected:
 	int texCount;
 public:
 	MeshData *Mesh;
@@ -17,7 +18,7 @@ public:
 	TextureData** Textures;
 	Model(void);
 	~Model(void);
-	void Draw(void);
+	virtual void Draw(void);
 	virtual void Update(void);
 	void AppendTextureData(TextureData* newTex);
 };

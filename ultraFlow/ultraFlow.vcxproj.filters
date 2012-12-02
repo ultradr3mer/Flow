@@ -66,6 +66,9 @@
     <ClInclude Include="GameTile.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CApp.cpp">
@@ -126,6 +129,9 @@
       <Filter>Quelldateien\Loader</Filter>
     </ClCompile>
     <ClCompile Include="GameTile.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

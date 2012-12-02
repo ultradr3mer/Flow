@@ -77,8 +77,8 @@ void CApp::fire()
 	if(resettingPos < 100)
 		return;
 
-	int hitx = round(crosshair->Position->x / 2);
-	int hity = round(crosshair->Position->z / 2);
+	int hitx = (int)round(crosshair->Position->x / 2);
+	int hity = (int)round(crosshair->Position->z / 2);
 
 	int comparePos[10];
 	int compareWriter = 0;

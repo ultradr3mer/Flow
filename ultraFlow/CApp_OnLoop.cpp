@@ -15,6 +15,8 @@ void CApp::OnLoop() {
 		objects[i]->Update();
 	}
 
+	ps->Update();
+
 	if(resettingPos == 0)
 	{
 		int tmp = 0;
@@ -22,7 +24,7 @@ void CApp::OnLoop() {
 		int i = 0;
 		while (i < ShipCount)
 		{
-			tmp = round(linearRand(0.0f,1.0f)*100);
+			tmp = (int)round(linearRand(0.0f,1.0f)*100);
 			for (int j = 0; j < i; j++)
 			{
 				if(shipPositions[j] == tmp)
