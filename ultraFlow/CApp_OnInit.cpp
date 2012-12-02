@@ -89,9 +89,6 @@ bool CApp::OnInit(int argc, char **argv) {
 	objects = new GameTile*[objectCount];
 	GameTile* gametile;
 
-	MeshData* mesh = MeshData::FromObj("plane.obj");
-	ShaderData* shader = ShaderData::FromPlainText("textureSimple.vert","textureSimple.frag");
-	TextureData* texture = TextureData::FromDDS("none.dds")->SetTarget(TexDiffuse);
 	//TextureData* normal = TextureData::FromDDS("monkey_n.dds")->SetTarget(TexNormal);
 
 	int posy, posx;
@@ -101,12 +98,6 @@ bool CApp::OnInit(int argc, char **argv) {
 		posx = i - size * posy;
 
 		gametile = new GameTile();
-		//mod->Body = BodyGenerator::FromObj("monkey_pbox.obj");
-		//mod->Body->getWorldTransform().setOrigin(btVector3(0.0f,i+1.0f,0.0f));
-		//mod.Mesh = mesh;
-		//mod.Shader = shader;
-		//mod.AppendTextureData(texture);
-		//mod->AppendTextureData(normal);
 
 		gametile->Position.x = posx - size/2;
 		gametile->Position.y = posy - size/2;
@@ -115,6 +106,10 @@ bool CApp::OnInit(int argc, char **argv) {
 		objects[i] = gametile;
 	}
 
+	MeshData* mesh = MeshData::FromObj("plane.obj");
+	ShaderData* shader = ShaderData::FromPlainText("textureSimple.vert","textureSimple.frag");
+	TextureData* texture = TextureData::FromDDS("crosshair.dds")->SetTarget(TexDiffuse);
+	
 	crosshair = new Model();
 	crosshair->Mesh = mesh;
 	crosshair->Shader = shader;
@@ -127,6 +122,9 @@ bool CApp::OnInit(int argc, char **argv) {
 
 	SDL_WarpMouse(screenX/2,screenY/2);
 	SDL_ShowCursor(0);
+
+	hitCounter = 0;
+	resettingPos = 0;
 
 	return true;
 }

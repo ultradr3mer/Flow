@@ -15,6 +15,8 @@
 #include "BodyGenerator.h"
 #include "GameTile.h"
  
+const int ShipCount = 10;
+
 class CApp {
     private:
         bool Running;
@@ -28,6 +30,9 @@ class CApp {
 		SDL_Surface* Surf_Display;
 		long GameBaseTime;
 		int GameTickLength;
+		int shipPositions[ShipCount];
+		int hitCounter;
+		int resettingPos;
 
     public:
         CApp();
@@ -42,5 +47,7 @@ class CApp {
         void OnRender();
  
         void OnCleanup();
+
+		void fire();
 };
 #endif
