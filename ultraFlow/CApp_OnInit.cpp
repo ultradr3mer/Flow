@@ -77,10 +77,10 @@ bool CApp::OnInit(int argc, char **argv) {
 	viewPort->Position->y = 4;
 
 	floor = new Model();
-	floor->Mesh = MeshData::FromObj("floor.obj");
-	floor->Shader = ShaderData::FromPlainText("simpleLight.vert","simpleLight.frag");
-	floor->AppendTextureData(TextureData::FromDDS("floor.dds")->SetTarget(TexDiffuse));
-	floor->AppendTextureData(TextureData::FromDDS("floor_n.dds")->SetTarget(TexNormal));
+	floor->Mesh = MeshData::FromObj("gameField.obj");
+	floor->Shader = ShaderData::FromPlainText("textureSimple.vert","textureSimple.frag");
+	floor->AppendTextureData(TextureData::FromDDS("gameField.dds")->SetTarget(TexDiffuse));
+	//floor->AppendTextureData(TextureData::FromDDS("floor_n.dds")->SetTarget(TexNormal));
 	//floor->Position->y = 1.0f;
 	floor->Update();
 
@@ -91,20 +91,20 @@ bool CApp::OnInit(int argc, char **argv) {
 
 	//TextureData* normal = TextureData::FromDDS("monkey_n.dds")->SetTarget(TexNormal);
 
-	int posy, posx;
-	for (int i = 0; i < objectCount; i++)
-	{
-		posy = i / size;
-		posx = i - size * posy;
+	//int posy, posx;
+	//for (int i = 0; i < objectCount; i++)
+	//{
+	//	posy = i / size;
+	//	posx = i - size * posy;
 
-		gametile = new GameTile();
+	//	gametile = new GameTile();
 
-		gametile->Position.x = (float)posx - size/2;
-		gametile->Position.y = (float)posy - size/2;
-		//mod->Update();
+	//	gametile->Position.x = (float)posx - size/2;
+	//	gametile->Position.y = (float)posy - size/2;
+	//	//mod->Update();
 
-		objects[i] = gametile;
-	}
+	//	objects[i] = gametile;
+	//}
 
 	MeshData* mesh = MeshData::FromObj("plane.obj");
 	ShaderData* shader = ShaderData::FromPlainText("textureSimple.vert","textureSimple.frag");

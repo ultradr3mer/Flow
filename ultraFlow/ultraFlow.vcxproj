@@ -86,6 +86,7 @@
     <ClInclude Include="BodyGenerator.h" />
     <ClInclude Include="CApp.h" />
     <ClInclude Include="DDSLoader.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="GameBase.h" />
     <ClInclude Include="GameTile.h" />
     <ClInclude Include="GenFunc.h" />
@@ -109,6 +110,7 @@
     <ClCompile Include="CApp_OnLoop.cpp" />
     <ClCompile Include="CApp_OnRender.cpp" />
     <ClCompile Include="DDSLoader.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GameBase.cpp" />
     <ClCompile Include="GameTile.cpp" />
     <ClCompile Include="GenFunc.cpp" />

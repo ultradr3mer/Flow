@@ -42,7 +42,7 @@ public:
 #pragma endregion
 
 #pragma region ParticleSystem
-const int particlecount = 4096*4;
+const int particlecount = 4096;
 
 class ParticleSystem :
 	public Model

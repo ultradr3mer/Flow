@@ -72,6 +72,8 @@ void ParticleSystem::Draw()
 {
 	Shader->Bind();
 
+	//Upload Particle Data
+
 	glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
 	glBufferData(GL_ARRAY_BUFFER, curParticleCount * 3 * sizeof(GLfloat), particlePositions, GL_STATIC_DRAW);
 	glVertexAttribPointer(AttrPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
