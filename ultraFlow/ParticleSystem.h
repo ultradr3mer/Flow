@@ -42,7 +42,7 @@ public:
 #pragma endregion
 
 #pragma region ParticleSystem
-const int particlecount = 2048;
+const int particlecount = 4096*4;
 
 class ParticleSystem :
 	public Model
@@ -51,6 +51,12 @@ private:
 	Particle particles[particlecount];
 	ParticleAffector* affectors[64];
 	int affectorCount;
+
+	//ParticleData
+	GLfloat particlePositions[particlecount*3];
+	GLfloat particleAlpha[particlecount];
+	GLint curParticleCount;
+	GLuint vbos[2];
 public:
 	ParticleSystem(void);
 	~ParticleSystem(void);

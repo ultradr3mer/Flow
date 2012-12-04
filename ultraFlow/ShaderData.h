@@ -15,6 +15,16 @@ enum Uniforms
 	FltAlpha
 };
 
+enum AttributeIndices
+{
+	AttrPosition,
+	AttrNormal,
+	AttrTexCoord,
+	AttrTangent,
+	AttrBiNormal,
+	AttrAlpha
+};
+
 class ShaderData
 {
 public:
