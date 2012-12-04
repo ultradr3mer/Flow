@@ -2,6 +2,8 @@
 #include "GenFunc.h"
 #include "TextureData.h"
 
+UniformInsert::UniformInsert(void){};
+
 static ShaderData* curShader;
 
 //Don't forget to update enum Uniforms
@@ -13,7 +15,8 @@ const GLchar* UniformsStrings[] = {
 	"Origin",
 	"Size",
 	"Aspect",
-	"Alpha"
+	"Alpha",
+	"State"
 };
 
 ShaderData* ShaderCache[4096];
@@ -201,6 +204,22 @@ GLint ShaderData::getLocation(enum Uniforms target)
 			return UniformLocations[i].second;
 	}
 	return -1;
+}
+
+void ShaderData::ParseUniformInserts(UniformInsert* list, int length)
+{
+	//int length = sizeof(*list)/sizeof(list[0])
+	for (int i = 0; i < length; i++)
+	{
+		switch (list[i].type)
+		{
+		case DataType1f:
+			Uniform1f(list[i].unifrom,*(GLfloat*)list[i].data);
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 ShaderData::~ShaderData(void)

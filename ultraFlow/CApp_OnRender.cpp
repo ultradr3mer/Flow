@@ -10,10 +10,17 @@ void CApp::OnRender() {
 	//glDepthFunc(GL_LEQUAL); 
 
 	viewPort->Bind();
-	//for (int i = 0; i < objectCount; i++)
-	//{
-	//	objects[i]->Draw();
-	//}
+
+	for (int i = 0; i < curEnemyCount; i++)
+	{
+		enemys[i]->Draw();
+	}
+
+	for (int i = 0; i < curBombCount; i++)
+	{
+		bombs[i]->Draw();
+	}
+
 	crosshair->Draw();
 	ps->Draw();
 	floor->Draw();

@@ -17,6 +17,42 @@ void CApp::OnLoop() {
 
 	ps->Update();
 
+	enemySpawnTime -= 0.01f;
+
+	if(enemySpawnTime <= 0)
+	{
+		int i;
+		bool occupied = false;
+		// find first free place
+		for (i = 0; i < curEnemyCount; i++)
+		{
+			if(!enemys[i]->alive)
+			{
+				occupied = true;
+				break;
+			}
+		}
+		if(occupied)
+			delete enemys[i];
+		else
+			curEnemyCount++;
+
+		enemys[i] = new Enemy();
+
+		enemySpawnTime = 1 / enemysPerSecond;
+	}
+
+	for (int i = 0; i < curEnemyCount; i++)
+	{
+		enemys[i]->Update();
+	}
+
+	for (int i = 0; i < curBombCount; i++)
+	{
+		bombs[i]->Update();
+	}
+
+
 	//if(resettingPos == 0)
 	//{
 	//	int tmp = 0;

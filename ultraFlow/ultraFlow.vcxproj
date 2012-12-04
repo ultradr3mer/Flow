@@ -84,6 +84,7 @@
   <ItemGroup>
     <ClInclude Include="Base.h" />
     <ClInclude Include="BodyGenerator.h" />
+    <ClInclude Include="Bomb.h" />
     <ClInclude Include="CApp.h" />
     <ClInclude Include="DDSLoader.h" />
     <ClInclude Include="Enemy.h" />
@@ -103,6 +104,7 @@
   <ItemGroup>
     <ClCompile Include="Base.cpp" />
     <ClCompile Include="BodyGenerator.cpp" />
+    <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="CApp.cpp" />
     <ClCompile Include="CApp_OnCleanup.cpp" />
     <ClCompile Include="CApp_OnEvent.cpp" />

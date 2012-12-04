@@ -12,7 +12,8 @@ enum Uniforms
 	VecOrigin,
 	FltSize,
 	FltAspect,
-	FltAlpha
+	FltAlpha,
+	FltState
 };
 
 enum AttributeIndices
@@ -23,6 +24,30 @@ enum AttributeIndices
 	AttrTangent,
 	AttrBiNormal,
 	AttrAlpha
+};
+
+enum DataType
+{
+	DataType1f
+};
+
+struct UniformInsert
+{
+	enum Uniforms unifrom;
+	enum DataType type;
+	void* data;
+
+	UniformInsert();
+
+	UniformInsert(
+		enum Uniforms mUnifrom,
+		enum DataType mType,
+		void* mData)
+	{
+		unifrom = mUnifrom;
+		type = mType;
+		data = mData;
+	};
 };
 
 class ShaderData
@@ -38,6 +63,7 @@ public:
 	static void Uniform3fv(enum Uniforms, vec3 const & vec);
 	static void UniformMatrix4fv(enum Uniforms target, mat4 const & matrix);
 	static void ShaderData::UniformMatrix4fv(enum Uniforms target, GLfloat* matrix );
+	static void ShaderData::ParseUniformInserts(UniformInsert* list, int length);
 private:
 	int uniformLocationsLength;
 	pair <enum Uniforms,GLint>* UniformLocations;

@@ -18,6 +18,8 @@ public:
 	TextureData** Textures;
 	Model(void);
 	~Model(void);
+	UniformInsert UniformInserts[32];
+	int UniformInsertCount;
 	virtual void Draw(void);
 	virtual void Update(void);
 	void AppendTextureData(TextureData* newTex);

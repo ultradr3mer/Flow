@@ -8,14 +8,12 @@ Model::Model(void)
 	Position = innerMatrixGenerator->Position;
 	Rotation = innerMatrixGenerator->Rotation;
 	texCount = 0;
+	UniformInsertCount = 0;
 }
 
 
 Model::~Model(void)
 {
-	delete Mesh;
-	delete Shader;
-	delete[] Textures;
 	delete innerMatrixGenerator;
 }
 
@@ -29,6 +27,8 @@ void Model::Draw(void)
 	}
 
 	setupMatrices();
+
+	ShaderData::ParseUniformInserts(UniformInserts,UniformInsertCount);
 
 	glDrawElements(GL_TRIANGLES, Mesh->Length, GL_UNSIGNED_INT, 0);
 }

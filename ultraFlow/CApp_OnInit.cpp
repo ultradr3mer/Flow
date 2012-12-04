@@ -86,26 +86,13 @@ bool CApp::OnInit(int argc, char **argv) {
 
 	objectCount = 100;
 	int size = (int)sqrt((float)objectCount);
-	objects = new GameTile*[objectCount];
-	GameTile* gametile;
 
-	//TextureData* normal = TextureData::FromDDS("monkey_n.dds")->SetTarget(TexNormal);
+	curEnemyCount = 0;
+	curBombCount = 0;
+	enemysPerSecond = 0.5;
+	enemySpawnTime = 2;
 
-	//int posy, posx;
-	//for (int i = 0; i < objectCount; i++)
-	//{
-	//	posy = i / size;
-	//	posx = i - size * posy;
-
-	//	gametile = new GameTile();
-
-	//	gametile->Position.x = (float)posx - size/2;
-	//	gametile->Position.y = (float)posy - size/2;
-	//	//mod->Update();
-
-	//	objects[i] = gametile;
-	//}
-
+#pragma region Crosshair
 	MeshData* mesh = MeshData::FromObj("plane.obj");
 	ShaderData* shader = ShaderData::FromPlainText("textureSimple.vert","textureSimple.frag");
 	TextureData* texture = TextureData::FromDDS("crosshair.dds")->SetTarget(TexDiffuse);
@@ -116,7 +103,9 @@ bool CApp::OnInit(int argc, char **argv) {
 	crosshair->AppendTextureData(TextureData::FromDDS("crosshair.dds")->SetTarget(TexDiffuse));
 	crosshair->Position->y = -0.01f;
 	crosshair->Update();
+#pragma endregion
 
+#pragma region Particles
 	//setup Particle System
 	ps = new ParticleSystem();
 	ps->AppendTextureData(TextureData::FromDDS("particle.dds")->SetTarget(TexDiffuse));
@@ -128,6 +117,7 @@ bool CApp::OnInit(int argc, char **argv) {
 	ParticleAffectorGravity* grav = new ParticleAffectorGravity();
 	grav->Strength = 0.00001f;
 	ps->AppendAffector(grav);
+#pragma endregion
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE,GL_ONE);

@@ -13,17 +13,23 @@
 #include "GameBase.h"
 #include "PhysicsModel.h"
 #include "BodyGenerator.h"
-#include "GameTile.h"
+//#include "GameTile.h"
+#include "Enemy.h"
 #include "ParticleSystem.h"
+#include "Bomb.h"
  
-const int ShipCount = 10;
 
 class CApp {
     private:
         bool Running;
 		long frame;
 		int timebase;
-		GameTile** objects;
+		Enemy* enemys[256];
+		int curEnemyCount;
+		float enemySpawnTime;
+		float enemysPerSecond;
+		Bomb* bombs[256];
+		int curBombCount;
 		Model* crosshair;
 		int objectCount;
 		Model* floor;
@@ -31,7 +37,6 @@ class CApp {
 		SDL_Surface* Surf_Display;
 		long GameBaseTime;
 		uint GameTickLength;
-		int shipPositions[ShipCount];
 		int hitCounter;
 		int resettingPos;
 		ParticleSystem* ps;

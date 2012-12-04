@@ -9,7 +9,6 @@ uniform mat4 ViewProjection;
 uniform float Aspect;
 uniform float Size;
  
-out vec2 vTexCoord;
 out float vAlpha;
 void main(void) {
 
