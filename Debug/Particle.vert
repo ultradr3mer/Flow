@@ -17,4 +17,6 @@ void main(void) {
 	gl_PointSize = 10.0 / gl_Position.w;
   
     vAlpha = in_Alpha;
+	
+	gl_TexCoord[0]=gl_MultiTexCoord0;
 }

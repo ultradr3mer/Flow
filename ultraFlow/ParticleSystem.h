@@ -29,6 +29,10 @@ public:
 struct ParticleAffectorSpawner : public ParticleAffector
 {
 public:
+	ParticleAffectorSpawner();
+	float spawnSize;
+	int particlePerSecond;
+	float particlesToSpawn;
 	virtual void Affect(Particle*, int count);
 	vec3* Position;
 };
@@ -58,6 +62,7 @@ private:
 	GLint curParticleCount;
 	GLuint vbos[2];
 public:
+	ParticleAffectorBase* BaseAffector;
 	ParticleSystem(void);
 	~ParticleSystem(void);
 	virtual void Draw();

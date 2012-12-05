@@ -109,7 +109,7 @@ bool CApp::OnInit(int argc, char **argv) {
 	//setup Particle System
 	ps = new ParticleSystem();
 	ps->AppendTextureData(TextureData::FromDDS("particle.dds")->SetTarget(TexDiffuse));
-	
+
 	ParticleAffectorSpawner* spawner = new ParticleAffectorSpawner();
 	spawner->Position = viewPort->Position;
 	ps->AppendAffector(spawner);

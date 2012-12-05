@@ -24,10 +24,6 @@ class CApp {
         bool Running;
 		long frame;
 		int timebase;
-		Enemy* enemys[256];
-		int curEnemyCount;
-		float enemySpawnTime;
-		float enemysPerSecond;
 		Bomb* bombs[256];
 		int curBombCount;
 		Model* crosshair;

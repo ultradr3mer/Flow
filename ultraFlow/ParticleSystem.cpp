@@ -16,15 +16,28 @@ void ParticleAffectorBase::Affect(Particle* particles, int count)
 	}
 }
 
+ParticleAffectorSpawner::ParticleAffectorSpawner()
+{
+	particlesToSpawn = 0;
+	particlePerSecond  = particlecount;
+	spawnSize = 2.0f;
+}
+
 void ParticleAffectorSpawner::Affect(Particle* particles, int count)
 {
-	for (int i = 0; i < count; i++)
+	particlesToSpawn += particlePerSecond * 0.01f;
+	int curParticlesToSpawn = (int)particlesToSpawn;
+	particlesToSpawn -= curParticlesToSpawn;
+
+	int SpawnedParticles = 0;
+	for (int i = 0; i < count && SpawnedParticles < curParticlesToSpawn; i++)
 	{
 		if(particles[i].Life <= 0)
 		{
 			particles[i].Life = 1;
-			particles[i].Position = gaussRand(*Position, vec3(2.0f));
+			particles[i].Position = gaussRand(*Position, vec3(spawnSize));
 			particles[i].Vector = vec3(0);
+			SpawnedParticles++;
 		}
 	}
 }
@@ -50,9 +63,9 @@ ParticleSystem::ParticleSystem(void)
 	}
 	affectorCount = 0;
 
-	ParticleAffectorBase* base = new ParticleAffectorBase();
-	base->Lifetime = 4;
-	AppendAffector(base);
+	BaseAffector = new ParticleAffectorBase();
+	BaseAffector->Lifetime = 4;
+	AppendAffector(BaseAffector);
 
 	glGenBuffers(2,vbos);
 }
