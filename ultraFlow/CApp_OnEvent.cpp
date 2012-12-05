@@ -91,8 +91,6 @@ void CApp::fire()
 		curBombCount++;
 
 	bombs[i] = new Bomb(crosshair->Position);
-
-	enemySpawnTime = 1 / enemysPerSecond;
 	
 	//if(resettingPos < 100)
 	//	return;

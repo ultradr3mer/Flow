@@ -107,11 +107,11 @@ bool CApp::OnInit(int argc, char **argv) {
 
 #pragma region Particles
 	//setup Particle System
-	ps = new ParticleSystem();
+	ps = new ParticleSystem(4000);
 	ps->AppendTextureData(TextureData::FromDDS("particle.dds")->SetTarget(TexDiffuse));
 
-	ParticleAffectorSpawner* spawner = new ParticleAffectorSpawner();
-	spawner->Position = viewPort->Position;
+	spawner = new ParticleAffectorSpawner();
+	spawner->particlePerSecond = 1000;
 	ps->AppendAffector(spawner);
 
 	ParticleAffectorGravity* grav = new ParticleAffectorGravity();

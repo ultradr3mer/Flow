@@ -19,6 +19,8 @@ void CApp::OnLoop() {
 
 	enemySpawnTime -= 0.01f;
 
+	spawner->Position = *viewPort->Position;
+
 	if(enemySpawnTime <= 0)
 	{
 		int i;

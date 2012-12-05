@@ -46,22 +46,37 @@ void Bomb::Update()
 					enemys[i]->alive = false;
 			}
 
-			particleSystem = new ParticleSystem();
+			particleSystem = new ParticleSystem(200);
 			particleSystem->AppendTextureData(TextureData::FromDDS("particle.dds")->SetTarget(TexDiffuse));
 			particleSystem->BaseAffector->Lifetime = 1;
+			particleSystem->BaseAffector->AlphaFunc = AlphaFuncFadeOut;
+			particleSystem->ParticleSize = 10;
 
 			ParticleAffectorSpawner* spawner = new ParticleAffectorSpawner();
-			spawner->Position = &Position;
-			spawner->spawnSize = 1.0;
+			spawner->Position = Position;
+			spawner->spawnSize = vec3(0.1f);
+			spawner->InitialVecRandom = vec3(0.1f,0.1f,0.1f);
+			spawner->InitialVec = vec3(0,0.0f,0);
+			spawner->particlePerSecond = 0;
+			spawner->particlesToSpawn = 200;
 			particleSystem->AppendAffector(spawner);
 
-			ParticleAffectorGravity* grav = new ParticleAffectorGravity();
-			grav->Strength = 0.00001f;
-			particleSystem->AppendAffector(grav);
+			//ParticleAffectorSpawner* spawner2 = new ParticleAffectorSpawner();
+			//spawner2->Position = Position;
+			//spawner2->spawnSize = vec3(0.1f);
+			//spawner2->InitialVecRandom = vec3(0.05f,0.075f,0.05f);
+			//spawner2->InitialVec = vec3(0,0.015f,0);
+			//spawner2->particlePerSecond = 0;
+			//spawner2->particlesToSpawn = 600;
+			//particleSystem->AppendAffector(spawner2);
+
+			//ParticleAffectorGravity* grav = new ParticleAffectorGravity();
+			//grav->Strength = -0.0001f;
+			//particleSystem->AppendAffector(grav);
 
 			exploded = true;
 		}
-		if(state > 10.0f)
+		if(state > 3.0f)
 			alive = false;
 		if(exploded)
 			particleSystem->Update();
@@ -70,9 +85,12 @@ void Bomb::Update()
 
 void Bomb::Draw()
 {
-	if(!exploded)
-		model->Draw();
-	if(exploded)
-		particleSystem->Draw();
+	if(alive)
+	{
+		if(!exploded)
+			model->Draw();
+		else
+			particleSystem->Draw();
+	}
 }
 

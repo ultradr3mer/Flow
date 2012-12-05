@@ -8,26 +8,51 @@ void ParticleAffector::Affect(Particle* particles, int count)
 
 void ParticleAffectorBase::Affect(Particle* particles, int count)
 {
+	float alpha;
 	float step = 1 / Lifetime / 100;
 	for (int i = 0; i < count; i++)
 	{
 		particles[i].Position += particles[i].Vector;
 		particles[i].Life -= step;
+
+		switch (AlphaFunc)
+		{
+		case AlphaFuncFadeOut:
+			particles[i].Alpha  = particles[i].Life;
+			break;
+		case AlphaFuncFadeIn:
+			particles[i].Alpha  = 1 - particles[i].Life;
+			break;
+		case AlphaFuncFadeInOut:
+			alpha = particles[i].Life - 0.5f;
+			alpha *= sign(alpha);
+			alpha = 1 - alpha * 2;
+			particles[i].Alpha = alpha;
+			break;
+		default:
+			break;
+		}
 	}
 }
 
 ParticleAffectorSpawner::ParticleAffectorSpawner()
 {
 	particlesToSpawn = 0;
-	particlePerSecond  = particlecount;
-	spawnSize = 2.0f;
+	particlePerSecond  = 0;
+	spawnSize = vec3(2.0f);
+
+	InitialVec = vec3(0);
+	InitialVecRandom = vec3(0);
 }
 
 void ParticleAffectorSpawner::Affect(Particle* particles, int count)
 {
+	int curParticlesToSpawn;
+
 	particlesToSpawn += particlePerSecond * 0.01f;
-	int curParticlesToSpawn = (int)particlesToSpawn;
+	curParticlesToSpawn = (int)particlesToSpawn;
 	particlesToSpawn -= curParticlesToSpawn;
+
 
 	int SpawnedParticles = 0;
 	for (int i = 0; i < count && SpawnedParticles < curParticlesToSpawn; i++)
@@ -35,8 +60,11 @@ void ParticleAffectorSpawner::Affect(Particle* particles, int count)
 		if(particles[i].Life <= 0)
 		{
 			particles[i].Life = 1;
-			particles[i].Position = gaussRand(*Position, vec3(spawnSize));
+			particles[i].Position = gaussRand(Position, vec3(spawnSize));
 			particles[i].Vector = vec3(0);
+
+			particles[i].Vector = InitialVec + gaussRand(vec3(0), vec3(InitialVecRandom));
+
 			SpawnedParticles++;
 		}
 	}
@@ -52,27 +80,42 @@ void ParticleAffectorGravity::Affect(Particle* particles, int count)
 #pragma endregion
 
 #pragma region ParticleSystem
-ParticleSystem::ParticleSystem(void)
+ParticleSystem::ParticleSystem(int MaxParticles)
 {
+	maxParticles = MaxParticles;
+	particles = new Particle[MaxParticles];
+	particlePositions = new GLfloat[MaxParticles*3];
+	particleAlpha = new GLfloat[MaxParticles];
+
 	//Mesh = MeshData::FromObj("plane.obj");
 	Shader = ShaderData::FromPlainText("Particle.vert","Particle.frag");
-	for (int i = 0; i < particlecount; i++)
-	{
-		particles[i].Position = gaussRand(vec3(0), vec3(2.5f));
-		particles[i].Life = linearRand(0.0f,1.0f);
-	}
+	//for (int i = 0; i < particlecount; i++)
+	//{
+	//	particles[i].Position = gaussRand(vec3(0), vec3(2.5f));
+	//	particles[i].Life = linearRand(0.0f,1.0f);
+	//}
 	affectorCount = 0;
 
 	BaseAffector = new ParticleAffectorBase();
 	BaseAffector->Lifetime = 4;
+	BaseAffector->AlphaFunc = AlphaFuncFadeInOut;
+
 	AppendAffector(BaseAffector);
+
+	ParticleSize = 10.0f;
 
 	glGenBuffers(2,vbos);
 }
 
 ParticleSystem::~ParticleSystem(void)
 {
-	delete[] affectors;
+	for (int i = 0; i < affectorCount; i++)
+	{
+		delete affectors[i];
+	}
+	delete particles;
+	delete particlePositions;
+	delete particleAlpha;
 	glDeleteBuffers(2,vbos);
 }
 
@@ -109,7 +152,7 @@ void ParticleSystem::Draw()
 	ShaderData::UniformMatrix4fv(MatViewProjection, curViewPort->ViewProjectionMatrix);
 	ShaderData::UniformMatrix4fv(MatModelView, mat4(1.0f));
 	//ShaderData::Uniform1f(FltAspect, curViewPort->Aspect);
-	ShaderData::Uniform1f(FltSize, 0.02f);
+	ShaderData::Uniform1f(FltSize, ParticleSize);
 
 	float alpha = 0;
 	vec4 position;
@@ -145,19 +188,17 @@ void ParticleSystem::Update()
 	
 	for (int i = 0; i < affectorCount; i++)
 	{
-		affectors[i]->Affect(particles,particlecount);
+		affectors[i]->Affect(particles,maxParticles);
 	}
 	curParticleCount = 0;
-	float alpha;
-	for (int i = 0; i < particlecount; i++)
+
+	for (int i = 0; i < maxParticles; i++)
 	{
 		particlePositions[curParticleCount*3+0] = particles[i].Position.x;
 		particlePositions[curParticleCount*3+1] = particles[i].Position.y;
 		particlePositions[curParticleCount*3+2] = particles[i].Position.z;
-		alpha = particles[i].Life - 0.5f;
-		alpha *= sign(alpha);
-		alpha = 1 - alpha * 2;
-		particleAlpha[curParticleCount] = alpha;
+		particleAlpha[curParticleCount] = particles[i].Alpha;
+
 		curParticleCount++;
 	}
 }

@@ -36,6 +36,7 @@ class CApp {
 		int hitCounter;
 		int resettingPos;
 		ParticleSystem* ps;
+		ParticleAffectorSpawner* spawner;
 
     public:
         CApp();
