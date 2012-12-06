@@ -6,7 +6,7 @@ float enemySpawnTime;
 float enemysPerSecond;
 
 float speed = 0.01f;
-float initialWaveLength = 0.5f;
+float initialWaveLength = 5.0f;
 float waveAmplitude  = 0.2f;
 
 Enemy::Enemy(void)
@@ -16,9 +16,9 @@ Enemy::Enemy(void)
 	model->Shader = ShaderData::FromPlainText("textureSimple.vert","textureSimple.frag");
 	model->AppendTextureData(TextureData::FromDDS("enemy.dds")->SetTarget(TexDiffuse));
 
-	speed += 0.001f;
-	initialWaveLength += 0.1f;
-	waveAmplitude  += 0.1f;
+	speed += 0.0004f;
+	initialWaveLength *= 0.98f;
+	waveAmplitude  += 0.04f;
 	waveLength = initialWaveLength;
 
 	alive = true;
