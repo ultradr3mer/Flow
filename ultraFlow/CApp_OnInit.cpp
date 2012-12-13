@@ -88,15 +88,15 @@ bool CApp::OnInit(int argc, char **argv) {
 	objects = new PhysicsModel* [objectCount];
 	PhysicsModel* mod;
 
-	MeshData* mesh = MeshData::FromObj("monkey.obj");
+	MeshData* mesh = MeshData::FromObj("sae_shuttle.obj");
 	ShaderData* shader = ShaderData::FromPlainText("simpleLight.vert","simpleLight.frag");
-	TextureData* texture = TextureData::FromDDS("monkey.dds")->SetTarget(TexDiffuse);
-	TextureData* normal = TextureData::FromDDS("monkey_n.dds")->SetTarget(TexNormal);
+	TextureData* texture = TextureData::FromDDS("sae_shuttle.dds")->SetTarget(TexDiffuse);
+	TextureData* normal = TextureData::FromDDS("sae_shuttle_n.dds")->SetTarget(TexNormal);
 
 	for (int i = 0; i < objectCount; i++)
 	{
 		mod = new PhysicsModel();
-		mod->Body = BodyGenerator::FromObj("monkey_pbox.obj");
+		mod->Body = BodyGenerator::FromObj("sae_shuttle_pbox.obj");
 		mod->Body->getWorldTransform().setOrigin(btVector3(0.0f,i+1.0f,0.0f));
 		mod->Mesh = mesh;
 		mod->Shader = shader;
