@@ -41,9 +41,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)\bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)\bin\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -78,20 +80,24 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)SDL-1.2.15\lib\x86;$(SolutionDir)bullet-2.81-rev2613\lib;$(SolutionDir)glew-1.9.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL.lib;SDLmain.lib;OpenGL32.lib;glew32.lib;BulletCollision_vs2010_debug.lib;BulletDynamics_vs2010_debug.lib;LinearMath_vs2010_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL.lib;SDLmain.lib;OpenGL32.lib;glew32.lib;BulletCollision_vs2010.lib;BulletDynamics_vs2010.lib;LinearMath_vs2010.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Base.h" />
     <ClInclude Include="BodyGenerator.h" />
+    <ClInclude Include="Bomb.h" />
     <ClInclude Include="CApp.h" />
     <ClInclude Include="DDSLoader.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="GameBase.h" />
+    <ClInclude Include="GameTile.h" />
     <ClInclude Include="GenFunc.h" />
     <ClInclude Include="MatrixGenerator.h" />
     <ClInclude Include="MeshData.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ObjLoader.h" />
+    <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="PhysicsModel.h" />
     <ClInclude Include="ShaderData.h" />
     <ClInclude Include="TextureData.h" />
@@ -100,6 +106,7 @@
   <ItemGroup>
     <ClCompile Include="Base.cpp" />
     <ClCompile Include="BodyGenerator.cpp" />
+    <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="CApp.cpp" />
     <ClCompile Include="CApp_OnCleanup.cpp" />
     <ClCompile Include="CApp_OnEvent.cpp" />
@@ -107,12 +114,15 @@
     <ClCompile Include="CApp_OnLoop.cpp" />
     <ClCompile Include="CApp_OnRender.cpp" />
     <ClCompile Include="DDSLoader.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GameBase.cpp" />
+    <ClCompile Include="GameTile.cpp" />
     <ClCompile Include="GenFunc.cpp" />
     <ClCompile Include="MatrixGenerator.cpp" />
     <ClCompile Include="MeshData.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ObjLoader.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="PhysicsModel.cpp" />
     <ClCompile Include="ShaderData.cpp" />
     <ClCompile Include="TextureData.cpp" />

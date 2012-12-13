@@ -2,6 +2,8 @@
 #include "GenFunc.h"
 #include "TextureData.h"
 
+UniformInsert::UniformInsert(void){};
+
 static ShaderData* curShader;
 
 //Don't forget to update enum Uniforms
@@ -9,8 +11,17 @@ const GLchar* UniformsStrings[] = {
 	"Diffuse",
 	"Normal",
 	"ModelView",
-	"ViewProjection"
+	"ViewProjection",
+	"Origin",
+	"Size",
+	"Aspect",
+	"Alpha",
+	"State"
 };
+
+ShaderData* ShaderCache[4096];
+char* ShaderNames[4096];
+int ShaderCachePosition;
 
 //generates a list with all existing Uniforms and their locations
 void ShaderData::generateLocations()
@@ -115,11 +126,12 @@ ShaderData::ShaderData(char* vertexsource, char* fragmentsource)
     glAttachShader(shaderprogram, vertexshader);
     glAttachShader(shaderprogram, fragmentshader);
 
-	glBindAttribLocation(shaderprogram, 0, "in_Position");
-    glBindAttribLocation(shaderprogram, 1, "in_Normal");
-	glBindAttribLocation(shaderprogram, 2, "in_TexCoord");
-	glBindAttribLocation(shaderprogram, 3, "in_Tangent");
-	glBindAttribLocation(shaderprogram, 4, "in_BiNormal");
+	glBindAttribLocation(shaderprogram, AttrPosition, "in_Position");
+    glBindAttribLocation(shaderprogram, AttrNormal, "in_Normal");
+	glBindAttribLocation(shaderprogram, AttrTexCoord, "in_TexCoord");
+	glBindAttribLocation(shaderprogram, AttrTangent, "in_Tangent");
+	glBindAttribLocation(shaderprogram, AttrBiNormal, "in_BiNormal");
+	glBindAttribLocation(shaderprogram, AttrAlpha, "in_Alpha");
 
     glLinkProgram(shaderprogram);
 
@@ -133,17 +145,43 @@ ShaderData::ShaderData(char* vertexsource, char* fragmentsource)
 
 ShaderData* ShaderData::FromPlainText(char* vertexSource, char* fragmentSource)
 {
+	char* name = new char[strlen(vertexSource)+strlen(fragmentSource)];
+	strcpy(name,vertexSource);
+	strcat(name,fragmentSource);
+
+	for (int i = 0; i < ShaderCachePosition; i++)
+	{
+		if(strcmp(ShaderNames[i],name) == 0)
+			return ShaderCache[i];
+	}
+
+	ShaderNames[ShaderCachePosition] = name;
+
 	/* Read our shaders into the appropriate buffers */
     char* vertexsource = FileToBuf(FullFileName(vertexSource));
 	char* fragmentsource = FileToBuf(FullFileName(fragmentSource));
 
-	return new ShaderData(vertexsource,fragmentsource);
+	ShaderCache[ShaderCachePosition] = new ShaderData(vertexsource,fragmentsource);
+
+	return ShaderCache[ShaderCachePosition++];
 }
 
 void ShaderData::Uniform1i(enum Uniforms target, GLint i)
 {
 	GLuint location = curShader->getLocation(target);
 	glUniform1i(location, i);
+}
+
+void ShaderData::Uniform1f(enum Uniforms target, GLfloat f)
+{
+	GLuint location = curShader->getLocation(target);
+	glUniform1f(location, f);
+}
+
+void ShaderData::Uniform3fv(enum Uniforms target, vec3 const & vec)
+{
+	GLuint location = curShader->getLocation(target);
+	glUniform3fv(location, 1, value_ptr(vec));
 }
 
 void ShaderData::UniformMatrix4fv(enum Uniforms target, GLfloat* matrix )
@@ -166,6 +204,22 @@ GLint ShaderData::getLocation(enum Uniforms target)
 			return UniformLocations[i].second;
 	}
 	return -1;
+}
+
+void ShaderData::ParseUniformInserts(UniformInsert* list, int length)
+{
+	//int length = sizeof(*list)/sizeof(list[0])
+	for (int i = 0; i < length; i++)
+	{
+		switch (list[i].type)
+		{
+		case DataType1f:
+			Uniform1f(list[i].unifrom,*(GLfloat*)list[i].data);
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 ShaderData::~ShaderData(void)

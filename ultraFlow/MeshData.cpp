@@ -15,6 +15,10 @@ btVector3 positions[buffersize];
 int dataLenght = 0;
 int dataLenghtIndex = 0;
 
+MeshData* MeshCache[4096];
+char* MeshNames[4096];
+int MeshCachePosition;
+
 MeshData::MeshData(void)
 {
 
@@ -71,9 +75,21 @@ void MeshData::Clear()
 
 MeshData* MeshData::FromObj(char* source)
 {
+	for (int i = 0; i < MeshCachePosition; i++)
+	{
+		if(strcmp(MeshNames[i],source) == 0)
+			return MeshCache[i];
+	}
+
+	char* name = new char[strlen(source)];
+	strcpy(name,source);
+	MeshNames[MeshCachePosition] = name;
+
 	ObjLoader::Load(source);
 	GenerateTangent();
-	return new MeshData();
+	MeshCache[MeshCachePosition] = new MeshData();
+
+	return MeshCache[MeshCachePosition++];
 }
 
 MeshData::~MeshData(void)

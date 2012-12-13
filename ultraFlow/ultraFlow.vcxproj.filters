@@ -19,11 +19,14 @@
     <Filter Include="Headerdateien\Loader">
       <UniqueIdentifier>{2714464d-a1f5-4b1b-ab5c-19e9ddbe5b55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quelldateien\App">
+      <UniqueIdentifier>{f72c051b-1a80-46e7-b294-c88a4b01099e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\App">
+      <UniqueIdentifier>{54a41123-a5b4-48c0-ba0b-e7f5ca6f7674}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CApp.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="GenFunc.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -63,26 +66,23 @@
     <ClInclude Include="TextureData.h">
       <Filter>Headerdateien\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="GameTile.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="CApp.h">
+      <Filter>Headerdateien\App</Filter>
+    </ClInclude>
+    <ClInclude Include="Bomb.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CApp.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="CApp_OnInit.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="CApp_OnEvent.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="CApp_OnLoop.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="CApp_OnRender.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="CApp_OnCleanup.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="GenFunc.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -121,6 +121,36 @@
     </ClCompile>
     <ClCompile Include="TextureData.cpp">
       <Filter>Quelldateien\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTile.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="CApp.cpp">
+      <Filter>Quelldateien\App</Filter>
+    </ClCompile>
+    <ClCompile Include="CApp_OnCleanup.cpp">
+      <Filter>Quelldateien\App</Filter>
+    </ClCompile>
+    <ClCompile Include="CApp_OnEvent.cpp">
+      <Filter>Quelldateien\App</Filter>
+    </ClCompile>
+    <ClCompile Include="CApp_OnInit.cpp">
+      <Filter>Quelldateien\App</Filter>
+    </ClCompile>
+    <ClCompile Include="CApp_OnLoop.cpp">
+      <Filter>Quelldateien\App</Filter>
+    </ClCompile>
+    <ClCompile Include="CApp_OnRender.cpp">
+      <Filter>Quelldateien\App</Filter>
+    </ClCompile>
+    <ClCompile Include="Bomb.cpp">
+      <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

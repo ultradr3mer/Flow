@@ -4,7 +4,10 @@ void CApp::OnCleanup() {
 
 	//md->~MeshData();
 	//sd->~ShaderData();
-	delete[] objects;
+	for (int i = 0; i < curEnemyCount; i++)
+	{
+		delete enemys[i];
+	}
 
     SDL_Quit();
 }

@@ -5,15 +5,24 @@ void CApp::OnRender() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-	glEnable(GL_DEPTH_TEST); 
-	glDepthMask(GL_TRUE); 
-	glDepthFunc(GL_LEQUAL); 
+	//glEnable(GL_DEPTH_TEST); 
+	//glDepthMask(GL_TRUE); 
+	//glDepthFunc(GL_LEQUAL); 
 
 	viewPort->Bind();
-	for (int i = 0; i < objectCount; i++)
+
+	for (int i = 0; i < curEnemyCount; i++)
 	{
-		objects[i]->Draw();
+		enemys[i]->Draw();
 	}
+
+	for (int i = 0; i < curBombCount; i++)
+	{
+		bombs[i]->Draw();
+	}
+
+	crosshair->Draw();
+	ps->Draw();
 	floor->Draw();
 
 	SDL_GL_SwapBuffers();

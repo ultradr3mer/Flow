@@ -13,19 +13,30 @@
 #include "GameBase.h"
 #include "PhysicsModel.h"
 #include "BodyGenerator.h"
+//#include "GameTile.h"
+#include "Enemy.h"
+#include "ParticleSystem.h"
+#include "Bomb.h"
  
+
 class CApp {
     private:
         bool Running;
 		long frame;
 		int timebase;
-		PhysicsModel** objects;
+		Bomb* bombs[256];
+		int curBombCount;
+		Model* crosshair;
 		int objectCount;
 		Model* floor;
 		ViewPort* viewPort;
 		SDL_Surface* Surf_Display;
 		long GameBaseTime;
-		int GameTickLength;
+		uint GameTickLength;
+		int hitCounter;
+		int resettingPos;
+		ParticleSystem* ps;
+		ParticleAffectorSpawner* spawner;
 
     public:
         CApp();
@@ -40,5 +51,7 @@ class CApp {
         void OnRender();
  
         void OnCleanup();
+
+		void fire();
 };
 #endif
