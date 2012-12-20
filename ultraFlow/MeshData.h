@@ -1,5 +1,6 @@
 #include "Base.h"
 #include "GenFunc.h"
+//#include "ListContainer.h"
 
 const int buffersize =128000;
 extern GLfloat positionBuffer[buffersize][3];
@@ -27,6 +28,7 @@ public:
 	static void Clear(void);
 	static void GenerateTangent(void);
 	int Length;
+	char Name[MaxNameLen];
 private:
 	GLuint vbo[6],vao;
 };
@@ -34,3 +36,4 @@ private:
 	//GLfloat **normals;
 	//GLuint *indices;
 
+extern ListContainer<MeshData> Meshes;

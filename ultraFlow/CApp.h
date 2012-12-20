@@ -8,24 +8,30 @@
 #include "DDSLoader.h"
 #include "TextureData.h"
 #include "Model.h"
-#include "MatrixGenerator.h"
 #include "ViewPort.h"
 #include "GameBase.h"
 #include "PhysicsModel.h"
-#include "BodyGenerator.h"
+#include "BulletManager.h"
+#include "Player.h"
+#include "XmlParser.h"
+#include "FrameBufferData.h"
+#include "Filter2D.h"
+#include "Sun.h"
+#include "Scene.h"
  
 class CApp {
     private:
         bool Running;
 		long frame;
 		int timebase;
-		PhysicsModel** objects;
-		int objectCount;
-		Model* floor;
-		ViewPort* viewPort;
+		Player* player;
 		SDL_Surface* Surf_Display;
-		long GameBaseTime;
-		int GameTickLength;
+		Uint32 GameBaseTime;
+		uint GameTickLength;
+		GameBase* object;
+		BufferSet* mainBufferSet;
+		Filter2D* filter2D;
+		Scene* scene;
 
     public:
         CApp();
@@ -35,10 +41,12 @@ class CApp {
  
 		void OnEvent(SDL_Event* Event);
  
-        void OnLoop();
+        void OnUpdate();
  
-        void OnRender();
+        void OnDraw();
  
         void OnCleanup();
+
+		void DrawScene(BufferSet* bufferSet);
 };
 #endif

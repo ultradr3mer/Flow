@@ -12,24 +12,36 @@ void CApp::OnEvent(SDL_Event* Event) {
 		y = Event->motion.y-screenY/2;
 		if(x != 0 || y != 0)
 		{
-			viewPort->Rotation->y -= x / 1000.0f;
-			viewPort->Rotation->x -= y / 1000.0f;
+			player->Rotation.y -= x / 1000.0f;
+			player->Rotation.x -= y / 1000.0f;
 		}
 		SDL_WarpMouse(screenX/2,screenY/2);
+		break;
+	case SDL_MOUSEBUTTONDOWN:
+		if(Event->button.button == SDL_BUTTON_LEFT )
+		{
+			player->Fire();
+		}
+		break;
+	case SDL_MOUSEBUTTONUP:
+		if(Event->button.button == SDL_BUTTON_LEFT )
+		{
+			player->FireUp();
+		}
 		break;
 	case SDL_KEYDOWN:
 		switch(Event->key.keysym.sym){
 		case SDLK_a:
-			viewPort->movingVec.x += -1;
+			player->MovingVec.x += -1;
 			break;
 		case SDLK_d:
-			viewPort->movingVec.x += +1;
+			player->MovingVec.x += +1;
 			break;
 		case SDLK_w:
-			viewPort->movingVec.z += +1;
+			player->MovingVec.z += +1;
 			break;
 		case SDLK_s:
-			viewPort->movingVec.z += -1;
+			player->MovingVec.z += -1;
 			break;
 		case SDLK_ESCAPE:
 			Running = false;
@@ -41,16 +53,16 @@ void CApp::OnEvent(SDL_Event* Event) {
 	case SDL_KEYUP:
 		switch(Event->key.keysym.sym){
 		case SDLK_a:
-			viewPort->movingVec.x -= -1;
+			player->MovingVec.x -= -1;
 			break;
 		case SDLK_d:
-			viewPort->movingVec.x -= +1;
+			player->MovingVec.x -= +1;
 			break;
 		case SDLK_w:
-			viewPort->movingVec.z -= +1;
+			player->MovingVec.z -= +1;
 			break;
 		case SDLK_s:
-			viewPort->movingVec.z -= -1;
+			player->MovingVec.z -= -1;
 			break;
 		case SDLK_ESCAPE:
 			Running = false;

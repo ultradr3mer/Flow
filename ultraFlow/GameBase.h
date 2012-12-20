@@ -1,17 +1,18 @@
+#pragma once
 #include "Base.h"
-
-#ifndef _BASE_H_
-    #define _BASE_H_
+//#include "ListContainer.h"
 
 class GameBase
 {
 protected:
-	GLfloat frameDuration;
+	//GLfloat frameDuration;
+	//virtual void ExecCleanup();
 public:
-	vec3* Position;
-	vec3* Rotation;
+	vec3 Position;
+	vec3 Rotation;
 	GameBase();
+	virtual ~GameBase();
 	virtual void Update(void);
 };
 
-#endif
+extern ListContainer<GameBase> GameObjList;

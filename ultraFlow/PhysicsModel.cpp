@@ -1,5 +1,6 @@
 #include "PhysicsModel.h"
 #include "ViewPort.h"
+#include "BulletManager.h"
 
 PhysicsModel::PhysicsModel(void)
 {
@@ -8,11 +9,13 @@ PhysicsModel::PhysicsModel(void)
 
 PhysicsModel::~PhysicsModel(void)
 {
+	dynamicsWorld->removeRigidBody(Body);
 }
 
 void PhysicsModel::Update(void)
 {
-	Body->getWorldTransform().getOpenGLMatrix(m);
+	if(Body->isActive())
+		Body->getWorldTransform().getOpenGLMatrix(m);
 }
 
 void PhysicsModel::setupMatrices()

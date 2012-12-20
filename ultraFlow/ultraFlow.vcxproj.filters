@@ -25,30 +25,33 @@
     <Filter Include="Headerdateien\App">
       <UniqueIdentifier>{54a41123-a5b4-48c0-ba0b-e7f5ca6f7674}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quelldateien\Drawable">
+      <UniqueIdentifier>{f8a88ace-c3f7-4525-83c2-fc468a79fdce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Drawable">
+      <UniqueIdentifier>{06c6b03a-5bcc-4579-a047-55bffaf67cbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Drawable\DefferedLights">
+      <UniqueIdentifier>{6db1fed9-a452-4775-b412-f1db5ac4cbbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Drawable\DefferedLights">
+      <UniqueIdentifier>{89985838-22d5-4545-94e8-963ddb77ca1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\View">
+      <UniqueIdentifier>{361018ac-4025-4e39-8d00-c0b582a68b39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\View">
+      <UniqueIdentifier>{66ddd042-3a7a-4f09-a930-07bc4c07e4db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GenFunc.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="MatrixGenerator.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Base.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="ViewPort.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="GameBase.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsModel.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="BodyGenerator.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="DDSLoader.h">
@@ -66,19 +69,49 @@
     <ClInclude Include="TextureData.h">
       <Filter>Headerdateien\Loader</Filter>
     </ClInclude>
-    <ClInclude Include="GameTile.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="ParticleSystem.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="CApp.h">
       <Filter>Headerdateien\App</Filter>
     </ClInclude>
-    <ClInclude Include="Bomb.h">
+    <ClInclude Include="Model.h">
+      <Filter>Headerdateien\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Headerdateien\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsModel.h">
+      <Filter>Headerdateien\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewPort.h">
+      <Filter>Headerdateien\View</Filter>
+    </ClInclude>
+    <ClInclude Include="ListContainer.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="XmlParser.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialData.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletManager.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameBufferData.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Filter2D.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Sun.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewPortIso.h">
+      <Filter>Headerdateien\View</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
@@ -86,25 +119,10 @@
     <ClCompile Include="GenFunc.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="MatrixGenerator.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="Base.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="ViewPort.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="GameBase.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsModel.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="BodyGenerator.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DDSLoader.cpp">
@@ -122,15 +140,6 @@
     <ClCompile Include="TextureData.cpp">
       <Filter>Quelldateien\Loader</Filter>
     </ClCompile>
-    <ClCompile Include="GameTile.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="ParticleSystem.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="CApp.cpp">
       <Filter>Quelldateien\App</Filter>
     </ClCompile>
@@ -143,13 +152,52 @@
     <ClCompile Include="CApp_OnInit.cpp">
       <Filter>Quelldateien\App</Filter>
     </ClCompile>
-    <ClCompile Include="CApp_OnLoop.cpp">
+    <ClCompile Include="PhysicsModel.cpp">
+      <Filter>Quelldateien\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>Quelldateien\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Quelldateien\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewPort.cpp">
+      <Filter>Quelldateien\View</Filter>
+    </ClCompile>
+    <ClCompile Include="CApp_OnUpdate.cpp">
       <Filter>Quelldateien\App</Filter>
     </ClCompile>
-    <ClCompile Include="CApp_OnRender.cpp">
+    <ClCompile Include="CApp_OnDraw.cpp">
       <Filter>Quelldateien\App</Filter>
     </ClCompile>
-    <ClCompile Include="Bomb.cpp">
+    <ClCompile Include="Player.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="XmlParser.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialData.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletManager.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameBufferData.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Filter2D.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Sun.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="ListContainer.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewPortIso.cpp">
+      <Filter>Quelldateien\View</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

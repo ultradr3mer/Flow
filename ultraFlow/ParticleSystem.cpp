@@ -88,7 +88,7 @@ ParticleSystem::ParticleSystem(int MaxParticles)
 	particleAlpha = new GLfloat[MaxParticles];
 
 	//Mesh = MeshData::FromObj("plane.obj");
-	Shader = ShaderData::FromPlainText("Particle.vert","Particle.frag");
+	//Shader = ShaderData::FromPlainText("Particle.vert","Particle.frag");
 	//for (int i = 0; i < particlecount; i++)
 	//{
 	//	particles[i].Position = gaussRand(vec3(0), vec3(2.5f));
@@ -126,10 +126,9 @@ void ParticleSystem::AppendAffector(ParticleAffector* affector)
 
 void ParticleSystem::Draw()
 {
-	Shader->Bind();
+	//Shader->Bind();
 
 	//Upload Particle Data
-
 	glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
 	glBufferData(GL_ARRAY_BUFFER, curParticleCount * 3 * sizeof(GLfloat), particlePositions, GL_STATIC_DRAW);
 	glVertexAttribPointer(AttrPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -143,10 +142,10 @@ void ParticleSystem::Draw()
 	glEnable(GL_POINT_SPRITE);
 	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
-	for (int i = 0; i < texCount; i++)
-	{
-		Textures[i]->Bind();
-	}
+	//for (int i = 0; i < texCount; i++)
+	//{
+	//	Textures[i]->Bind();
+	//}
 	glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, 1);
 
 	ShaderData::UniformMatrix4fv(MatViewProjection, curViewPort->ViewProjectionMatrix);

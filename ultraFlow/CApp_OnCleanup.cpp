@@ -1,10 +1,10 @@
 #include "CApp.h"
  
-void CApp::OnCleanup() {
+void CApp::OnCleanup() 
+{
+	GameObjList.ClearDelete();
 
-	//md->~MeshData();
-	//sd->~ShaderData();
-	delete[] objects;
+	delete mainBufferSet;
 
     SDL_Quit();
 }

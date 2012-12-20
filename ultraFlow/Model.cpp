@@ -1,58 +1,58 @@
 #include "Model.h"
 #include "ViewPort.h"
 
-Model::Model(void)
+//Model::Model(Scene* scene)
+//{
+//	//Textures = nullptr;
+//	Mesh = nullptr;
+//	Material = nullptr;
+//	this->scene = scene;
+//	scene->SceneDrawables.Add(this);
+//}
+
+Model::Model()
 {
-	Textures = nullptr;
-	innerMatrixGenerator = new MatrixGenerator();
-	Position = innerMatrixGenerator->Position;
-	Rotation = innerMatrixGenerator->Rotation;
-	texCount = 0;
-	UniformInsertCount = 0;
+	//Textures = nullptr;
+	Mesh = nullptr;
+	Material = nullptr;
 }
 
 
 Model::~Model(void)
 {
-	delete innerMatrixGenerator;
+	//scene->SceneDrawables.Remove(this);
 }
 
-void Model::Draw(void)
+void Model::Draw()
+{
+	Draw(DrawingPassSolid);
+}
+
+void Model::Draw(enum DrawingPass pass)
 {
 	Mesh->Bind();
-	Shader->Bind();
-	for (int i = 0; i < texCount; i++)
-	{
-		Textures[i]->Bind();
-	}
+
+	if(!Material->Bind(pass))
+		return;
 
 	setupMatrices();
-
-	ShaderData::ParseUniformInserts(UniformInserts,UniformInsertCount);
+	//ShaderData::ParseUniformInserts(&UniformInserts);
 
 	glDrawElements(GL_TRIANGLES, Mesh->Length, GL_UNSIGNED_INT, 0);
 }
 
 void Model::setupMatrices()
 {
-	ShaderData::UniformMatrix4fv(MatModelView, innerMatrixGenerator->Matrix);
+	ShaderData::UniformMatrix4fv(MatModelView, modelMatrix);
 	ShaderData::UniformMatrix4fv(MatViewProjection, curViewPort->ViewProjectionMatrix);
-}
-
-void Model::AppendTextureData(TextureData* newTex)
-{
-	int newLength = texCount+1;
-	TextureData** newTextures = new TextureData*[texCount+1];
-	for (int i = 0; i < texCount; i++)
-	{
-		newTextures[i] = Textures[i];
-	}
-	newTextures[texCount++] = newTex;
-	delete[] Textures;
-	Textures = newTextures;
 }
 
 void Model::Update()
 {
-	innerMatrixGenerator->Update();
+	if(Position != oldPosition || Rotation  != oldRotation)
+	{
+		modelMatrix = MatrixFromPosAng(Position,Rotation);
+		Position = oldPosition;
+		Rotation = oldRotation;
+	}
 }

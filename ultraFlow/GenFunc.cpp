@@ -45,3 +45,51 @@ bool cutFromChar(char* line, char seperator, char* whole, int* startIndex)
 
 	return true;
 }
+
+mat4 MatrixFromPosAng(vec3 Position, vec3 Rotation)
+{
+	//Rotation.x -= (int)Rotation.x;
+	//Rotation.y -= (int)Rotation.y;
+	//Rotation.z -= (int)Rotation.z;
+
+	mat4 outMatrix = translate(mat4(1.0f),Position);
+	outMatrix = rotate( outMatrix, Rotation.y * 360, vec3(0.0f, 1.0f, 0.0f));
+	outMatrix = rotate( outMatrix, Rotation.x * 360, vec3(1.0f, 0.0f, 0.0f));
+	outMatrix = rotate( outMatrix, Rotation.z * 360, vec3(0.0f, 0.0f, 1.0f));
+	return outMatrix;
+}
+
+bool strcasecmp(char* str1,char* str2)
+{
+	int length1 = strlen(str1);
+	int length2 = strlen(str2);
+
+	if(length1 != length2)
+		return false;
+
+	for (int i = 0; i < length1; i++)
+	{
+		if(toupper(str1[i]) != toupper(str2[i]))
+			return false;
+	}
+
+	return true;
+}
+
+btVector3 BulletVec3FromVec3(vec3* origVector)
+{
+	return btVector3(origVector->x,origVector->y,origVector->z);
+}
+
+vec3 Vec3FromBulletVec3(btVector3* origVector)
+{
+	return vec3(origVector->x(),origVector->y(),origVector->z());
+}
+
+vec3 RotationFromNormal(vec3 normal)
+{
+	vec3 returnVec(0);
+	returnVec.y = atan2(normal.x,normal.z) / pi / 2;
+	returnVec.x = atan2(length(vec2(normal.x,normal.z)),normal.y) / pi / 2;
+	return returnVec;
+}

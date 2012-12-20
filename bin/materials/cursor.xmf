@@ -1,0 +1,5 @@
+<material>
+	<textures diffuse="cursor.dds"/>
+	<shader frag="textureSimple.frag" vert="textureSimple.vert"/>
+	<transparent/>
+</material>

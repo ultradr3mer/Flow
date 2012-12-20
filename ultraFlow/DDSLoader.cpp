@@ -49,7 +49,9 @@ DdsLoadInfo loadInfoIndex8 = {
 
 bool DDSLoader::loadDds( char* source )
 {
-	FILE *f = fopen(FullFileName(source), "rb");
+	updateError("DDSLoader ENTER loadDds");
+
+	FILE *f = fopen(FullFileName("materials\\",source), "rb");
 	int xSize, ySize;
 	bool hasMipmaps_;
 	GLenum format, cFormat; 
@@ -127,7 +129,7 @@ bool DDSLoader::loadDds( char* source )
     for( unsigned int ix = 0; ix < mipMapCount; ++ix ) {
       fread( data, 1, size, f );
       glCompressedTexImage2D( GL_TEXTURE_2D, ix, li->internalFormat, x, y, 0, size, data );
-      updateError();
+      updateError("DDSLoader glCompressedTexImage2D");
       x = (x+1)>>1;
       y = (y+1)>>1;
       size = std::max( li->divSize, x )/li->divSize * std::max( li->divSize, y )/li->divSize * li->blockBytes;
@@ -155,7 +157,7 @@ bool DDSLoader::loadDds( char* source )
       }
       glPixelStorei( GL_UNPACK_ROW_LENGTH, y );
       glTexImage2D( GL_TEXTURE_2D, ix, li->internalFormat, x, y, 0, li->externalFormat, li->type, unpacked );
-      updateError();
+      updateError("DDSLoader glTexImage2D");
       x = (x+1)>>1;
       y = (y+1)>>1;
       size = x * y * li->blockBytes;
@@ -176,17 +178,17 @@ bool DDSLoader::loadDds( char* source )
       fread( data, 1, size, f );
       glPixelStorei( GL_UNPACK_ROW_LENGTH, y );
       glTexImage2D( GL_TEXTURE_2D, ix, li->internalFormat, x, y, 0, li->externalFormat, li->type, data );
-      updateError();
+      updateError("DDSLoader glTexImage2D 2");
       x = (x+1)>>1;
       y = (y+1)>>1;
       size = x * y * li->blockBytes;
     }
     free( data );
     glPixelStorei( GL_UNPACK_SWAP_BYTES, GL_FALSE );
-    updateError();
+    updateError("DDSLoader glPixelStorei");
   }
   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, mipMapCount-1 );
-  updateError();
+  updateError("DDSLoader glTexParameteri");
 
   return true;
 

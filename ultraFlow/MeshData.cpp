@@ -15,13 +15,15 @@ btVector3 positions[buffersize];
 int dataLenght = 0;
 int dataLenghtIndex = 0;
 
-MeshData* MeshCache[4096];
-char* MeshNames[4096];
+//MeshData* MeshCache[4096];
+//char* MeshNames[4096];
 int MeshCachePosition;
+
+ListContainer<MeshData> Meshes;// = ListContainer();
 
 MeshData::MeshData(void)
 {
-
+	updateError("MeshData ENTER MeshData");
 	//GLchar *vertexsource, *fragmentsource;
 
     /* Allocate and assign a Vertex Array Object to our handle */
@@ -65,6 +67,8 @@ MeshData::MeshData(void)
 	Length = dataLenghtIndex;
 
 	Clear();
+
+	updateError("MeshData MeshData");
 }
 
 void MeshData::Clear()
@@ -75,21 +79,21 @@ void MeshData::Clear()
 
 MeshData* MeshData::FromObj(char* source)
 {
-	for (int i = 0; i < MeshCachePosition; i++)
+	MeshData* Mesh = nullptr;
+	Meshes.InitReader(&Mesh);
+	while (Meshes.Read())
 	{
-		if(strcmp(MeshNames[i],source) == 0)
-			return MeshCache[i];
+		if(strcmp(source,Mesh->Name) == 0)
+			return Mesh;
 	}
-
-	char* name = new char[strlen(source)];
-	strcpy(name,source);
-	MeshNames[MeshCachePosition] = name;
 
 	ObjLoader::Load(source);
 	GenerateTangent();
-	MeshCache[MeshCachePosition] = new MeshData();
+	Mesh = new MeshData();
+	strcpy(Mesh->Name,source);
+	Meshes.Add(Mesh);
 
-	return MeshCache[MeshCachePosition++];
+	return Mesh;
 }
 
 MeshData::~MeshData(void)
@@ -178,11 +182,11 @@ void MeshData::GenerateTangent(void)
 
 		// Calculate Multiplicators
 		// For tangent
-		float sTan = 1.0f / (texB.x - texA.x * texB.y / texA.y);
-		float rTan = 1.0f / (texA.x - texB.x * texA.y / texB.y);
+		sTan = 1.0f / (texB.x - texA.x * texB.y / texA.y);
+		rTan = 1.0f / (texA.x - texB.x * texA.y / texB.y);
 		// For binormal
-		float sBi = 1.0f / (texB.y - texA.y * texB.x / texA.x);
-		float rBi = 1.0f / (texA.y - texB.y * texA.x / texB.x);
+		sBi = 1.0f / (texB.y - texA.y * texB.x / texA.x);
+		rBi = 1.0f / (texA.y - texB.y * texA.x / texB.x);
 
 		// Calculate tangent and save to buffer
 		Tangent = normalize(rTan * localA + sTan * localB);

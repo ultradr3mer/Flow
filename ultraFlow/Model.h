@@ -1,27 +1,33 @@
+#pragma once
 #include "Base.h"
 #include "MeshData.h"
 #include "TextureData.h"
 #include "ShaderData.h"
-#include "MatrixGenerator.h"
+#include "MaterialData.h"
+//#include "Scene.h"
+//#include "ListContainer.h"
 
-#pragma once
 class Model : public GameBase
 {
 private:
-	MatrixGenerator* innerMatrixGenerator;
 	virtual void setupMatrices(void);
 protected:
-	int texCount;
+	mat4 modelMatrix;
+	vec3 oldPosition;
+	vec3 oldRotation;
+	//Scene* scene;
 public:
 	MeshData *Mesh;
-	ShaderData *Shader;
-	TextureData** Textures;
-	Model(void);
-	~Model(void);
-	UniformInsert UniformInserts[32];
-	int UniformInsertCount;
-	virtual void Draw(void);
+	MaterialData *Material;
+	Model();
+	//Model(Scene* scene);
+	virtual ~Model(void);
+	ListContainer<UniformInsert> UniformInserts;
+	virtual void Draw(enum DrawingPass pass);
+	virtual void Draw();
 	virtual void Update(void);
-	void AppendTextureData(TextureData* newTex);
+	//void AppendTextureData(TextureData* newTex);
 };
+
+
 

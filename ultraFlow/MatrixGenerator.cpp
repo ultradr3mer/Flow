@@ -1,12 +1,12 @@
 #include "MatrixGenerator.h"
 
 
-MatrixGenerator::MatrixGenerator(void)
-{
-	Position = new vec3(0,0,0);
-	Rotation = new vec3(0,0,0);
-	//Matrix = new mat4();
-}
+//MatrixGenerator::MatrixGenerator(void)
+//{
+//	Position = vec3(0,0,0);
+//	Rotation = vec3(0,0,0);
+//	//Matrix = new mat4();
+//}
 
 MatrixGenerator::MatrixGenerator(vec3* initPosition,vec3* initRotation)
 {

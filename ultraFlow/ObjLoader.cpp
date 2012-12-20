@@ -13,7 +13,7 @@ ObjLoader::~ObjLoader(void)
 
 void ObjLoader::Load(char* source)
 {
-	char* data = FileToBuf(FullFileName(source));
+	char* data = FileToBuf(FullFileName("models\\",source));
 
 	//int readerPos;
 	//int length;

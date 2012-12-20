@@ -7,51 +7,48 @@ UniformInsert::UniformInsert(void){};
 static ShaderData* curShader;
 
 //Don't forget to update enum Uniforms
-const GLchar* UniformsStrings[] = {
+char* UniformsStrings[] = {
+	"NULL",
 	"Diffuse",
 	"Normal",
+	"Depth",
+	"DefferedLightmap",
+	"Shadowmap",
+	"ShadowPrjection",
 	"ModelView",
 	"ViewProjection",
 	"Origin",
+	"Direction",
+	"RenderSize",
+	"EyePos",
+	"EyeFwd",
+	"EyeRight",
+	"EyeUp",
+	"NearZ",
+	"FarZ",
 	"Size",
 	"Aspect",
 	"Alpha",
 	"State"
 };
 
-ShaderData* ShaderCache[4096];
-char* ShaderNames[4096];
+int UniformCount = sizeof(UniformsStrings)/sizeof(UniformsStrings[0]);
+
+ListContainer<ShaderData> Shaders;// = ListContainer();
+
+//ShaderData* ShaderCache[4096];
+//char* ShaderNames[4096];
 int ShaderCachePosition;
 
 //generates a list with all existing Uniforms and their locations
 void ShaderData::generateLocations()
 {
-	int maxLength = sizeof(UniformsStrings)/sizeof(UniformsStrings[0]);
-	int writerPos = 0, curLocation;
-	uniformLocationsLength = 0;
 
-	pair <enum Uniforms,GLint> curPair;
-	pair <enum Uniforms,GLint>* tmpUniformLocations 
-		= new pair <enum Uniforms,GLint>[maxLength];
-	for (int i = 0; i < maxLength; i++)
+	UniformLocations = new GLint[UniformCount];
+	for (int i = 0; i < UniformCount; i++)
 	{
-		curLocation = glGetUniformLocation(shaderprogram, UniformsStrings[i]);
-		tmpUniformLocations[i] = make_pair ((enum Uniforms)i, curLocation);
-		if(curLocation != -1)
-		{
-			uniformLocationsLength++;
-		}
+		UniformLocations[i] = glGetUniformLocation(shaderprogram, UniformsStrings[i]);
 	}
-
-	UniformLocations = new pair <enum Uniforms,GLint>[uniformLocationsLength];
-	for (int i = 0; i < maxLength; i++)
-	{
-		curPair = tmpUniformLocations[i];
-		if(curPair.second != -1)
-			UniformLocations[writerPos++] = curPair;
-	}
-
-	delete[] tmpUniformLocations;
 }
 
 ShaderData::ShaderData(char* vertexsource, char* fragmentsource)
@@ -141,29 +138,32 @@ ShaderData::ShaderData(char* vertexsource, char* fragmentsource)
 
 	free(vertexsource);
     free(fragmentsource);
+
+	Shaders.Add(this);
 }
 
 ShaderData* ShaderData::FromPlainText(char* vertexSource, char* fragmentSource)
 {
-	char* name = new char[strlen(vertexSource)+strlen(fragmentSource)];
-	strcpy(name,vertexSource);
-	strcat(name,fragmentSource);
-
-	for (int i = 0; i < ShaderCachePosition; i++)
+	ShaderData* Shader;
+	Shaders.InitReader(&Shader);
+	while(Shaders.Read())
 	{
-		if(strcmp(ShaderNames[i],name) == 0)
-			return ShaderCache[i];
+		if(strcmp(Shader->VertexName,vertexSource) == 0 &&
+			strcmp(Shader->FragmentName,fragmentSource) == 0)
+		{
+			return Shader;
+		}
 	}
 
-	ShaderNames[ShaderCachePosition] = name;
-
 	/* Read our shaders into the appropriate buffers */
-    char* vertexsource = FileToBuf(FullFileName(vertexSource));
-	char* fragmentsource = FileToBuf(FullFileName(fragmentSource));
+	char* vertexsource = FileToBuf(FullFileName("shaders\\",vertexSource));
+	char* fragmentsource = FileToBuf(FullFileName("shaders\\",fragmentSource));
 
-	ShaderCache[ShaderCachePosition] = new ShaderData(vertexsource,fragmentsource);
+	Shader = new ShaderData(vertexsource,fragmentsource);
+	strcpy(Shader->VertexName,vertexSource);
+	strcpy(Shader->FragmentName,fragmentSource);
 
-	return ShaderCache[ShaderCachePosition++];
+	return Shader;
 }
 
 void ShaderData::Uniform1i(enum Uniforms target, GLint i)
@@ -184,6 +184,12 @@ void ShaderData::Uniform3fv(enum Uniforms target, vec3 const & vec)
 	glUniform3fv(location, 1, value_ptr(vec));
 }
 
+void ShaderData::Uniform2fv(enum Uniforms target, vec2 const & vec)
+{
+	GLuint location = curShader->getLocation(target);
+	glUniform2fv(location, 1, value_ptr(vec));
+}
+
 void ShaderData::UniformMatrix4fv(enum Uniforms target, GLfloat* matrix )
 {
 	GLuint location = curShader->getLocation(target);
@@ -198,28 +204,33 @@ void ShaderData::UniformMatrix4fv(enum Uniforms target, mat4 const & matrix)
 
 GLint ShaderData::getLocation(enum Uniforms target)
 {
-	for (int i = 0; i < uniformLocationsLength; i++)
-	{
-		if(UniformLocations[i].first == target)
-			return UniformLocations[i].second;
-	}
-	return -1;
+	return UniformLocations[target];
 }
 
-void ShaderData::ParseUniformInserts(UniformInsert* list, int length)
+bool ShaderData::HasUniform(enum Uniforms target)
 {
-	//int length = sizeof(*list)/sizeof(list[0])
-	for (int i = 0; i < length; i++)
+	return curShader->UniformLocations[target] != -1;
+}
+
+void ShaderData::ParseUniformInserts(ListContainer<UniformInsert>* list)
+{
+	if(list->Length == 0)
+		return;
+	
+	UniformInsert* insert = nullptr;
+	list->InitReader(&insert);
+	while(list->Read())
 	{
-		switch (list[i].type)
+		switch (insert->type)
 		{
 		case DataType1f:
-			Uniform1f(list[i].unifrom,*(GLfloat*)list[i].data);
+			Uniform1f(insert->unifrom,*(GLfloat*)insert->data);
 			break;
 		default:
 			break;
 		}
 	}
+
 }
 
 ShaderData::~ShaderData(void)
@@ -230,6 +241,8 @@ ShaderData::~ShaderData(void)
     glDeleteProgram(shaderprogram);
     glDeleteShader(vertexshader);
     glDeleteShader(fragmentshader);
+
+	Shaders.Remove(this);
 }
 
 void ShaderData::Bind(void)
@@ -237,4 +250,14 @@ void ShaderData::Bind(void)
 	curShader = this;
 	CurTexUnit = 0;
     glUseProgram(shaderprogram);
+}
+
+enum Uniforms GetUniformEnum(char* Name)
+{
+	for (int i = 0; i < UniformCount; i++)
+	{
+		if(strcasecmp(UniformsStrings[i],Name))
+			return (Uniforms)i;
+	}
+	return UniformsNull;
 }

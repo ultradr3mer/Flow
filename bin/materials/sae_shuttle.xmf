@@ -1,0 +1,9 @@
+<material>
+	<shader frag="simpleLight.frag" vert="simpleLight.vert"/>
+	<defferedshader frag="normal.frag" vert="normal.vert"/>
+	<shadowshader frag="shadow.frag" vert="simpleLight.vert"/>
+	<framebuffers defferedlightmap="defferedlightmap"/>
+	
+	<textures diffuse="sae_shuttle.dds" normal="sae_shuttle_n.dds"/>
+	<lighting/>
+</material>

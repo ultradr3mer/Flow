@@ -1,37 +1,38 @@
 #include "CApp.h"
 
-char execPath[512];
-int execPathLenght;
-void preparePath(char*);
 bool useVertexArrays = false;
 
-CApp::CApp() {
+CApp::CApp() 
+{
     Running = true;
 }
  
 int CApp::OnExecute(int argc, char **argv) {
-	preparePath(argv[0]);
-
 	if(OnInit(argc, argv) == false) {
 		return -1;
 	}
 
-
 	SDL_Event Event;
+	bool calculatedFrame;
     while(Running) {
+		//BulletManager::Step();
+
 		while(SDL_PollEvent(&Event)) 
 		{
 			OnEvent(&Event);
 		}
+		calculatedFrame= false;
 		while ((SDL_GetTicks() - GameBaseTime) > GameTickLength)
 		{
 			GameBaseTime += GameTickLength;
-			OnLoop();
+			OnUpdate();
+			calculatedFrame = true;
 		}
 
-		BodyGenerator::Step();
+		BulletManager::Step();
 
-        OnRender();
+		OnDraw();
+
     }
  
     OnCleanup();
@@ -59,15 +60,10 @@ void preparePath(char* rawpath)
 		execPath[i] = tmpPointer[i];
 	}
 }
-
-char* FullFileName(char* file)
-{
-	execPath[execPathLenght] = '\0';
-	return strcat(execPath,file);
-}
  
 int main(int argc, char **argv) {
     CApp theApp;
  
+	preparePath(argv[0]);
     return theApp.OnExecute(argc, argv);
 }

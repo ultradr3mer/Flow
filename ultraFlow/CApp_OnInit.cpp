@@ -11,7 +11,7 @@ void sdldie(const char *msg)
  
  
 bool CApp::OnInit(int argc, char **argv) {
-#pragma region sdl/opengl
+	#pragma region sdl/opengl
 
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         return false;
@@ -42,68 +42,54 @@ bool CApp::OnInit(int argc, char **argv) {
 	if (GLEW_OK != err)
 	{
 	  fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
-
 	}
 	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 
-#pragma endregion
+	glDisable( GL_LINE_SMOOTH );
+    glDisable( GL_POLYGON_SMOOTH );
+    glDisable( GL_MULTISAMPLE );
 
-//#pragma region bullet
-//	//float m[16];
-//	//body->getWorldTransform ().getOpenGLMatrix(m);
-//	btBroadphaseInterface* broadphase = new btDbvtBroadphase();
-//    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-//    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
-//    btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
-//    dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
-//    dynamicsWorld->setGravity(btVector3(0,-10,0));
-//	
-// 
-//    btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0,1,0),1);   
-//
-//	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(0,-1.5,0)));
-//    btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
-//    btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
-//    dynamicsWorld->addRigidBody(groundRigidBody);
-//#pragma endregion
+	//check whether extension string can be found
+	if (!strstr((char*)glGetString(GL_EXTENSIONS), 
+		"GL_EXT_texture_filter_anisotropic"))
+	{
+		printf("No Anisotropic filtering");
+	}
+	#pragma endregion
 
-	BodyGenerator::Init();
+	scene = new Scene();
 
+	BulletManager::Init();
+	//GameObjList = ListContainer();
+	object = nullptr;
+
+	// Initialize Renderbuffers
+	mainBufferSet = new BufferSet(screenX,screenY);
+
+	// Initialize game stepping
 	GameTickLength = 1000 / 100;
 	GameBaseTime = 0;
 
-	viewPort = new ViewPort();
-	viewPort->Position->z = 2;
-	viewPort->Position->y = 4;
-
-	floor = new Model();
+	// Setup scene
+	Model* floor = new Model();
 	floor->Mesh = MeshData::FromObj("floor.obj");
-	floor->Shader = ShaderData::FromPlainText("simpleLight.vert","simpleLight.frag");
-	floor->AppendTextureData(TextureData::FromDDS("floor.dds")->SetTarget(TexDiffuse));
-	floor->AppendTextureData(TextureData::FromDDS("floor_n.dds")->SetTarget(TexNormal));
-	//floor->Position->y = 1.0f;
-	floor->Update();
+	floor->Material = MaterialData::FromXml("floor.xmf");
+	scene->SceneDrawables.Add(floor);
 
-	objectCount = 20;
-	objects = new PhysicsModel* [objectCount];
+	player = new Player(scene);
+	player->Position.z = 2;
+	player->Position.y = 4;
+
 	PhysicsModel* mod;
 
-	MeshData* mesh = MeshData::FromObj("sae_shuttle.obj");
-	ShaderData* shader = ShaderData::FromPlainText("simpleLight.vert","simpleLight.frag");
-	TextureData* texture = TextureData::FromDDS("sae_shuttle.dds")->SetTarget(TexDiffuse);
-	TextureData* normal = TextureData::FromDDS("sae_shuttle_n.dds")->SetTarget(TexNormal);
-
-	for (int i = 0; i < objectCount; i++)
+	for (int i = 0; i < 20; i++)
 	{
 		mod = new PhysicsModel();
-		mod->Body = BodyGenerator::FromObj("sae_shuttle_pbox.obj");
+		mod->Material = MaterialData::FromXml("sae_shuttle.xmf");
+		mod->Body = BulletManager::FromObj("sae_shuttle_pbox.obj");
 		mod->Body->getWorldTransform().setOrigin(btVector3(0.0f,i+1.0f,0.0f));
-		mod->Mesh = mesh;
-		mod->Shader = shader;
-		mod->AppendTextureData(texture);
-		mod->AppendTextureData(normal);
-
-		objects[i] = mod;
+		mod->Mesh = MeshData::FromObj("sae_shuttle.obj");
+		scene->SceneDrawables.Add(mod);
 	}
 
 	SDL_WarpMouse(screenX/2,screenY/2);
