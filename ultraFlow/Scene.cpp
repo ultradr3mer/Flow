@@ -1,12 +1,14 @@
 #include "Scene.h"
 
+Scene* curScene;
+
 Scene::Scene(void)
 {
 	//Lists used for rendering not storing
 	Lights.PerformCleanup = false;
 	SceneDrawables.PerformCleanup = false;
 
-	Sun* sun = new Sun();
+	sun = new Sun();
 	Lights.Add(sun);
 }
 
@@ -25,6 +27,11 @@ void Scene::Draw(enum DrawingPass pass)
 	}
 }
 
+void drawShadowPass()
+{
+	curScene->Draw(DrawingPassShadow);
+}
+
 void Scene::DrawShadowBuffers()
 {
 	glEnable(GL_DEPTH_TEST); 
@@ -32,8 +39,9 @@ void Scene::DrawShadowBuffers()
 	Lights.InitReader(&light);
 	while (Lights.Read())
 	{
-		light->Bind();
-		Draw(DrawingPassShadow);
+
+		light->UpdateShadowBuffer(drawShadowPass);
+		//Draw(DrawingPassShadow);
 	}
 }
 
@@ -46,4 +54,9 @@ void Scene::DrawDefferedLights()
 		CurLight = light;
 		light->Draw();
 	}
+}
+
+void Scene::Update()
+{
+	sun->Position = EyePos;
 }

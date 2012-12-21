@@ -5,10 +5,11 @@ ViewPort* curViewPort;
 
 ViewPort::ViewPort(void)
 {
-	Near = 0.1;
+	Near = 0.1f;
 	Far = 100;
-	Aspect = 4.0f / 3.0f;
+	Aspect = (float)screenX / (float)screenY;
 	ProjectrionMatrix = perspective(45.0f, Aspect, Near, Far);
+	CalcReconstrucVecs = false;
 }
 
 
@@ -27,21 +28,30 @@ void ViewPort::Update()
 		//fwd = vec3(viewMat * vec4(0.0f, 0.0f, -1.0f, 0.0f));
 		//right = vec3(viewMat * vec4(1.0f, 0.0f, 0.0f, 0.0f));
 
-		mat4 invViewProjectionMatrix = inverse(ViewProjectionMatrix);
-		vec4 posCenter = invViewProjectionMatrix * vec4(0.0f, 0.0f, 1.0f, 1.0f);
-		posCenter /= posCenter.w;
-		vec4 posRight = invViewProjectionMatrix * vec4(1.0f, 0.0f, 1.0f, 1.0f);
-		posRight /= posRight.w;
-		vec4 posUp = invViewProjectionMatrix * vec4(0.0f, 1.0f, 1.0f, 1.0f);
-		posUp /= posUp.w;
+		if(CalcReconstrucVecs)
+		{
+			mat4 invViewProjectionMatrix = inverse(ViewProjectionMatrix);
+			vec4 posCenter = invViewProjectionMatrix * vec4(0.0f, 0.0f, 1.0f, 1.0f);
+			posCenter /= posCenter.w;
+			vec4 posRight = invViewProjectionMatrix * vec4(1.0f, 0.0f, 1.0f, 1.0f);
+			posRight /= posRight.w;
+			vec4 posUp = invViewProjectionMatrix * vec4(0.0f, 1.0f, 1.0f, 1.0f);
+			posUp /= posUp.w;
 
-		fwd = vec3(posCenter) - Position;
-		right = vec3(posRight - posCenter);
-		up = vec3(posUp - posCenter);
-		
-		fwd1 = normalize(fwd);
-		right1 = normalize(right);
-		up1 = normalize(up);
+			fwdD = vec3(posCenter) - Position;
+			rightD = vec3(posRight - posCenter);
+			upD = vec3(posUp - posCenter);
+
+			fwd = normalize(fwdD);
+			right = normalize(rightD);
+			up = normalize(upD);
+		}
+		else
+		{
+			fwd = vec3(viewMat * vec4(0.0f, 0.0f, 1.0f, 0.0f));
+			right = vec3(viewMat * vec4(1.0f, 0.0f, 0.0f, 0.0f));
+			up = vec3(viewMat * vec4(0.0f, 1.0f, 0.0f, 0.0f));
+		}
 	}
 }
 

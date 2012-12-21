@@ -1,0 +1,4 @@
+<material>
+	<framebuffers diffuse="scene"/>
+	<shader frag="defferedSun.frag" vert="defferedSun.vert"/>
+</material>

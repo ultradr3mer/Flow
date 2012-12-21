@@ -38,17 +38,20 @@ void FrameBufferData::Initialize()
 {
 	updateError("FrameBufferData ENTER Initialize");
 
-	// Create Color Tex
-	if(TextureId == -1)
-		glGenTextures(1, &TextureId);
-	glBindTexture(GL_TEXTURE_2D, TextureId);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, SizeX, SizeY, 0,
-				GL_RGBA, GL_UNSIGNED_BYTE, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	if(UseColor)
+	{
+		// Create Color Tex
+		if(TextureId == -1)
+			glGenTextures(1, &TextureId);
+		glBindTexture(GL_TEXTURE_2D, TextureId);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, SizeX, SizeY, 0,
+					GL_RGBA, GL_UNSIGNED_BYTE, 0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 
 	// Create Depth Tex
 	if(DepthTextureId == -1)
@@ -69,9 +72,19 @@ void FrameBufferData::Initialize()
 
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, FboId);
 
-	// attach the texture to FBO color attachment point
-	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT,GL_TEXTURE_2D, TextureId, 0);
-	GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+	GLenum status = GL_FRAMEBUFFER_COMPLETE_EXT;
+	if(UseColor)
+	{
+		// attach the texture to FBO color attachment point
+		glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT,GL_TEXTURE_2D, TextureId, 0);
+		GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+	}
+	else
+	{
+		// Instruct openGL that we won't bind a color texture with the currently bound FBO
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+	}
 
 	// attach the depth exture to depth attachment point
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT,GL_TEXTURE_2D, DepthTextureId, 0);
@@ -118,6 +131,10 @@ BufferSet::BufferSet(int x, int y)
 	DefferedLightmap.SizeY = y;
 	DefferedLightmap.Initialize();
 
+	ScenePass.SizeX = x;
+	ScenePass.SizeY = y;
+	ScenePass.Initialize();
+
 	OutBuffer = (FrameBufferData*)&defaultFramebuffer;
 }
 
@@ -132,7 +149,9 @@ char* BufferNames[] = {
 	"NormalColor",
 	"NormalDepth",
 	"DefferedLightmap",
-	"MyShadowmap"
+	"MyShadowmap",
+	"MyInnerShadowMap",
+	"Scene"
 };
 
 int BufferNameCount = sizeof(BufferNames)/sizeof(BufferNames[0]);
@@ -172,6 +191,9 @@ void FbTextureBinder::Bind()
 			break;
 		case MyShadowmap:
 			textureId = CurLight->ShadowBuffer.DepthTextureId;
+			break;
+		case MyInnerShadowMap:
+			textureId = CurLight->ShadowInnerBuffer.DepthTextureId;
 			break;
 		default:
 			break;

@@ -6,6 +6,8 @@
 Player::Player(Scene* scene)
 {
 	View = new ViewPort();
+	View->CalcReconstrucVecs = true;
+
 	Cursor = new Model();
 	scene->SceneDrawables.Add(Cursor);
 
@@ -33,7 +35,7 @@ void Player::Update(void)
 	float friction =  0.98f;
 	float rotation = 0.7f;
 
-	smoothMove = smoothMove * friction + (MovingVec.x * View->right1 + MovingVec.z * View->fwd1) * acceleration;
+	smoothMove = smoothMove * friction + (MovingVec.x * View->right + MovingVec.z * View->fwd) * acceleration;
 	Position += smoothMove;
 
 	smoothRotate = smoothRotate * rotation + Rotation * (1-rotation);
@@ -43,13 +45,13 @@ void Player::Update(void)
 
 	if(pickConstraint != nullptr)
 	{
-		Cursor-> Position = Position + View->fwd1*gOldPickingDist;
+		Cursor-> Position = Position + View->fwd*gOldPickingDist;
 		pickConstraint->setPivotB(BulletVec3FromVec3(&Cursor-> Position));
 	}
 	else
 	{	
 		btVector3 from = BulletVec3FromVec3(&Position);
-		btVector3 to = BulletVec3FromVec3(&(Position + View->fwd1*100.0f));
+		btVector3 to = BulletVec3FromVec3(&(Position + View->fwd*100.0f));
 
 		btCollisionWorld::ClosestRayResultCallback	closestResults(from,to);
 		//closestResults.m_flags |= btTriangleRaycastCallback::kF_FilterBackfaces;
@@ -66,7 +68,7 @@ void Player::Update(void)
 void Player::Fire()
 {
 	btVector3 from = BulletVec3FromVec3(&Position);
-	btVector3 to = BulletVec3FromVec3(&(Position + View->fwd1*100.0f));
+	btVector3 to = BulletVec3FromVec3(&(Position + View->fwd*100.0f));
 	btCollisionWorld::ClosestRayResultCallback	closestResults(from,to);
 	//closestResults.m_flags |= btTriangleRaycastCallback::kF_FilterBackfaces;
 	dynamicsWorld->rayTest(from,to,closestResults);

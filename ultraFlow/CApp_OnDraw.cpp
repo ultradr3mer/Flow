@@ -8,11 +8,15 @@ void CApp::OnDraw() {
 	glDepthMask(GL_TRUE); 
 	glDepthFunc(GL_LEQUAL); 
 
+	//Sett current element
+	curScene = scene;
+
 	//Render Shadowbuffers
 	scene->DrawShadowBuffers();
 
 	//Activate View
 	player->View->Bind();
+	scene->EyePos = player->Position;
 	DrawScene(mainBufferSet);
 
 	//Swap Buffers
@@ -53,6 +57,9 @@ void CApp::DrawScene(BufferSet* bufferSet)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	scene->Draw(DrawingPassTransparent);
+
+	//Output final image
+	//bufferSet->OutBuffer->Bind();
 
 	glDisable(GL_BLEND);
 }

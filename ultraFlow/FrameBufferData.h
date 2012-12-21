@@ -12,13 +12,14 @@ public:
 	int SizeX;
 	int SizeY;
 	vec4 Clearcolor;
+	GLint depthBufferFmt;
+	bool UseColor;
 
 	//info
 	GLuint TextureId;
 	GLuint DepthTextureId;
 	GLuint FboId;
 	bool FboReady;
-	GLint depthBufferFmt;
 
 	//creation
 	FrameBufferData(void);
@@ -45,6 +46,7 @@ public:
 	// Used access result
 	FrameBufferData* OutBuffer;
 	FrameBufferData NormalPass;
+	FrameBufferData ScenePass;
 	FrameBufferData DefferedLightmap;
 
 	//Functions
@@ -62,7 +64,9 @@ enum FrameBuffer
 	FrameBufferNormalColor,
 	FrameBufferNormalDepth,
 	FrameBufferDefferedLightmap,
-	MyShadowmap
+	MyShadowmap,
+	MyInnerShadowMap,
+	FrameBufferScene
 };
 
 struct FbTextureBinder : TextureData

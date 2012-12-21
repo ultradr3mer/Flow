@@ -1,4 +1,4 @@
 <material>
-	<framebuffers normal="normalcolor" depth="normaldepth" shadowmap="myshadowmap"/>
+	<framebuffers normal="normalcolor" depth="normaldepth" shadowmap="myshadowmap" innershadowmap="myinnershadowmap"/>
 	<shader frag="defferedSun.frag" vert="defferedSun.vert"/>
 </material>

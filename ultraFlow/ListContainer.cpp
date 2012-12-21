@@ -103,12 +103,26 @@ inline T* ListContainer<T>::Get(int index)
 template <class T>
 inline void ListContainer<T>::Remove(int index)
 {
-	goToElement(index-1);
+	if(Length == 0 || index >= Length)
+		return;
 
-	elementToRemove = nextElement->NextElement;
-	nextElement->NextElement = nextElement->NextElement->NextElement;
+	if(index == 0)
+	{
+		ListElement* tmp = firstElement;
+		firstElement = firstElement->NextElement;
+		//delete (T*)tmp->Content;
+		delete tmp;
+	}
+	else
+	{
+		goToElement(index-1);
 
-	delete elementToRemove;
+		elementToRemove = nextElement->NextElement;
+		nextElement->NextElement = nextElement->NextElement->NextElement;
+
+		//delete (T*)elementToRemove->Content;
+		delete elementToRemove;
+	}
 
 	Length--;
 }
@@ -168,13 +182,17 @@ inline void ListContainer<T>::RemoveDelete(T* content)
 template <class T>
 inline void ListContainer<T>::RemoveDelete(int index)
 {
-	if(Length = 0 || index >= Length)
+	if(Length == 0 || index >= Length)
 		return;
+
+	T* content;
 
 	if(index == 0)
 	{
 		ListElement* tmp = firstElement;
 		firstElement = firstElement->NextElement;
+		content = (T*)tmp->Content;
+		delete content;
 		delete tmp;
 	}
 	else
@@ -184,7 +202,8 @@ inline void ListContainer<T>::RemoveDelete(int index)
 		elementToRemove = nextElement->NextElement;
 		nextElement->NextElement = nextElement->NextElement->NextElement;
 
-		delete (T*)elementToRemove->Content;
+		content = (T*)elementToRemove->Content;
+		delete content;
 		delete elementToRemove;
 	}
 
