@@ -81,7 +81,10 @@ void Sun::Update()
 		viewPort->Position = Position;
 		viewPort->Update();
 		shadowProjectionMatrix = bias * viewPort->ViewProjectionMatrix;
+	}
 
+	if(length(Position - viewInnerPort->Position)>2.0f)
+	{
 		viewInnerPort->Position = Position;
 		viewInnerPort->Update();
 		shadowInnerProjectionMatrix = bias * viewInnerPort->ViewProjectionMatrix;
@@ -90,11 +93,11 @@ void Sun::Update()
 
 void Sun::UpdateShadowBuffer(drawShadowCall draw)
 {
-	ShadowBuffer.Bind();
+	ShadowBuffer.Bind(true);
 	viewPort->Bind();
 	draw();
 
-	ShadowInnerBuffer.Bind();
+	ShadowInnerBuffer.Bind(true);
 	viewInnerPort->Bind();
 	draw();
 }

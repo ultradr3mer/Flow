@@ -1,14 +1,11 @@
 #include "CApp.h"
 void CApp::OnDraw() {
-
-	glClearColor(0.0, 0.0, 0.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glDepthMask(GL_TRUE); 
 	glDepthFunc(GL_LEQUAL); 
 
-	//Sett current element
+	//Set current element
 	curScene = scene;
 
 	//Render Shadowbuffers
@@ -17,7 +14,7 @@ void CApp::OnDraw() {
 	//Activate View
 	player->View->Bind();
 	scene->EyePos = player->Position;
-	DrawScene(mainBufferSet);
+	scene->DrawScene(mainBufferSet);
 
 	//Swap Buffers
 	SDL_GL_SwapBuffers();
@@ -30,36 +27,8 @@ void CApp::OnDraw() {
 		fps = frame*1000.0f/(time-timebase);
 	 	timebase = time;
 		frame = 0;
-		printf("FPS: %f\n",fps);
+		printf("FPS: %f Visible: %f%%\n",fps,(float)DrawnObj / (DrawnObj + NotDrawnObj));
+		DrawnObj = 0;
+		NotDrawnObj = 0;
 	}
-}
-
-void CApp::DrawScene(BufferSet* bufferSet)
-{
-	CurrentBufferSet = bufferSet;
-
-	//Draw deffered pass
-	bufferSet->NormalPass.Bind();
-	glEnable(GL_DEPTH_TEST); 
-	scene->Draw(DrawingPassDeffered);
-
-	//Draw Lights
-	//bufferSet->OutBuffer->Bind();
-	bufferSet->DefferedLightmap.Bind();
-	scene->DrawDefferedLights();
-
-	//Draw solid pass
-	bufferSet->OutBuffer->Bind();
-	scene->Draw(DrawingPassSolid);
-
-	//Draw transparent pass
-	glDisable(GL_DEPTH_TEST); 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	scene->Draw(DrawingPassTransparent);
-
-	//Output final image
-	//bufferSet->OutBuffer->Bind();
-
-	glDisable(GL_BLEND);
 }

@@ -1,0 +1,4 @@
+<material>
+	<framebuffers normal="SsaoPerform"/>
+	<shader frag="ssaoBlur.frag" vert="composite.vert"/>
+</material>

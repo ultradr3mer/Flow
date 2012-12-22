@@ -7,5 +7,6 @@ public:
 	Filter2D(void);
 	~Filter2D(void);
 	void Draw(MaterialData* filterMaterial);
+	void Draw(MaterialData* filterMaterial, ListContainer<UniformInsert>* UniformInsterts);
 };
 

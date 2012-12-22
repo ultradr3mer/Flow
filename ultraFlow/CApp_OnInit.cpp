@@ -11,6 +11,16 @@ void sdldie(const char *msg)
  
  
 bool CApp::OnInit(int argc, char **argv) {
+
+	//FILE * pFile = fopen(FullFileName("","random_vectors.txt"),"w");
+	//for (int i = 0; i < 64; i++)
+	//{
+	//	vec3 rnd = sphericalRand(1.0f);
+
+	//	fprintf(pFile, "vec3(%f, %f, %f),\n",rnd.x,rnd.y,rnd.z);
+	//}
+	//fclose(pFile);
+
 	#pragma region sdl/opengl
 
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) {
@@ -60,7 +70,6 @@ bool CApp::OnInit(int argc, char **argv) {
 	scene = new Scene();
 
 	BulletManager::Init();
-	//GameObjList = ListContainer();
 	object = nullptr;
 
 	// Initialize Renderbuffers
@@ -76,6 +85,7 @@ bool CApp::OnInit(int argc, char **argv) {
 	floor->Material = MaterialData::FromXml("floor.xmf");
 	scene->SceneDrawables.Add(floor);
 
+	// Create player
 	player = new Player(scene);
 	player->Position.z = 2;
 	player->Position.y = 4;

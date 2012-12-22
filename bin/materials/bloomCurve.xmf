@@ -1,4 +1,4 @@
 <material>
 	<framebuffers diffuse="scene"/>
-	<shader frag="defferedSun.frag" vert="defferedSun.vert"/>
+	<shader frag="bloomCurve.frag" vert="composite.vert"/>
 </material>

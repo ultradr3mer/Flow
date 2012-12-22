@@ -12,6 +12,8 @@ float indexedtextureBuffer[buffersize*2];
 float indexedNormalBuffer[buffersize*3];
 btVector3 positions[buffersize];
 
+GLfloat maxDistToCenter;
+
 int dataLenght = 0;
 int dataLenghtIndex = 0;
 
@@ -65,6 +67,7 @@ MeshData::MeshData(void)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, dataLenghtIndex * sizeof(GLuint), indexBuffer, GL_STATIC_DRAW);
 
 	Length = dataLenghtIndex;
+	maxRadius = maxDistToCenter;
 
 	Clear();
 

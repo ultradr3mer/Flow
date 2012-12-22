@@ -30,15 +30,18 @@ void Model::Draw()
 
 void Model::Draw(enum DrawingPass pass)
 {
-	Mesh->Bind();
+	if(curViewPort->FrustumCheck(Position, Mesh->maxRadius))
+	{
+		Mesh->Bind();
 
-	if(!Material->Bind(pass))
-		return;
+		if(!Material->Bind(pass))
+			return;
 
-	setupMatrices();
-	//ShaderData::ParseUniformInserts(&UniformInserts);
+		setupMatrices();
+		//ShaderData::ParseUniformInserts(&UniformInserts);
 
-	glDrawElements(GL_TRIANGLES, Mesh->Length, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, Mesh->Length, GL_UNSIGNED_INT, 0);
+	}
 }
 
 void Model::setupMatrices()

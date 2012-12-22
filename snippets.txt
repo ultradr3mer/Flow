@@ -1,0 +1,24 @@
+
+//Generates a file containing some random vetors inside a sphere with r = 1
+srand(149503);
+FILE * pFile = fopen(FullFileName("","random_vectors.txt"),"w");
+for (int i = 0; i < 32; i++)
+{
+	vec3 rnd = sphericalRand(1.0f);
+
+	fprintf(pFile, "vec3(%f, %f, %f),\n",rnd.x,rnd.y,rnd.z);
+}
+fclose(pFile);
+
+//Fragment Shader Function for generating fine noise
+float noise()
+{
+	int x = int(gl_FragCoord.x);
+	int y = int(gl_FragCoord.y);
+	float noise = 0;
+	int hLine = (y - y / 2 * 2);
+	noise = (x - x / 2 * 2) == hLine ? 0.0 : 0.5;
+	noise += hLine == 0 ? 0.0 : 0.25;
+	
+	return noise;
+}

@@ -1,0 +1,4 @@
+<material>
+	<framebuffers normal="NormalColor" depth="NormalDepth"/>
+	<shader frag="ssaoPrepare.frag" vert="composite.vert"/>
+</material>

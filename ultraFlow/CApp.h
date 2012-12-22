@@ -30,7 +30,6 @@ class CApp {
 		uint GameTickLength;
 		GameBase* object;
 		BufferSet* mainBufferSet;
-		Filter2D* filter2D;
 		Scene* scene;
 
     public:
@@ -46,7 +45,5 @@ class CApp {
         void OnDraw();
  
         void OnCleanup();
-
-		void DrawScene(BufferSet* bufferSet);
 };
 #endif

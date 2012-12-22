@@ -124,7 +124,6 @@
     <ClCompile Include="FrameBufferData.cpp" />
     <ClCompile Include="GameBase.cpp" />
     <ClCompile Include="GenFunc.cpp" />
-    <ClCompile Include="ListContainer.cpp" />
     <ClCompile Include="MaterialData.cpp" />
     <ClCompile Include="MeshData.cpp" />
     <ClCompile Include="Model.cpp" />

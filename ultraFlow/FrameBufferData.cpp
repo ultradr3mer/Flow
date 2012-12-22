@@ -10,7 +10,9 @@ FrameBufferData::FrameBufferData(void)
 	DepthTextureId = -1;
 	TextureId = -1;
 	Clearcolor = vec4(0,0,0,0);
-	depthBufferFmt = GL_DEPTH_COMPONENT16;
+	DepthBufferFmt = GL_DEPTH_COMPONENT16;
+	BufferFmt = GL_RGBA8;
+	MultiSampeling = false;
 }
 
 FrameBufferData::~FrameBufferData(void)
@@ -20,7 +22,7 @@ FrameBufferData::~FrameBufferData(void)
 	glDeleteFramebuffersEXT(1, &FboId);
 }
 
-void FrameBufferData::Bind()
+void FrameBufferData::Bind(bool clear)
 {
 	if(FboReady)
 	{
@@ -29,14 +31,36 @@ void FrameBufferData::Bind()
 		glViewport(0, 0, SizeX, SizeY);
 
 		// clear buffers
-		glClearColor(Clearcolor.r,Clearcolor.g,Clearcolor.b,Clearcolor.a);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		if(clear)
+		{
+			glClearColor(Clearcolor.r,Clearcolor.g,Clearcolor.b,Clearcolor.a);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		}
 	}
 }
+
+void FrameBufferData::SetMultiSampeling(bool value)
+{
+	MultiSampeling = value;
+	GLfloat param = MultiSampeling ? GL_LINEAR : GL_NEAREST;
+
+	if(UseColor)
+	{
+		glBindTexture(GL_TEXTURE_2D, TextureId);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, param);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, param);
+	}
+
+	glBindTexture(GL_TEXTURE_2D, DepthTextureId);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, param);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, param);
+};
 
 void FrameBufferData::Initialize()
 {
 	updateError("FrameBufferData ENTER Initialize");
+
+	GLfloat sampeling = MultiSampeling ? GL_LINEAR : GL_NEAREST;
 
 	if(UseColor)
 	{
@@ -44,11 +68,11 @@ void FrameBufferData::Initialize()
 		if(TextureId == -1)
 			glGenTextures(1, &TextureId);
 		glBindTexture(GL_TEXTURE_2D, TextureId);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, sampeling);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, sampeling);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, SizeX, SizeY, 0,
+		glTexImage2D(GL_TEXTURE_2D, 0, BufferFmt, SizeX, SizeY, 0,
 					GL_RGBA, GL_UNSIGNED_BYTE, 0);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
@@ -57,11 +81,11 @@ void FrameBufferData::Initialize()
 	if(DepthTextureId == -1)
 		glGenTextures(1, &DepthTextureId);
 	glBindTexture(GL_TEXTURE_2D, DepthTextureId);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, sampeling);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, sampeling);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D, 0, depthBufferFmt, SizeX, SizeY, 0,
+	glTexImage2D(GL_TEXTURE_2D, 0, DepthBufferFmt, SizeX, SizeY, 0,
 		GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -110,11 +134,17 @@ DefaultFrameBuffer::DefaultFrameBuffer()
 {
 }
 
-void DefaultFrameBuffer::Bind()
+void DefaultFrameBuffer::Bind(bool clear)
 {
 	// unbind FBO
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	glViewport(0, 0, screenX, screenY);
+
+	if(clear)
+	{
+		glClearColor(0.0, 0.0, 0.0, 1.0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
 	//glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
 }
 #pragma endregion
@@ -124,7 +154,7 @@ BufferSet::BufferSet(int x, int y)
 {
 	NormalPass.SizeX = x;
 	NormalPass.SizeY = y;
-	NormalPass.depthBufferFmt = GL_DEPTH_COMPONENT24;
+	NormalPass.DepthBufferFmt = GL_DEPTH_COMPONENT24;
 	NormalPass.Initialize();
 
 	DefferedLightmap.SizeX = x;
@@ -134,6 +164,28 @@ BufferSet::BufferSet(int x, int y)
 	ScenePass.SizeX = x;
 	ScenePass.SizeY = y;
 	ScenePass.Initialize();
+
+	Bloom.SizeX = x/4;
+	Bloom.SizeY = y/4;
+	Bloom.Initialize();
+
+	BloomB.SizeX = x/4;
+	BloomB.SizeY = y/4;
+	BloomB.Initialize();
+
+	SsaoPrepare.SizeX = x;
+	SsaoPrepare.SizeY = y;
+	SsaoPrepare.BufferFmt = GL_RGBA16;
+	SsaoPrepare.Initialize();
+
+	SsaoPerform.SizeX = x/4;
+	SsaoPerform.SizeY = y/4;
+	SsaoPerform.Initialize();
+
+	SsaoBlur.SizeX = x/4;
+	SsaoBlur.SizeY = y/4;
+	SsaoBlur.MultiSampeling = true;
+	SsaoBlur.Initialize();
 
 	OutBuffer = (FrameBufferData*)&defaultFramebuffer;
 }
@@ -151,7 +203,12 @@ char* BufferNames[] = {
 	"DefferedLightmap",
 	"MyShadowmap",
 	"MyInnerShadowMap",
-	"Scene"
+	"Scene",
+	"Bloom",
+	"BloomB",
+	"SsaoPrepare",
+	"SsaoPerform",
+	"SsaoBlur"
 };
 
 int BufferNameCount = sizeof(BufferNames)/sizeof(BufferNames[0]);
@@ -195,11 +252,29 @@ void FbTextureBinder::Bind()
 		case MyInnerShadowMap:
 			textureId = CurLight->ShadowInnerBuffer.DepthTextureId;
 			break;
+		case FrameBufferScene:
+			textureId = CurrentBufferSet->ScenePass.TextureId;
+			break;
+		case Bloom:
+			textureId = CurrentBufferSet->Bloom.TextureId;
+			break;
+		case BloomB:
+			textureId = CurrentBufferSet->BloomB.TextureId;
+			break;
+		case FbSsaoPrepare:
+			textureId = CurrentBufferSet->SsaoPrepare.TextureId;
+			break;
+		case FbSsaoPerform:
+			textureId = CurrentBufferSet->SsaoPerform.TextureId;
+			break;
+		case FbSsaoBlur:
+			textureId = CurrentBufferSet->SsaoBlur.TextureId;
+			break;
 		default:
 			break;
 		}
 
-		if(textureId != -1)
+		if(textureId != -1 && ShaderData::HasUniform(Target))
 		{
 			glActiveTexture(GL_TEXTURE0 + CurTexUnit);
 			glBindTexture(GL_TEXTURE_2D, textureId);

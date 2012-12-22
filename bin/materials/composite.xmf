@@ -1,0 +1,4 @@
+<material>
+	<framebuffers diffuse="scene" diffuse2="bloom"/>
+	<shader frag="composite.frag" vert="composite.vert"/>
+</material>

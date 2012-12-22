@@ -21,3 +21,15 @@ void Filter2D::Draw(MaterialData* filterMaterial)
 	glDrawElements(GL_TRIANGLES, Mesh->Length, GL_UNSIGNED_INT, 0);
 }
 
+void Filter2D::Draw(MaterialData* filterMaterial, ListContainer<UniformInsert>* UniformInsterts)
+{
+	Mesh->Bind();
+
+	if(!filterMaterial->Bind(DrawingPassSolid))
+		return;
+
+	ShaderData::ParseUniformInserts(UniformInsterts);
+
+	glDrawElements(GL_TRIANGLES, Mesh->Length, GL_UNSIGNED_INT, 0);
+}
+

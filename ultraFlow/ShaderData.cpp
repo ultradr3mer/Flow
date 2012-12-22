@@ -2,14 +2,13 @@
 #include "GenFunc.h"
 #include "TextureData.h"
 
-UniformInsert::UniformInsert(void){};
-
 static ShaderData* curShader;
 
 //Don't forget to update enum Uniforms
 char* UniformsStrings[] = {
 	"NULL",
 	"Diffuse",
+	"Diffuse2",
 	"Normal",
 	"Depth",
 	"DefferedLightmap",
@@ -170,37 +169,37 @@ ShaderData* ShaderData::FromPlainText(char* vertexSource, char* fragmentSource)
 
 void ShaderData::Uniform1i(enum Uniforms target, GLint i)
 {
-	GLuint location = curShader->getLocation(target);
+	GLint location = curShader->getLocation(target);
 	glUniform1i(location, i);
 }
 
 void ShaderData::Uniform1f(enum Uniforms target, GLfloat f)
 {
-	GLuint location = curShader->getLocation(target);
+	GLint location = curShader->getLocation(target);
 	glUniform1f(location, f);
 }
 
 void ShaderData::Uniform3fv(enum Uniforms target, vec3 const & vec)
 {
-	GLuint location = curShader->getLocation(target);
+	GLint location = curShader->getLocation(target);
 	glUniform3fv(location, 1, value_ptr(vec));
 }
 
 void ShaderData::Uniform2fv(enum Uniforms target, vec2 const & vec)
 {
-	GLuint location = curShader->getLocation(target);
+	GLint location = curShader->getLocation(target);
 	glUniform2fv(location, 1, value_ptr(vec));
 }
 
 void ShaderData::UniformMatrix4fv(enum Uniforms target, GLfloat* matrix )
 {
-	GLuint location = curShader->getLocation(target);
+	GLint location = curShader->getLocation(target);
 	glUniformMatrix4fv(location, 1,GL_FALSE, matrix);
 }
 
 void ShaderData::UniformMatrix4fv(enum Uniforms target, mat4 const & matrix)
 {
-	GLuint location = curShader->getLocation(target);
+	GLint location = curShader->getLocation(target);
 	glUniformMatrix4fv(location, 1,GL_FALSE, value_ptr(matrix));
 }
 
@@ -227,6 +226,9 @@ void ShaderData::ParseUniformInserts(ListContainer<UniformInsert>* list)
 		{
 		case DataType1f:
 			Uniform1f(insert->unifrom,*(GLfloat*)insert->data);
+			break;
+		case DataTypeMat4:
+			UniformMatrix4fv(insert->unifrom,value_ptr(*(mat4*)insert->data));
 			break;
 		default:
 			break;

@@ -14,6 +14,8 @@ extern float indexedtextureBuffer[buffersize*2];
 extern float indexedNormalBuffer[buffersize*3];
 extern btVector3 positions[buffersize];
 
+extern GLfloat maxDistToCenter;
+
 extern int dataLenght;
 extern int dataLenghtIndex;
 
@@ -29,6 +31,7 @@ public:
 	static void GenerateTangent(void);
 	int Length;
 	char Name[MaxNameLen];
+	float maxRadius;
 private:
 	GLuint vbo[6],vao;
 };

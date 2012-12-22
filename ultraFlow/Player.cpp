@@ -11,7 +11,7 @@ Player::Player(Scene* scene)
 	Cursor = new Model();
 	scene->SceneDrawables.Add(Cursor);
 
-	Cursor->Mesh = MeshData::FromObj("plane.obj");
+	Cursor->Mesh = MeshData::FromObj("cursor.obj");
 	Cursor->Material = MaterialData::FromXml("cursor.xmf");
 	Cursor->Position = vec3(0,1,0);
 

@@ -22,14 +22,16 @@ uniform sampler2D InnerShadowmap;
 uniform float NearZ = 0.1;
 uniform float FarZ = 100.0;
 
-uniform int Samples = 4;
+uniform int Samples = 6;
 uniform int Rings = 2;
 uniform float SoftSize = 0.001;
 
 float PI = 3.14159265;
 
-float noise(int x, int y)
+float noise()
 {
+	int x = int(gl_FragCoord.x);
+	int y = int(gl_FragCoord.y);
 	float noise = 0;
 	int hLine = (y - y / 2 * 2);
 	noise = (x - x / 2 * 2) == hLine ? 0.0 : 0.5;
@@ -40,7 +42,7 @@ float noise(int x, int y)
 
 float shadow(vec3 pos, float bias, sampler2D map)
 {
-	float noise = noise(int(gl_FragCoord.x),int(gl_FragCoord.y));
+	float noise = noise();
 
 	float step = PI*2.0 / float(Samples);
 	float shadowValue = 1.0 / float(Samples) / float(Rings);

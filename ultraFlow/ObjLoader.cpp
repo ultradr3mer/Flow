@@ -13,6 +13,7 @@ ObjLoader::~ObjLoader(void)
 
 void ObjLoader::Load(char* source)
 {
+	maxDistToCenter = 0;
 	char* data = FileToBuf(FullFileName("models\\",source));
 
 	//int readerPos;
@@ -46,6 +47,13 @@ void ObjLoader::Load(char* source)
 			indexedPositionBuffer[curPos+1] = (float)strtod(subline,NULL);
 			cutFromChar(subline,' ', line, &lineIndex);
 			indexedPositionBuffer[curPos+2] = (float)strtod(subline,NULL);
+
+			GLfloat distToCenter = length(vec3(
+				indexedPositionBuffer[curPos],
+				indexedPositionBuffer[curPos+1],
+				indexedPositionBuffer[curPos+2]));
+
+			if(maxDistToCenter < distToCenter) maxDistToCenter = distToCenter;
 
 			curPos += 3;
 		}

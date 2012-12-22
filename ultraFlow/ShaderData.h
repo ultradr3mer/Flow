@@ -7,6 +7,7 @@ enum Uniforms
 {
 	UniformsNull,
 	TexDiffuse,
+	TexDiffuse2,
 	TexNormal,
 	TexDepth,
 	TexDeffLightmap,
@@ -43,7 +44,8 @@ enum AttributeIndices
 
 enum DataType
 {
-	DataType1f
+	DataType1f,
+	DataTypeMat4
 };
 
 struct UniformInsert
@@ -52,9 +54,9 @@ struct UniformInsert
 	enum DataType type;
 	void* data;
 
-	UniformInsert();
+	inline UniformInsert(){};
 
-	UniformInsert(
+	inline UniformInsert(
 		enum Uniforms mUnifrom,
 		enum DataType mType,
 		void* mData)

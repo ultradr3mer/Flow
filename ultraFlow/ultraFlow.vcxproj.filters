@@ -191,9 +191,6 @@
     <ClCompile Include="Sun.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="ListContainer.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="ViewPortIso.cpp">
       <Filter>Quelldateien\View</Filter>
     </ClCompile>

@@ -12,8 +12,10 @@ public:
 	int SizeX;
 	int SizeY;
 	vec4 Clearcolor;
-	GLint depthBufferFmt;
+	GLint DepthBufferFmt;
+	GLint BufferFmt;
 	bool UseColor;
+	bool MultiSampeling;
 
 	//info
 	GLuint TextureId;
@@ -25,7 +27,8 @@ public:
 	FrameBufferData(void);
 	~FrameBufferData(void);
 	void Initialize();
-	virtual void Bind();
+	virtual void Bind(bool clear);
+	void SetMultiSampeling(bool value);
 };
 
 //GL window framebuffer
@@ -33,7 +36,7 @@ class DefaultFrameBuffer : FrameBufferData
 {
 public:
 	DefaultFrameBuffer();
-	virtual void Bind();
+	virtual void Bind(bool clear);
 };
 
 extern DefaultFrameBuffer defaultFramebuffer;
@@ -48,6 +51,13 @@ public:
 	FrameBufferData NormalPass;
 	FrameBufferData ScenePass;
 	FrameBufferData DefferedLightmap;
+
+	FrameBufferData Bloom;
+	FrameBufferData BloomB;
+
+	FrameBufferData SsaoPrepare;
+	FrameBufferData SsaoPerform;
+	FrameBufferData SsaoBlur;
 
 	//Functions
 	BufferSet(int x, int y);
@@ -66,7 +76,12 @@ enum FrameBuffer
 	FrameBufferDefferedLightmap,
 	MyShadowmap,
 	MyInnerShadowMap,
-	FrameBufferScene
+	FrameBufferScene,
+	Bloom,
+	BloomB,
+	FbSsaoPrepare,
+	FbSsaoPerform,
+	FbSsaoBlur
 };
 
 struct FbTextureBinder : TextureData
