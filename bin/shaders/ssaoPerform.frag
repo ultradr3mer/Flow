@@ -11,9 +11,9 @@ uniform float Size = 0.03;
 uniform float Falloff = 0.000002;
 uniform float FalloffStrength = 0.07;
 uniform float Strength = 2.0;
-uniform int Samples = 10;
+uniform int Samples = 8;
 uniform float DistanceScaling = 30.0;
-uniform float Inertia = 0.6;
+uniform float Inertia = 0.5;
 
 vec3 sphere[64] = {
 vec3(-0.065134, -0.027501, -0.997497),

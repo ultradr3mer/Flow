@@ -9,11 +9,16 @@ char* UniformsStrings[] = {
 	"NULL",
 	"Diffuse",
 	"Diffuse2",
+	"Diffuse3",
+	"Diffuse4",
+	"Diffuse5",
+	"Diffuse6",
 	"Normal",
 	"Depth",
 	"DefferedLightmap",
 	"Shadowmap",
 	"InnerShadowmap",
+	"Reflections",
 	"ShadowProjection",
 	"InnerShadowProjection",
 	"ModelView",
@@ -229,6 +234,9 @@ void ShaderData::ParseUniformInserts(ListContainer<UniformInsert>* list)
 			break;
 		case DataTypeMat4:
 			UniformMatrix4fv(insert->unifrom,value_ptr(*(mat4*)insert->data));
+			break;
+		case DataTypeVector3:
+			Uniform3fv(insert->unifrom,*(vec3*)insert->data);
 			break;
 		default:
 			break;

@@ -38,26 +38,31 @@ MeshData::MeshData(void)
     // generate buffers
     glGenBuffers(6, vbo);
 
+	// Position data
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
 	glBufferData(GL_ARRAY_BUFFER, dataLenght * 3 * sizeof(GLfloat), positionBuffer, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(0);
 
+	// Normal data
     glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
     glBufferData(GL_ARRAY_BUFFER, dataLenght * 3 * sizeof(GLfloat), normalBuffer, GL_STATIC_DRAW);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(1);
 
+	// Texture data
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
 	glBufferData(GL_ARRAY_BUFFER, dataLenght * 2 * sizeof(GLfloat), textureBuffer, GL_STATIC_DRAW);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(2);
 
+	// Tangent data
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[3]);
 	glBufferData(GL_ARRAY_BUFFER, dataLenght * 3 * sizeof(GLfloat), tangentBuffer, GL_STATIC_DRAW);
     glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(3);
 
+	// BiNormal data
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[4]);
 	glBufferData(GL_ARRAY_BUFFER, dataLenght * 3 * sizeof(GLfloat), biNormalBuffer, GL_STATIC_DRAW);
     glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, 0);

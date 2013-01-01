@@ -73,11 +73,32 @@ bool CApp::OnInit(int argc, char **argv) {
 	object = nullptr;
 
 	// Initialize Renderbuffers
-	mainBufferSet = new BufferSet(screenX,screenY);
+	mainBufferSet = new BufferSet();
+	mainBufferSet->EnableSsao = true;
+	mainBufferSet->EnableBloom = true;
+	mainBufferSet->SizeX = screenX;
+	mainBufferSet->SizeY = screenY;
+	mainBufferSet->Initialize();
 
 	// Initialize game stepping
 	GameTickLength = 1000 / 100;
 	GameBaseTime = 0;
+
+	// Create player
+	player = new Player(scene);
+	player->Position.z = 2;
+	player->Position.y = 4;
+
+	// For Update Order
+	GameObjList.Remove(scene);
+	GameObjList.Add(scene);
+
+	// Setup Sky
+	Model* sky = new Model();
+	sky->Mesh = MeshData::FromObj("sky.obj");
+	sky->Material = MaterialData::FromXml("sky\\sky.xmf");
+	//sky->Size = vec3(player->View->Far / 1.73205081f);
+	scene->Sky = sky;
 
 	// Setup scene
 	Model* floor = new Model();
@@ -85,20 +106,21 @@ bool CApp::OnInit(int argc, char **argv) {
 	floor->Material = MaterialData::FromXml("floor.xmf");
 	scene->SceneDrawables.Add(floor);
 
-	// Create player
-	player = new Player(scene);
-	player->Position.z = 2;
-	player->Position.y = 4;
-
 	PhysicsModel* mod;
 
 	for (int i = 0; i < 20; i++)
 	{
 		mod = new PhysicsModel();
-		mod->Material = MaterialData::FromXml("sae_shuttle.xmf");
-		mod->Body = BulletManager::FromObj("sae_shuttle_pbox.obj");
+
+		//mod->Material = MaterialData::FromXml("sae_shuttle.xmf");
+		//mod->Body = BulletManager::FromObj("sae_shuttle_pbox.obj");
+		//mod->Mesh = MeshData::FromObj("sae_shuttle.obj");
+
+		mod->Material = MaterialData::FromXml("sphere.xmf");
+		mod->Body = BulletManager::FromObj("sphere_pbox.obj");
+		mod->Mesh = MeshData::FromObj("sphere.obj");
+
 		mod->Body->getWorldTransform().setOrigin(btVector3(0.0f,i+1.0f,0.0f));
-		mod->Mesh = MeshData::FromObj("sae_shuttle.obj");
 		scene->SceneDrawables.Add(mod);
 	}
 

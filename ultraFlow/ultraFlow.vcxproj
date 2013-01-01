@@ -89,6 +89,7 @@
     <ClInclude Include="Base.h" />
     <ClInclude Include="BulletManager.h" />
     <ClInclude Include="CApp.h" />
+    <ClInclude Include="CubeMap.h" />
     <ClInclude Include="DDSLoader.h" />
     <ClInclude Include="Filter2D.h" />
     <ClInclude Include="FrameBufferData.h" />
@@ -119,6 +120,7 @@
     <ClCompile Include="CApp_OnInit.cpp" />
     <ClCompile Include="CApp_OnUpdate.cpp" />
     <ClCompile Include="CApp_OnDraw.cpp" />
+    <ClCompile Include="CubeMap.cpp" />
     <ClCompile Include="DDSLoader.cpp" />
     <ClCompile Include="Filter2D.cpp" />
     <ClCompile Include="FrameBufferData.cpp" />

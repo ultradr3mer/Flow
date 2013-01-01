@@ -9,6 +9,7 @@ class Player :
 {
 private:
 	Model* Cursor;
+	Scene* scene;
 	vec3 smoothMove;
 	vec3 smoothRotate;
 	btRigidBody* pickedBody;

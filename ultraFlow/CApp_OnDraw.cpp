@@ -11,9 +11,14 @@ void CApp::OnDraw() {
 	//Render Shadowbuffers
 	scene->DrawShadowBuffers();
 
-	//Activate View
+	//Setup Cubemaps
+	//scene->EyeDir = player->View->fwd;
+	scene->cubeMap->Bind();
+	//player->View->Bind();
+	scene->DrawScene(scene->cubeMap->cubemapBufferSet);
+
+	//Draw Main
 	player->View->Bind();
-	scene->EyePos = player->Position;
 	scene->DrawScene(mainBufferSet);
 
 	//Swap Buffers

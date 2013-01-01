@@ -18,14 +18,23 @@ ViewPort::ViewPort(void)
 {
 	Near = 0.1f;
 	Far = 100;
+	FovY = 45.0f/360.0f;
+
 	Aspect = (float)screenX / (float)screenY;
-	ProjectrionMatrix = perspective(45.0f, Aspect, Near, Far);
 	CalcReconstrucVecs = false;
+
+	BuildPerspective();
 }
 
 
 ViewPort::~ViewPort(void)
 {
+	GameObjList.Remove(this);
+}
+
+void ViewPort::BuildPerspective()
+{
+	ProjectrionMatrix = perspective(FovY*360.0f, Aspect, Near, Far);
 }
 
 void ViewPort::Update()
@@ -36,18 +45,18 @@ void ViewPort::Update()
 		ViewMat = inverse(InvViewMat);
 		ViewProjectionMatrix = ProjectrionMatrix * ViewMat;
 
-		mat4 invViewProjectionMatrix = inverse(ViewProjectionMatrix);
+		InvViewProjectionMatrix = inverse(ViewProjectionMatrix);
 
 		//fwd = vec3(ViewMat * vec4(0.0f, 0.0f, -1.0f, 0.0f));
 		//right = vec3(ViewMat * vec4(1.0f, 0.0f, 0.0f, 0.0f));
 
 		if(CalcReconstrucVecs)
 		{
-			vec4 posCenter = invViewProjectionMatrix * vec4(0.0f, 0.0f, 1.0f, 1.0f);
+			vec4 posCenter = InvViewProjectionMatrix * vec4(0.0f, 0.0f, 1.0f, 1.0f);
 			posCenter /= posCenter.w;
-			vec4 posRight = invViewProjectionMatrix * vec4(1.0f, 0.0f, 1.0f, 1.0f);
+			vec4 posRight = InvViewProjectionMatrix * vec4(1.0f, 0.0f, 1.0f, 1.0f);
 			posRight /= posRight.w;
-			vec4 posUp = invViewProjectionMatrix * vec4(0.0f, 1.0f, 1.0f, 1.0f);
+			vec4 posUp = InvViewProjectionMatrix * vec4(0.0f, 1.0f, 1.0f, 1.0f);
 			posUp /= posUp.w;
 
 			fwdD = vec3(posCenter) - Position;
@@ -67,14 +76,14 @@ void ViewPort::Update()
 
 		#pragma region frustum culling generation
 
-		vec4 edge000 = invViewProjectionMatrix * vec4(-1.0f, -1.0f, -1.0f, 1.0f);
-		vec4 edge001 = invViewProjectionMatrix * vec4(-1.0f, -1.0f, 1.0f, 1.0f);
-		vec4 edge010 = invViewProjectionMatrix * vec4(-1.0f, 1.0f, -1.0f, 1.0f);
-		vec4 edge011 = invViewProjectionMatrix * vec4(-1.0f, 1.0f, 1.0f, 1.0f);
+		vec4 edge000 = InvViewProjectionMatrix * vec4(-1.0f, -1.0f, -1.0f, 1.0f);
+		vec4 edge001 = InvViewProjectionMatrix * vec4(-1.0f, -1.0f, 1.0f, 1.0f);
+		vec4 edge010 = InvViewProjectionMatrix * vec4(-1.0f, 1.0f, -1.0f, 1.0f);
+		vec4 edge011 = InvViewProjectionMatrix * vec4(-1.0f, 1.0f, 1.0f, 1.0f);
 
-		vec4 edge100 = invViewProjectionMatrix * vec4(1.0f, -1.0f, -1.0f, 1.0f);
-		vec4 edge101 = invViewProjectionMatrix * vec4(1.0f, -1.0f, 1.0f, 1.0f);
-		vec4 edge110 = invViewProjectionMatrix * vec4(1.0f, 1.0f, -1.0f, 1.0f);
+		vec4 edge100 = InvViewProjectionMatrix * vec4(1.0f, -1.0f, -1.0f, 1.0f);
+		vec4 edge101 = InvViewProjectionMatrix * vec4(1.0f, -1.0f, 1.0f, 1.0f);
+		vec4 edge110 = InvViewProjectionMatrix * vec4(1.0f, 1.0f, -1.0f, 1.0f);
 
 		edge000 /= edge000.w;
 		edge001 /= edge001.w;

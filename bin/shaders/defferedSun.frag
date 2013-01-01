@@ -66,13 +66,15 @@ float shadow(vec3 pos, float bias, sampler2D map)
 void main(void) {
     // Pass through our original color with full opacity.
     // gl_FragColor = vec4(vTexCoord.x,vTexCoord.y,0.0,1.0);
-	vec3 N = texture2D(Normal, vTexCoord).rgb * 2 - 1;
+	vec4 nTex = texture2D(Normal, vTexCoord);
+	vec3 N = nTex.rgb * 2 - 1;
 	
 	float depth = texture2D(Depth, vTexCoord).x;
 	depth = 2.0 * depth - 1.0;
 	depth = (2.0 * NearZ) / (FarZ + NearZ - depth * (FarZ - NearZ));
 	vec2 screenpos = vTexCoord * 2 - 1;
-	vec3 GPos = EyePos + (EyeFwd + screenpos.x * EyeRight + screenpos.y * EyeUp) * depth;
+	vec3 ViewVec = (EyeFwd + screenpos.x * EyeRight + screenpos.y * EyeUp) * depth;
+	vec3 GPos = EyePos + ViewVec;
 	
 	float angle = clamp(dot(-Direction, N),0,1);
 	
@@ -96,12 +98,15 @@ void main(void) {
 			shadow = shadow(LPos.xyz,0.0006/angle,Shadowmap);
 		}
 	}
-
+	
 	vec3 light = vec3(1.1,1.0,0.9);
 	vec3 ambient = vec3(0.1,0.1,0.15);
 
-	vec3 illumination = angle*light*shadow+ambient;
+	float illumination = angle*shadow;
 	
-	gl_FragColor = vec4(illumination,1);//vec4(illumination,1.0);//texture2D(Depth, vTexCoord);
+	float exp = 12.5/nTex.a;
+	float specular = pow(clamp(dot(-Direction, reflect(normalize(ViewVec),N)),0,1),exp)*illumination;
+
+	gl_FragColor = vec4(illumination*light+ambient,specular);//vec4(illumination,1.0);//texture2D(Depth, vTexCoord);
 	//gl_FragColor = vec4(illumination,1.0);
 }

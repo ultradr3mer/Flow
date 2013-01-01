@@ -115,7 +115,7 @@ bool MaterialData::Bind(enum DrawingPass pass)
 		curShader->Bind();
 	#pragma endregion
 
-	ShaderData::Uniform2fv(VecRenderSize,vec2(screenX,screenY));
+	ShaderData::Uniform2fv(VecRenderSize,CurRenderDim);
 
 	TextureData* curTexture = nullptr;
 	Textures.InitReader(&curTexture);

@@ -1,6 +1,9 @@
 #include "FrameBufferData.h"
 #include "Sun.h"
+#include "CubeMap.h"
+
 BufferSet* CurrentBufferSet;
+vec2 CurRenderDim;
 
 #pragma region FrameBufferData
 //FrameBufferData
@@ -29,6 +32,8 @@ void FrameBufferData::Bind(bool clear)
 		// set rendering destination to FBO
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, FboId);
 		glViewport(0, 0, SizeX, SizeY);
+		CurRenderDim.x = SizeX;
+		CurRenderDim.y = SizeY;
 
 		// clear buffers
 		if(clear)
@@ -139,6 +144,8 @@ void DefaultFrameBuffer::Bind(bool clear)
 	// unbind FBO
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	glViewport(0, 0, screenX, screenY);
+	CurRenderDim.x = screenX;
+	CurRenderDim.y = screenY;
 
 	if(clear)
 	{
@@ -150,42 +157,60 @@ void DefaultFrameBuffer::Bind(bool clear)
 #pragma endregion
 
 #pragma region BufferSet
-BufferSet::BufferSet(int x, int y)
+BufferSet::BufferSet()
 {
-	NormalPass.SizeX = x;
-	NormalPass.SizeY = y;
+	EnableSsao = false;
+	EnableBloom = false;
+	SizeX = 0;
+	SizeY = 0;
+}
+
+void BufferSet::Initialize()
+{
+	NormalPass.SizeX = SizeX;
+	NormalPass.SizeY = SizeY;
 	NormalPass.DepthBufferFmt = GL_DEPTH_COMPONENT24;
 	NormalPass.Initialize();
 
-	DefferedLightmap.SizeX = x;
-	DefferedLightmap.SizeY = y;
+	DefferedLightmap.SizeX = SizeX;
+	DefferedLightmap.SizeY = SizeY;
 	DefferedLightmap.Initialize();
 
-	ScenePass.SizeX = x;
-	ScenePass.SizeY = y;
+	ScenePass.SizeX = SizeX;
+	ScenePass.SizeY = SizeY;
 	ScenePass.Initialize();
 
-	Bloom.SizeX = x/4;
-	Bloom.SizeY = y/4;
-	Bloom.Initialize();
+	RefletionPass.SizeX = SizeX;
+	RefletionPass.SizeY = SizeY;
+	RefletionPass.Initialize();
 
-	BloomB.SizeX = x/4;
-	BloomB.SizeY = y/4;
-	BloomB.Initialize();
+	if(EnableSsao)
+	{
+		Bloom.SizeX = SizeX/4;
+		Bloom.SizeY = SizeY/4;
+		Bloom.Initialize();
 
-	SsaoPrepare.SizeX = x;
-	SsaoPrepare.SizeY = y;
-	SsaoPrepare.BufferFmt = GL_RGBA16;
-	SsaoPrepare.Initialize();
+		BloomB.SizeX = SizeX/4;
+		BloomB.SizeY = SizeY/4;
+		BloomB.Initialize();
+	}
 
-	SsaoPerform.SizeX = x/4;
-	SsaoPerform.SizeY = y/4;
-	SsaoPerform.Initialize();
+	if(EnableSsao)
+	{
+		SsaoPrepare.SizeX = SizeX;
+		SsaoPrepare.SizeY = SizeY;
+		SsaoPrepare.BufferFmt = GL_RGBA16;
+		SsaoPrepare.Initialize();
 
-	SsaoBlur.SizeX = x/4;
-	SsaoBlur.SizeY = y/4;
-	SsaoBlur.MultiSampeling = true;
-	SsaoBlur.Initialize();
+		SsaoPerform.SizeX = SizeX/4;
+		SsaoPerform.SizeY = SizeY/4;
+		SsaoPerform.Initialize();
+
+		SsaoBlur.SizeX = SizeX/4;
+		SsaoBlur.SizeY = SizeY/4;
+		SsaoBlur.MultiSampeling = true;
+		SsaoBlur.Initialize();
+	}
 
 	OutBuffer = (FrameBufferData*)&defaultFramebuffer;
 }
@@ -208,7 +233,14 @@ char* BufferNames[] = {
 	"BloomB",
 	"SsaoPrepare",
 	"SsaoPerform",
-	"SsaoBlur"
+	"SsaoBlur",
+	"CubemapSide1",
+	"CubemapSide2",
+	"CubemapSide3",
+	"CubemapSide4",
+	"CubemapSide5",
+	"CubemapSide6",
+	"DefferedReflections"
 };
 
 int BufferNameCount = sizeof(BufferNames)/sizeof(BufferNames[0]);
@@ -269,6 +301,27 @@ void FbTextureBinder::Bind()
 			break;
 		case FbSsaoBlur:
 			textureId = CurrentBufferSet->SsaoBlur.TextureId;
+			break;
+		case FbCubemap1:
+			textureId = CurCubeMap->FrameBuffers[0].TextureId;
+			break;
+		case FbCubemap2:
+			textureId = CurCubeMap->FrameBuffers[1].TextureId;
+			break;
+		case FbCubemap3:
+			textureId = CurCubeMap->FrameBuffers[2].TextureId;
+			break;
+		case FbCubemap4:
+			textureId = CurCubeMap->FrameBuffers[3].TextureId;
+			break;
+		case FbCubemap5:
+			textureId = CurCubeMap->FrameBuffers[4].TextureId;
+			break;
+		case FbCubemap6:
+			textureId = CurCubeMap->FrameBuffers[5].TextureId;
+			break;
+		case FbDefReflections:
+			textureId = CurrentBufferSet->RefletionPass.TextureId;
 			break;
 		default:
 			break;

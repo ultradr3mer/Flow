@@ -4,6 +4,8 @@
 #include "GenFunc.h"
 #include "TextureData.h"
 
+extern vec2 CurRenderDim;
+
 #pragma region FrameBufferData
 class FrameBufferData
 {
@@ -46,11 +48,18 @@ extern DefaultFrameBuffer defaultFramebuffer;
 class BufferSet
 {
 public:
+	// ShadingOptions
+	bool EnableSsao;
+	bool EnableBloom;
+	int SizeX;
+	int SizeY;
+
 	// Used access result
 	FrameBufferData* OutBuffer;
 	FrameBufferData NormalPass;
 	FrameBufferData ScenePass;
 	FrameBufferData DefferedLightmap;
+	FrameBufferData RefletionPass;
 
 	FrameBufferData Bloom;
 	FrameBufferData BloomB;
@@ -60,8 +69,9 @@ public:
 	FrameBufferData SsaoBlur;
 
 	//Functions
-	BufferSet(int x, int y);
+	BufferSet();
 	~BufferSet();
+	void Initialize();
 };
 
 extern BufferSet* CurrentBufferSet;
@@ -81,7 +91,14 @@ enum FrameBuffer
 	BloomB,
 	FbSsaoPrepare,
 	FbSsaoPerform,
-	FbSsaoBlur
+	FbSsaoBlur,
+	FbCubemap1,
+	FbCubemap2,
+	FbCubemap3,
+	FbCubemap4,
+	FbCubemap5,
+	FbCubemap6,
+	FbDefReflections
 };
 
 struct FbTextureBinder : TextureData

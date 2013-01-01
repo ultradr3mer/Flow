@@ -2,19 +2,22 @@
 #include "Model.h"
 #include "Sun.h"
 #include "Filter2D.h"
+#include "CubeMap.h"
 
 class Scene : public GameBase
 {
 private:
 	Sun* sun;
-	Filter2D* filter2D;
 
 public:
-
 	MaterialData* BloomCurveFilter;
+	MaterialData* CompositeFilter;
+	MaterialData* CubeMapFilter;
+	ListContainer<UniformInsert> cubeMapUniforms;
+
 	MaterialData* BloomBlurFilter;
 	MaterialData* BloomBlurFilterB;
-	MaterialData* CompositeFilter;
+	MaterialData* BloomAdd;
 
 	MaterialData* SsaoPrepare;
 	MaterialData* SsaoPerform;
@@ -22,6 +25,9 @@ public:
 	MaterialData* SsaoMult;
 	ListContainer<UniformInsert> SsaoUniforms;
 
+	CubeMap* cubeMap;
+
+	mat4 ViewMat;
 	mat4 InvertedViewProjectionMat;
 	float NearZ;
 	float FarZ;
@@ -36,6 +42,9 @@ public:
 	void DrawDefferedLights();
 	virtual void Update(void);
 	void DrawScene(BufferSet* bufferSet);
+
+	Filter2D* filter2D;
+	Model* Sky;
 };
 
 extern Scene* curScene;

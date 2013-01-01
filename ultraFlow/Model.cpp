@@ -15,6 +15,7 @@ Model::Model()
 	//Textures = nullptr;
 	Mesh = nullptr;
 	Material = nullptr;
+	//Size = vec3(1.0f);
 }
 
 
@@ -30,7 +31,7 @@ void Model::Draw()
 
 void Model::Draw(enum DrawingPass pass)
 {
-	if(curViewPort->FrustumCheck(Position, Mesh->maxRadius))
+	if(pass == DrawingPassSolidForced || curViewPort->FrustumCheck(Position, Mesh->maxRadius))
 	{
 		Mesh->Bind();
 
@@ -55,7 +56,7 @@ void Model::Update()
 	if(Position != oldPosition || Rotation  != oldRotation)
 	{
 		modelMatrix = MatrixFromPosAng(Position,Rotation);
-		Position = oldPosition;
-		Rotation = oldRotation;
+		oldPosition = Position;
+		oldRotation = Rotation;
 	}
 }

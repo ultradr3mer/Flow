@@ -1,0 +1,4 @@
+<material>
+	<shader frag="sky.frag" vert="sky.vert"/>
+	<textures diffuse="sky\sky_0001.dds" diffuse2="sky\sky_0002.dds" diffuse3="sky\sky_0003.dds" diffuse4="sky\sky_0004.dds" diffuse5="sky\sky_0005.dds" diffuse6="sky\sky_0006.dds"/>
+</material>

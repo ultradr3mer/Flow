@@ -8,11 +8,16 @@ enum Uniforms
 	UniformsNull,
 	TexDiffuse,
 	TexDiffuse2,
+	TexDiffuse3,
+	TexDiffuse4,
+	TexDiffuse5,
+	TexDiffuse6,
 	TexNormal,
 	TexDepth,
 	TexDeffLightmap,
 	TexShadowMap,
 	TexInnerShadowMap,
+	TexDeffReflections,
 	MatShadowProjection,
 	MatInnerShadowProjection,
 	MatModelView,
@@ -29,7 +34,7 @@ enum Uniforms
 	FltSize,
 	FltAspect,
 	FltAlpha,
-	FltState
+	FltState,
 };
 
 enum AttributeIndices
@@ -45,7 +50,8 @@ enum AttributeIndices
 enum DataType
 {
 	DataType1f,
-	DataTypeMat4
+	DataTypeMat4,
+	DataTypeVector3
 };
 
 struct UniformInsert

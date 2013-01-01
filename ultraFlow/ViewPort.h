@@ -22,9 +22,11 @@ public:
 	mat4 InvViewMat;
 	mat4 ViewMat;
 	mat4 ProjectrionMatrix;
+	mat4 InvViewProjectionMatrix;
 	bool CalcReconstrucVecs;
 	float Near;
 	float Far;
+	float FovY;
 	vec3 fwd;
 	vec3 right;
 	vec3 up;
@@ -39,6 +41,7 @@ public:
 	vec3 movingVec;
 	float Aspect;
 	bool FrustumCheck(vec3 position, float radius);
+	void BuildPerspective();
 };
 extern ViewPort* curViewPort;
 

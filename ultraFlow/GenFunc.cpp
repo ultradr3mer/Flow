@@ -53,9 +53,23 @@ mat4 MatrixFromPosAng(vec3 Position, vec3 Rotation)
 	//Rotation.z -= (int)Rotation.z;
 
 	mat4 outMatrix = translate(mat4(1.0f),Position);
+	outMatrix = rotate( outMatrix, Rotation.z * 360, vec3(0.0f, 0.0f, 1.0f));
 	outMatrix = rotate( outMatrix, Rotation.y * 360, vec3(0.0f, 1.0f, 0.0f));
 	outMatrix = rotate( outMatrix, Rotation.x * 360, vec3(1.0f, 0.0f, 0.0f));
+	return outMatrix;
+}
+
+mat4 MatrixFromPosAngSiz(vec3 Position, vec3 Rotation, vec3 Size)
+{
+	//Rotation.x -= (int)Rotation.x;
+	//Rotation.y -= (int)Rotation.y;
+	//Rotation.z -= (int)Rotation.z;
+
+	mat4 outMatrix = translate(mat4(1.0f),Position);
 	outMatrix = rotate( outMatrix, Rotation.z * 360, vec3(0.0f, 0.0f, 1.0f));
+	outMatrix = rotate( outMatrix, Rotation.y * 360, vec3(0.0f, 1.0f, 0.0f));
+	outMatrix = rotate( outMatrix, Rotation.x * 360, vec3(1.0f, 0.0f, 0.0f));
+	outMatrix = scale( outMatrix, Size);
 	return outMatrix;
 }
 

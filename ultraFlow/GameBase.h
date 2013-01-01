@@ -10,6 +10,7 @@ protected:
 public:
 	vec3 Position;
 	vec3 Rotation;
+	//vec3 Size;
 	GameBase();
 	virtual ~GameBase();
 	virtual void Update(void);

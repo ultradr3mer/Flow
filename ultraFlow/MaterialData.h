@@ -7,6 +7,7 @@
 enum DrawingPass
 {
 	DrawingPassSolid,
+	DrawingPassSolidForced,
 	DrawingPassTransparent,
 	DrawingPassDeffered,
 	DrawingPassShadow

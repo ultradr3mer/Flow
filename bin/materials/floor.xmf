@@ -2,7 +2,7 @@
 	<shader frag="simpleLight.frag" vert="simpleLight.vert"/>
 	<defferedshader frag="normal.frag" vert="normal.vert"/>
 	<shadowshader frag="shadow.frag" vert="simpleLight.vert"/>
-	<framebuffers defferedlightmap="defferedlightmap"/>
+	<framebuffers defferedlightmap="defferedlightmap" reflections="defferedreflections"/>
 	
 	<textures diffuse="floor.dds" normal="floor_n.dds"/>
 </material>

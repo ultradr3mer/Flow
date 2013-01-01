@@ -16,12 +16,15 @@ Player::Player(Scene* scene)
 	Cursor->Position = vec3(0,1,0);
 
 	pickConstraint = nullptr;
+
+	this->scene = scene;
 }
 
 Player::~Player(void)
 {
 	delete View;
 	delete Cursor;
+	GameObjList.Remove(this);
 	if(pickConstraint != nullptr)
 	{
 		dynamicsWorld->removeConstraint(pickConstraint);
@@ -42,6 +45,9 @@ void Player::Update(void)
 
 	View->Position = Position;
 	View->Rotation = smoothRotate;
+
+	scene->EyePos = View->Position;
+	//scene->Update();
 
 	if(pickConstraint != nullptr)
 	{

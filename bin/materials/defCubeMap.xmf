@@ -1,0 +1,4 @@
+<material>
+	<framebuffers normal="NormalColor" Diffuse="CubemapSide1" Diffuse2="CubemapSide2" Diffuse3="CubemapSide3" Diffuse4="CubemapSide4" Diffuse5="CubemapSide5" Diffuse6="CubemapSide6"/>
+	<shader frag="defCubeMap.frag" vert="defCubeMap.vert"/>
+</material>
