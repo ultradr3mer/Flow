@@ -21,6 +21,10 @@
 #include <btBulletDynamicsCommon.h>
 #include <BulletCollision/NarrowPhaseCollision/btRaycastCallback.h>
 
+#include <noise\noise.h>
+#include "noiseutils.h"
+
+//using namespace noise;
 using namespace glm;
 using namespace std;
 

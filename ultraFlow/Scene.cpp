@@ -8,8 +8,8 @@ Scene::Scene(void)
 	Lights.PerformCleanup = false;
 	SceneDrawables.PerformCleanup = false;
 
-	sun = new Sun();
-	Lights.Add(sun);
+	SunLight = new Sun();
+	Lights.Add(SunLight);
 
 	SsaoUniforms.PerformCleanup = true;
 
@@ -87,7 +87,7 @@ void Scene::DrawDefferedLights()
 
 void Scene::Update()
 {
-	sun->Position = EyePos;
+	SunLight->Position = EyePos;
 	cubeMap->Position = EyePos;
 	Sky->Position = EyePos;
 }

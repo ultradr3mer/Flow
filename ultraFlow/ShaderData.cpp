@@ -30,6 +30,8 @@ char* UniformsStrings[] = {
 	"EyeFwd",
 	"EyeRight",
 	"EyeUp",
+	"Light",
+	"Ambient",
 	"NearZ",
 	"FarZ",
 	"Size",

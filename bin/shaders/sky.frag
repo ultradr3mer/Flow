@@ -39,5 +39,10 @@ void main(void) {
 		outVal += texture2D(Diffuse6, vTexCoord);
 	}
 	
+	// outVal.r = outVal.a;
+	// outVal.a = 1.0;
+	
+	outVal.rgb *= outVal.a;
+	
 	gl_FragColor = outVal;
 }

@@ -21,6 +21,9 @@ void CApp::OnDraw() {
 	player->View->Bind();
 	scene->DrawScene(mainBufferSet);
 
+	//glDisable(GL_BLEND);
+	//scene->filter2D->Draw(scene->CubeMapFilter,&scene->cubeMapUniforms);
+
 	//Swap Buffers
 	SDL_GL_SwapBuffers();
 

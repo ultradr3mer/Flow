@@ -26,6 +26,9 @@ uniform int Samples = 6;
 uniform int Rings = 2;
 uniform float SoftSize = 0.001;
 
+uniform vec3 Light;
+uniform vec3 Ambient;
+
 float PI = 3.14159265;
 
 float noise()
@@ -99,14 +102,14 @@ void main(void) {
 		}
 	}
 	
-	vec3 light = vec3(1.1,1.0,0.9);
-	vec3 ambient = vec3(0.1,0.1,0.15);
+	//vec3 light = vec3(1.1,1.0,0.9);
+	//vec3 ambient = vec3(0.1,0.1,0.15);
 
 	float illumination = angle*shadow;
 	
 	float exp = 12.5/nTex.a;
 	float specular = pow(clamp(dot(-Direction, reflect(normalize(ViewVec),N)),0,1),exp)*illumination;
 
-	gl_FragColor = vec4(illumination*light+ambient,specular);//vec4(illumination,1.0);//texture2D(Depth, vTexCoord);
+	gl_FragColor = vec4(illumination*Light+(1-illumination)*Ambient,specular);//vec4(illumination,1.0);//texture2D(Depth, vTexCoord);
 	//gl_FragColor = vec4(illumination,1.0);
 }

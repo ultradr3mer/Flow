@@ -15,7 +15,7 @@ void main(void) {
 	vec4 illumination = texture2D(DefferedLightmap, screenPos);
 	vec3 illColor = illumination.rgb / (illumination.r + illumination.g + illumination.b) * 3;
 	
-	vec3 Reflection = texture2D(Reflections, screenPos).rgb * 0.2;
+	vec3 Reflection = texture2D(Reflections, screenPos).rgb * 0.1;
 	
 	gl_FragColor.rgb = texture2D(Diffuse, vTexCoord).rgb*illumination+illColor*illumination.a*0.4+Reflection;
 	gl_FragColor.a = 1;

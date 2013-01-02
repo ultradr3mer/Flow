@@ -24,6 +24,7 @@ CubeMap::CubeMap(void)
 
 	viewPort.Aspect = 1;
 	viewPort.FovY = 0.25;
+	viewPort.CalcReconstrucVecs = true;
 	viewPort.BuildPerspective();
 
 	//GameObjList.Remove(&viewPort);

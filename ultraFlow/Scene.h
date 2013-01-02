@@ -7,7 +7,6 @@
 class Scene : public GameBase
 {
 private:
-	Sun* sun;
 
 public:
 	MaterialData* BloomCurveFilter;
@@ -45,6 +44,7 @@ public:
 
 	Filter2D* filter2D;
 	Model* Sky;
+	Sun* SunLight;
 };
 
 extern Scene* curScene;

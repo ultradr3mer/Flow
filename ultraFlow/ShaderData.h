@@ -29,6 +29,8 @@ enum Uniforms
 	VecEyeFwd,
 	VecEyeRight,
 	VecEyeUp,
+	VecLight,
+	VecAmbient,
 	FltNear,
 	FltFar,
 	FltSize,

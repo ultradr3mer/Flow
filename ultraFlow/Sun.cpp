@@ -42,8 +42,19 @@ Sun::Sun(void)
 	ShadowInnerBuffer.Initialize();
 
 	shadowProjectionMatrix = bias * viewPort->ViewProjectionMatrix;
+
+	Color = vec3(0.639f,0.953f,1.000f) * 1.2f;
+	Ambient = vec3(0.141f,0.005f,0.010f);
 }
 
+void Sun::SetAngle(vec3 rotation)
+{
+	viewPort->Rotation = rotation;
+	viewPort->Update();
+
+	viewInnerPort->Rotation = rotation;
+	viewInnerPort->Update();
+}
 
 Sun::~Sun(void)
 {
@@ -70,6 +81,9 @@ void Sun::Draw()
 
 	ShaderData::UniformMatrix4fv(MatShadowProjection,shadowProjectionMatrix);
 	ShaderData::UniformMatrix4fv(MatInnerShadowProjection,shadowInnerProjectionMatrix);
+
+	ShaderData::Uniform3fv(VecLight,Color);
+	ShaderData::Uniform3fv(VecAmbient,Ambient);
 
 	glDrawElements(GL_TRIANGLES, Mesh->Length, GL_UNSIGNED_INT, 0);
 }

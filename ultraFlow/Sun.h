@@ -22,6 +22,9 @@ public:
 	virtual void Draw();
 	virtual void Update();
 	void UpdateShadowBuffer(drawShadowCall call);
+	void SetAngle(vec3 rotation);
+	vec3 Color;
+	vec3 Ambient;
 };
 
 extern Sun* CurLight;

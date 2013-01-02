@@ -59,9 +59,9 @@ void main(void) {
 	vec3 outVal = vec3(0,0,0);
 	
 	vec3 N = texture2D(Normal, vTexCoord).rgb * 2 - 1;
-	vec3 refVec = reflect(normalize(vView),N);
+	vec3 refVec = reflect(vView,N);
 	
-	outVal = getRef(N);
+	outVal = getRef(refVec);
 	//outVal = texture2D(Diffuse3,vTexCoord).rgb;
 	
 	gl_FragColor = vec4(outVal,0.2);

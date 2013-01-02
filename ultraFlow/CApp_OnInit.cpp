@@ -99,6 +99,7 @@ bool CApp::OnInit(int argc, char **argv) {
 	sky->Material = MaterialData::FromXml("sky\\sky.xmf");
 	//sky->Size = vec3(player->View->Far / 1.73205081f);
 	scene->Sky = sky;
+	scene->SunLight->SetAngle(vec3(0.4f,0.425f,0.0f));
 
 	// Setup scene
 	Model* floor = new Model();
@@ -112,13 +113,13 @@ bool CApp::OnInit(int argc, char **argv) {
 	{
 		mod = new PhysicsModel();
 
-		//mod->Material = MaterialData::FromXml("sae_shuttle.xmf");
-		//mod->Body = BulletManager::FromObj("sae_shuttle_pbox.obj");
-		//mod->Mesh = MeshData::FromObj("sae_shuttle.obj");
+		mod->Material = MaterialData::FromXml("sae_shuttle.xmf");
+		mod->Body = BulletManager::FromObj("sae_shuttle_pbox.obj");
+		mod->Mesh = MeshData::FromObj("sae_shuttle.obj");
 
-		mod->Material = MaterialData::FromXml("sphere.xmf");
-		mod->Body = BulletManager::FromObj("sphere_pbox.obj");
-		mod->Mesh = MeshData::FromObj("sphere.obj");
+		//mod->Material = MaterialData::FromXml("sphere.xmf");
+		//mod->Body = BulletManager::FromObj("sphere_pbox.obj");
+		//mod->Mesh = MeshData::FromObj("sphere.obj");
 
 		mod->Body->getWorldTransform().setOrigin(btVector3(0.0f,i+1.0f,0.0f));
 		scene->SceneDrawables.Add(mod);

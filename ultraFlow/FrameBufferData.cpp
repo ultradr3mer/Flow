@@ -94,7 +94,6 @@ void FrameBufferData::Initialize()
 		GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-
 	// create a framebuffer object
 	if(FboId == -1)
 		glGenFramebuffersEXT(1, &FboId);
