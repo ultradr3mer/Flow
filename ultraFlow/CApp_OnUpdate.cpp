@@ -6,9 +6,9 @@ void CApp::OnUpdate() {
 	//{
 	//	objects[i]->Update();
 	//}
-	GameObjList.InitReader(&object);
+	GameObjList.InitReader();
 	while (GameObjList.Read())
 	{
-		object->Update();
+		GameObjList.Cur->Update();
 	}
 }

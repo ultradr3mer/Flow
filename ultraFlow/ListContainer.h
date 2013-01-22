@@ -6,7 +6,9 @@
 struct ListElement
 {
 	ListElement* NextElement;
+	float SortValue;
 	void* Content;
+
 	ListElement(void* content);
 };
 #pragma endregion
@@ -17,14 +19,23 @@ class ListContainer
 {
 private:
 	ListElement* firstElement;
-	//ListElement* lastElement;
+	ListElement* lastElement;
 	ListElement* nextElement;
 	ListElement* elementToRemove;
+	ListElement* currentElement;
+	T** IndexBuffer;
+
+	//Intern Movement
 	void goToElement(int index);
-	T** outPointer;
+
 public:
 	bool PerformCleanup;
 	int Length;
+	T* Cur;
+
+	//Constructors
+	ListContainer(void);
+	~ListContainer(void);
 
 	//Adding elements
 	void Add(T* content);
@@ -32,29 +43,39 @@ public:
 	//Getting elements
 	T* Get(int index);
 
-	//Reading the list
+	//Iterating through the list
 	bool Read();
-	void InitReader(T** outObject);
+	void InitReader();
+
 	//Removing elements
+	void RemoveFirst();
 	void Remove(T* content);
 	void Remove(int index);
 	void RemoveDelete(T* content);
 	void RemoveDelete(int index);
+
 	//Clearing the list
 	void Clear();
 	void ClearDelete();
+
+	//Info
+	int CalcLength();
+
+	//Indexing
 	T** GetIndex();
-	//void Deconstruct();
-	//void SetIndex(void **);
-	ListContainer(void);
-	~ListContainer(void);
+
+	// Sorting
+	void SetSortValue(T* content, float value);
+	void SetCurSortValue(float value);
+	float GetSortValue(T* content);
+	float GetCurSortValue();
+	void Sort();
 };
 #pragma endregion
 
 #pragma endregion
 
 #pragma region Definitions
-
 
 #pragma region ListElement
 inline ListElement::ListElement(void* content)
@@ -73,12 +94,16 @@ inline ListContainer<T>::ListContainer(void)
 	firstElement = nullptr;
 	nextElement = nullptr;
 	Length = 0;
+	IndexBuffer = nullptr;
 }
 
 //Deconstuctor
 template <class T>
 inline ListContainer<T>::~ListContainer(void)
 {
+	if(IndexBuffer != nullptr)
+		delete IndexBuffer;
+
 	if(PerformCleanup)
 		ClearDelete();
 	else
@@ -89,15 +114,27 @@ inline ListContainer<T>::~ListContainer(void)
 template <class T>
 inline void ListContainer<T>::Add(T* content)
 {
-	if(Length == 0)
+	ListElement* newElement = new ListElement(content);
+	if(firstElement == nullptr)
 	{
-		firstElement = new ListElement(content);
+		firstElement = newElement;
+		lastElement = newElement;
 	}
 	else
 	{
-		goToElement(Length-1);
-		nextElement->NextElement = new ListElement(content);
+		lastElement->NextElement = newElement;
+		lastElement = newElement;
 	}
+
+	//if(Length == 0)
+	//{
+	//	firstElement = new ListElement(content);
+	//}
+	//else
+	//{
+	//	goToElement(Length-1);
+	//	nextElement->NextElement = new ListElement(content);
+	//}
 	Length++;
 }
 
@@ -126,16 +163,16 @@ inline bool ListContainer<T>::Read()
 	if(nextElement == nullptr)
 		return false;
 
-	*outPointer = (T*)nextElement->Content;
+	Cur = (T*)nextElement->Content;
+	currentElement = nextElement;
 	nextElement = nextElement->NextElement;
 	return true;
 }
 
 //Reset stepping to first object
 template <class T>
-inline void ListContainer<T>::InitReader(T** outPointer)
+inline void ListContainer<T>::InitReader()
 {
-	this->outPointer = outPointer;
 	nextElement = firstElement;
 }
 
@@ -155,77 +192,102 @@ inline T* ListContainer<T>::Get(int index)
 template <class T>
 inline void ListContainer<T>::Remove(int index)
 {
-	if(Length == 0 || index >= Length)
-		return;
-
-	if(index == 0)
+	int i = 0;
+	elementToRemove = nullptr;
+	ListElement* curElement = firstElement;
+	ListElement* prevElement = nullptr;
+	InitReader();
+	while (Read())
 	{
-		ListElement* tmp = firstElement;
-		firstElement = firstElement->NextElement;
-		//delete (T*)tmp->Content;
-		delete tmp;
+		if(i == index)
+		{
+			if(prevElement != nullptr)
+			{
+				prevElement->NextElement = nextElement;
+				if(nextElement == nullptr)
+					lastElement = prevElement;
+			}
+			else
+			{
+				firstElement = firstElement->NextElement;
+			}
+				
+			delete curElement;
+			Length--;
+			break;
+		}
+		prevElement = curElement;
+		curElement = nextElement;
+		i++;
 	}
-	else
-	{
-		goToElement(index-1);
-
-		elementToRemove = nextElement->NextElement;
-		nextElement->NextElement = nextElement->NextElement->NextElement;
-
-		//delete (T*)elementToRemove->Content;
-		delete elementToRemove;
-	}
-
-	Length--;
 }
 
 //Removes Element with defined content
 template <class T>
 inline void ListContainer<T>::Remove(T* content)
 {
-	T* unused = nullptr;
-
 	elementToRemove = nullptr;
 	ListElement* curElement = firstElement;
 	ListElement* prevElement = nullptr;
-	InitReader(&unused);
+	InitReader();
 	while (Read())
 	{
 		if(curElement->Content == content)
 		{
 			if(prevElement != nullptr)
-				curElement->NextElement = nextElement;
+			{
+				prevElement->NextElement = nextElement;
+				if(nextElement == nullptr)
+					lastElement = prevElement;
+			}
 			else
-				firstElement = nextElement;
+			{
+				firstElement = firstElement->NextElement;
+			}
 				
 			delete curElement;
+			Length--;
 		}
 		prevElement = curElement;
 		curElement = nextElement;
 	}
-
-	Length--;
 }
 
 //Removes Element with defined content and deletes this content
 template <class T>
 inline void ListContainer<T>::RemoveDelete(T* content)
 {
-	T* unused = nullptr;
-
 	elementToRemove = nullptr;
 	ListElement* curElement = firstElement;
-	InitReader(&unused);
+	ListElement* prevElement = nullptr;
+	InitReader();
 	while (Read())
 	{
 		if(curElement->Content == content)
 		{
-			prevElement->NextElement = nextElement->NextElement;
-			delete (T*)content;
-			delete nextElement;
+			if(prevElement != nullptr)
+			{
+				prevElement->NextElement = nextElement;
+				if(nextElement == nullptr)
+					lastElement = prevElement;
+			}
+			else
+			{
+				firstElement = firstElement->NextElement;
+			}
+				
+			delete curElement;
 			Length--;
-			break;
+
+			delete content;
+
+			//Reinitialze Reader
+			elementToRemove = nullptr;
+			ListElement* curElement = firstElement;
+			ListElement* prevElement = nullptr;
+			InitReader();
 		}
+		prevElement = curElement;
 		curElement = nextElement;
 	}
 }
@@ -234,32 +296,34 @@ inline void ListContainer<T>::RemoveDelete(T* content)
 template <class T>
 inline void ListContainer<T>::RemoveDelete(int index)
 {
-	if(Length == 0 || index >= Length)
-		return;
-
-	T* content;
-
-	if(index == 0)
+	int i = 0;
+	elementToRemove = nullptr;
+	ListElement* curElement = firstElement;
+	ListElement* prevElement = nullptr;
+	InitReader();
+	while (Read())
 	{
-		ListElement* tmp = firstElement;
-		firstElement = firstElement->NextElement;
-		content = (T*)tmp->Content;
-		delete content;
-		delete tmp;
+		if(i == index)
+		{
+			if(prevElement != nullptr)
+			{
+				prevElement->NextElement = nextElement;
+				if(nextElement == nullptr)
+					lastElement = prevElement;
+			}
+			else
+			{
+				firstElement = firstElement->NextElement;
+			}
+				
+			delete curElement;
+			Length--;
+			break;
+		}
+		prevElement = curElement;
+		curElement = nextElement;
+		i++;
 	}
-	else
-	{
-		goToElement(index-1);
-
-		elementToRemove = nextElement->NextElement;
-		nextElement->NextElement = nextElement->NextElement->NextElement;
-
-		content = (T*)elementToRemove->Content;
-		delete content;
-		delete elementToRemove;
-	}
-
-	Length--;
 }
 
 //Removes all Elements from the list
@@ -277,7 +341,6 @@ inline void ListContainer<T>::Clear()
 template <class T>
 inline T** ListContainer<T>::GetIndex()
 {
-	T** IndexBuffer = nullptr;
 	if(IndexBuffer != nullptr)
 		delete IndexBuffer;
 
@@ -302,8 +365,202 @@ inline void ListContainer<T>::ClearDelete(void)
 	while (Length > 0)
 	{
 		RemoveDelete(0);
+
+		//T** index = GetIndex();
+		//printf("\n%d",CalcLength());
 	}
 }
 
+//Deletes all elements
+template <typename T>
+inline int ListContainer<T>::CalcLength(void)
+{
+	int count = 0;
+
+	InitReader();
+	while (Read())
+	{
+		count ++;
+	}
+
+	return count;
+}
+
+//Set sorting value
+template <typename T>
+inline void ListContainer<T>::SetSortValue(T* content, float value)
+{
+	ListElement* curElement = firstElement;
+	while (curElement != nullptr)
+	{
+		if(curElement->Content == content)
+		{
+			curElement->SortValue = value;
+			break;
+		}
+		curElement = curElement->NextElement;
+	}
+}
+
+//Set sorting value
+template <typename T>
+inline void ListContainer<T>::SetCurSortValue(float value)
+{
+	currentElement->SortValue = value;
+}
+
+//Set sorting value
+template <typename T>
+inline float ListContainer<T>::GetCurSortValue()
+{
+	return currentElement->SortValue;
+}
+
+//Get sorting value
+template <typename T>
+inline float ListContainer<T>::GetSortValue(T* content)
+{
+	ListElement* curElement = firstElement;
+	while (curElement != nullptr)
+	{
+		if(curElement->Content == content)
+		{
+			return curElement->SortValue;
+		}
+		curElement = curElement->NextElement;
+	}
+	return -1.0f;
+}
+
+//Sort all elements
+template <typename T>
+inline void ListContainer<T>::Sort(void)
+{
+	//Variables
+	int segmentPosition = 0;
+	ListElement* leftFirstElement;
+	ListElement* rightFirstElement;
+	ListElement* tmpElement;
+	//ListElement* curFirstElement = firstElement;
+	ListElement* firstProcessedElement;
+	ListElement* lastProcessedElement;
+
+	//Actions
+	for(int curentSegment = 1; curentSegment <= Length; curentSegment *= 2)
+	{
+		firstProcessedElement = nullptr;
+		while(firstElement != nullptr)
+		{
+			//Generate left side
+			leftFirstElement = firstElement;
+
+			if(firstElement != nullptr)
+			{
+				tmpElement = firstElement; 
+				for (int i = 0; i < curentSegment - 1 && tmpElement->NextElement != nullptr; i++)
+				{
+					tmpElement = tmpElement->NextElement;
+				}
+				firstElement = tmpElement->NextElement;
+				tmpElement->NextElement = nullptr;
+			}
+
+			//Generate right side
+			rightFirstElement = firstElement;
+
+			if(firstElement != nullptr)
+			{
+				tmpElement = firstElement; 
+				for (int i = 0; i < curentSegment - 1 && tmpElement->NextElement != nullptr; i++)
+				{
+					tmpElement = tmpElement->NextElement;
+				}
+				firstElement = tmpElement->NextElement;
+				tmpElement->NextElement = nullptr;
+			}
+
+			//Merge sides together
+			if(leftFirstElement != nullptr && rightFirstElement != nullptr)
+			{
+				//Initialize list
+				if(firstProcessedElement == nullptr)
+				{
+					if(leftFirstElement->SortValue < rightFirstElement->SortValue)
+					{
+						firstProcessedElement = leftFirstElement;
+						lastProcessedElement = leftFirstElement;
+						leftFirstElement = leftFirstElement->NextElement;
+					}
+					else
+					{
+						firstProcessedElement = rightFirstElement;
+						lastProcessedElement = rightFirstElement;
+						rightFirstElement = rightFirstElement->NextElement;
+					}
+				}
+
+				//Add item depending on value
+				while(leftFirstElement != nullptr && rightFirstElement != nullptr)
+				{
+					if(leftFirstElement->SortValue < rightFirstElement->SortValue)
+					{
+						lastProcessedElement->NextElement = leftFirstElement;
+						lastProcessedElement = leftFirstElement;
+						leftFirstElement = leftFirstElement->NextElement;
+					}
+					else
+					{
+						lastProcessedElement->NextElement = rightFirstElement;
+						lastProcessedElement = rightFirstElement;
+						rightFirstElement = rightFirstElement->NextElement;
+					}
+				}
+			}
+			else if (firstProcessedElement == nullptr)
+			{
+				//One list is empty -> no initialisation
+				if(leftFirstElement != nullptr)
+				{
+					firstProcessedElement = leftFirstElement;
+					lastProcessedElement = leftFirstElement;
+					leftFirstElement = leftFirstElement->NextElement;
+				}
+				else
+				{
+					firstProcessedElement = rightFirstElement;
+					lastProcessedElement = rightFirstElement;
+					rightFirstElement = rightFirstElement->NextElement;
+				}
+			}
+
+			//Fill remaining Parts
+			while(leftFirstElement != nullptr)
+			{
+				lastProcessedElement->NextElement = leftFirstElement;
+				lastProcessedElement = leftFirstElement;
+				leftFirstElement = leftFirstElement->NextElement;
+			}
+			while(rightFirstElement != nullptr)
+			{
+				lastProcessedElement->NextElement = rightFirstElement;
+				lastProcessedElement = rightFirstElement;
+				rightFirstElement = rightFirstElement->NextElement;
+			}
+		}
+		firstElement = firstProcessedElement;
+	}
+}
+
+//Removes first element from list
+template <typename T>
+inline void ListContainer<T>::RemoveFirst(void)
+{
+	firstElement = firstElement->NextElement;
+	if(firstElement == nullptr)
+		lastElement = nullptr;
+
+	Length--;
+}
 #pragma endregion
 
+#pragma endregion

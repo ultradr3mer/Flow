@@ -9,7 +9,7 @@ void CApp::OnDraw() {
 	curScene = scene;
 
 	//Render Shadowbuffers
-	scene->DrawShadowBuffers();
+	//scene->DrawShadowBuffers();
 
 	//Setup Cubemaps
 	//scene->EyeDir = player->View->fwd;

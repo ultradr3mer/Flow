@@ -87,14 +87,14 @@ void MeshData::Clear()
 
 MeshData* MeshData::FromObj(char* source)
 {
-	MeshData* Mesh = nullptr;
-	Meshes.InitReader(&Mesh);
+	Meshes.InitReader();
 	while (Meshes.Read())
 	{
-		if(strcmp(source,Mesh->Name) == 0)
-			return Mesh;
+		if(strcmp(source,Meshes.Cur->Name) == 0)
+			return Meshes.Cur;
 	}
 
+	MeshData* Mesh = nullptr;
 	ObjLoader::Load(source);
 	GenerateTangent();
 	Mesh = new MeshData();

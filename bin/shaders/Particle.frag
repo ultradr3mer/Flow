@@ -11,5 +11,5 @@ void main(void) {
     // gl_FragColor = vec4(vTexCoord.x,vTexCoord.y,0.0,1.0);
 	vec4 coord = gl_TexCoord[0];
 	gl_FragColor = texture2D(Diffuse, coord.xy);
-	gl_FragColor.rgb *= vAlpha;
+	gl_FragColor.a *= vAlpha;
 }

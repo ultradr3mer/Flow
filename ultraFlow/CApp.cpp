@@ -29,7 +29,7 @@ int CApp::OnExecute(int argc, char **argv) {
 			calculatedFrame = true;
 		}
 
-		BulletManager::Step();
+		//BulletManager::Step();
 
 		OnDraw();
 

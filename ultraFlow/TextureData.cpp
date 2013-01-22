@@ -55,14 +55,14 @@ void TextureData::Bind(void)
 
 TextureData* TextureData::FromDDS(char* source)
 {
-	TextureData* textureData = nullptr;
-	Textures.InitReader(&textureData);
+	Textures.InitReader();
 	while(Textures.Read())
 	{
-		if(strcasecmp(textureData->Name,source))
-			return textureData;
+		if(strcasecmp(Textures.Cur->Name,source))
+			return Textures.Cur;
 	}
 
+	TextureData* textureData = nullptr;
 	textureData = new TextureData();
 	textureData->CreateData();
 	DDSLoader::loadDds(source);

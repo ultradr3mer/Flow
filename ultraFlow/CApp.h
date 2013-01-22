@@ -18,6 +18,7 @@
 #include "Filter2D.h"
 #include "Sun.h"
 #include "Scene.h"
+#include "ParticleSystem.h"
  
 class CApp {
     private:

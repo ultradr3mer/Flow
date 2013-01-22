@@ -124,9 +124,12 @@ void ParticleSystem::AppendAffector(ParticleAffector* affector)
 	affectors[affectorCount++] = affector;
 }
 
-void ParticleSystem::Draw()
+void ParticleSystem::Draw(enum DrawingPass pass)
 {
+	if(pass != DrawingPassTransparent)
+		return;
 	//Shader->Bind();
+	Material->Bind(DrawingPassTransparent);
 
 	//Upload Particle Data
 	glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);

@@ -86,8 +86,8 @@ bool CApp::OnInit(int argc, char **argv) {
 
 	// Create player
 	player = new Player(scene);
-	player->Position.z = 2;
-	player->Position.y = 4;
+	//player->Position.z = 2;
+	//player->Position.y = 4;
 
 	// For Update Order
 	GameObjList.Remove(scene);
@@ -101,29 +101,46 @@ bool CApp::OnInit(int argc, char **argv) {
 	scene->Sky = sky;
 	scene->SunLight->SetAngle(vec3(0.4f,0.425f,0.0f));
 
-	// Setup scene
-	Model* floor = new Model();
-	floor->Mesh = MeshData::FromObj("floor.obj");
-	floor->Material = MaterialData::FromXml("floor.xmf");
-	scene->SceneDrawables.Add(floor);
+	//setup Particle System
+	ParticleSystem* ps = new ParticleSystem(2000);
+	ps->Material = MaterialData::FromXml("particle.xmf");
+	ps->ParticleSize = 100.0f;
+	scene->SceneDrawables.Add(ps);
+	
+	ParticleAffectorSpawner* spawner = new ParticleAffectorSpawner();
+	//spawner->Position = viewPort->Position;
+	spawner->particlePerSecond = 200;
+	spawner->spawnSize = vec3(1.0f,1.0f,0.0f);
+	spawner->Position = vec3(0.0f,0.0f,1.0f);
+	ps->AppendAffector(spawner);
 
-	PhysicsModel* mod;
+	ParticleAffectorGravity* grav = new ParticleAffectorGravity();
+	grav->Strength = 0.00001f;
+	ps->AppendAffector(grav);
 
-	for (int i = 0; i < 20; i++)
-	{
-		mod = new PhysicsModel();
+	//// Setup scene
+	//Model* floor = new Model();
+	//floor->Mesh = MeshData::FromObj("floor.obj");
+	//floor->Material = MaterialData::FromXml("floor.xmf");
+	//scene->SceneDrawables.Add(floor);
 
-		mod->Material = MaterialData::FromXml("sae_shuttle.xmf");
-		mod->Body = BulletManager::FromObj("sae_shuttle_pbox.obj");
-		mod->Mesh = MeshData::FromObj("sae_shuttle.obj");
+	//PhysicsModel* mod;
 
-		//mod->Material = MaterialData::FromXml("sphere.xmf");
-		//mod->Body = BulletManager::FromObj("sphere_pbox.obj");
-		//mod->Mesh = MeshData::FromObj("sphere.obj");
+	//for (int i = 0; i < 20; i++)
+	//{
+	//	mod = new PhysicsModel();
 
-		mod->Body->getWorldTransform().setOrigin(btVector3(0.0f,i+1.0f,0.0f));
-		scene->SceneDrawables.Add(mod);
-	}
+	//	mod->Material = MaterialData::FromXml("sae_shuttle.xmf");
+	//	mod->Body = BulletManager::FromObj("sae_shuttle_pbox.obj");
+	//	mod->Mesh = MeshData::FromObj("sae_shuttle.obj");
+
+	//	//mod->Material = MaterialData::FromXml("sphere.xmf");
+	//	//mod->Body = BulletManager::FromObj("sphere_pbox.obj");
+	//	//mod->Mesh = MeshData::FromObj("sphere.obj");
+
+	//	mod->Body->getWorldTransform().setOrigin(btVector3(0.0f,i+1.0f,0.0f));
+	//	scene->SceneDrawables.Add(mod);
+	//}
 
 	SDL_WarpMouse(screenX/2,screenY/2);
 	SDL_ShowCursor(0);

@@ -8,12 +8,12 @@ Player::Player(Scene* scene)
 	View = new ViewPort();
 	View->CalcReconstrucVecs = true;
 
-	Cursor = new Model();
-	scene->SceneDrawables.Add(Cursor);
+	//Cursor = new Model();
+	//scene->SceneDrawables.Add(Cursor);
 
-	Cursor->Mesh = MeshData::FromObj("cursor.obj");
-	Cursor->Material = MaterialData::FromXml("cursor.xmf");
-	Cursor->Position = vec3(0,1,0);
+	//Cursor->Mesh = MeshData::FromObj("cursor.obj");
+	//Cursor->Material = MaterialData::FromXml("cursor.xmf");
+	//Cursor->Position = vec3(0,1,0);
 
 	pickConstraint = nullptr;
 
@@ -23,7 +23,7 @@ Player::Player(Scene* scene)
 Player::~Player(void)
 {
 	delete View;
-	delete Cursor;
+	//delete Cursor;
 	GameObjList.Remove(this);
 	if(pickConstraint != nullptr)
 	{

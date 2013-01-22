@@ -48,11 +48,10 @@ Scene::~Scene(void)
 
 void Scene::DrawPass(enum DrawingPass pass)
 {
-	Model* model = nullptr;
-	SceneDrawables.InitReader(&model);
+	SceneDrawables.InitReader();
 	while (SceneDrawables.Read())
 	{
-		model->Draw(pass);
+		SceneDrawables.Cur->Draw(pass);
 	}
 }
 
@@ -64,24 +63,22 @@ void drawShadowPass()
 void Scene::DrawShadowBuffers()
 {
 	glEnable(GL_DEPTH_TEST); 
-	Sun* light = nullptr;
-	Lights.InitReader(&light);
+	Lights.InitReader();
 	while (Lights.Read())
 	{
 
-		light->UpdateShadowBuffer(drawShadowPass);
+		Lights.Cur->UpdateShadowBuffer(drawShadowPass);
 		//Draw(DrawingPassShadow);
 	}
 }
 
 void Scene::DrawDefferedLights()
 {
-	Sun* light;
-	Lights.InitReader(&light);
+	Lights.InitReader();
 	while (Lights.Read())
 	{
-		CurLight = light;
-		light->Draw();
+		CurLight = Lights.Cur;
+		CurLight->Draw();
 	}
 }
 
@@ -107,34 +104,35 @@ void Scene::DrawScene(BufferSet* bufferSet)
 	glDisable(GL_BLEND);
 	DrawPass(DrawingPassDeffered);
 
-	//Draw reflections
-	bufferSet->RefletionPass.Bind(true);
-	glDisable(GL_BLEND);
-	filter2D->Draw(CubeMapFilter,&cubeMapUniforms);
+	////Draw reflections
+	//bufferSet->RefletionPass.Bind(true);
+	//glDisable(GL_BLEND);
+	//filter2D->Draw(CubeMapFilter,&cubeMapUniforms);
 
-	//Calculate SSAO
-	if(bufferSet->EnableSsao)
-	{
-		bufferSet->SsaoPrepare.Bind(false);
-		glDisable(GL_DEPTH_TEST); 
-		glDisable(GL_BLEND);
-		filter2D->Draw(SsaoPrepare,&SsaoUniforms);
-		bufferSet->SsaoPerform.Bind(false);
-		filter2D->Draw(SsaoPerform,&SsaoUniforms);
-		bufferSet->SsaoBlur.Bind(false);
-		filter2D->Draw(SsaoBlur,&SsaoUniforms);
-	}
+	////Calculate SSAO
+	//if(bufferSet->EnableSsao)
+	//{
+	//	bufferSet->SsaoPrepare.Bind(false);
+	//	glDisable(GL_DEPTH_TEST); 
+	//	glDisable(GL_BLEND);
+	//	filter2D->Draw(SsaoPrepare,&SsaoUniforms);
+	//	bufferSet->SsaoPerform.Bind(false);
+	//	filter2D->Draw(SsaoPerform,&SsaoUniforms);
+	//	bufferSet->SsaoBlur.Bind(false);
+	//	filter2D->Draw(SsaoBlur,&SsaoUniforms);
+	//}
 
-	//Draw Lights
-	//bufferSet->OutBuffer->Bind(true);
-	bufferSet->DefferedLightmap.Bind(true);
-	glDisable(GL_DEPTH_TEST);
-	glBlendFunc(GL_ONE, GL_ONE);
-	glEnable(GL_BLEND);
-	DrawDefferedLights();
+	////Draw Lights
+	////bufferSet->OutBuffer->Bind(true);
+	//bufferSet->DefferedLightmap.Bind(true);
+	//glDisable(GL_DEPTH_TEST);
+	//glBlendFunc(GL_ONE, GL_ONE);
+	//glEnable(GL_BLEND);
+	//DrawDefferedLights();
 
 	//Draw solid pass
-	bufferSet->ScenePass.Bind(true);
+	bufferSet->OutBuffer->Bind(true);
+	//bufferSet->OutBuffer->Bind(false);
 	glDisable(GL_DEPTH_TEST);
 	Sky->Draw(DrawingPassSolidForced);
 	glEnable(GL_DEPTH_TEST);
@@ -143,8 +141,8 @@ void Scene::DrawScene(BufferSet* bufferSet)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	if(bufferSet->EnableSsao)
-		filter2D->Draw(SsaoMult);
+	//if(bufferSet->EnableSsao)
+	//	filter2D->Draw(SsaoMult);
 
 	//Draw transparent pass
 	glDisable(GL_DEPTH_TEST); 
@@ -152,26 +150,26 @@ void Scene::DrawScene(BufferSet* bufferSet)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	DrawPass(DrawingPassTransparent);
 
-	//Calulate Bloom
-	glDisable(GL_BLEND);
-	if(bufferSet->EnableBloom)
-	{
-		bufferSet->Bloom.SetMultiSampeling(false);
-		bufferSet->Bloom.Bind(false);
-		filter2D->Draw(BloomCurveFilter);
-		bufferSet->BloomB.Bind(false);
-		filter2D->Draw(BloomBlurFilter);
-		bufferSet->Bloom.Bind(false);
-		filter2D->Draw(BloomBlurFilterB);
-	}
+	////Calulate Bloom
+	//glDisable(GL_BLEND);
+	//if(bufferSet->EnableBloom)
+	//{
+	//	bufferSet->Bloom.SetMultiSampeling(false);
+	//	bufferSet->Bloom.Bind(false);
+	//	filter2D->Draw(BloomCurveFilter);
+	//	bufferSet->BloomB.Bind(false);
+	//	filter2D->Draw(BloomBlurFilter);
+	//	bufferSet->Bloom.Bind(false);
+	//	filter2D->Draw(BloomBlurFilterB);
+	//}
 
-	//Output final image
-	bufferSet->OutBuffer->Bind(false);
-	bufferSet->Bloom.SetMultiSampeling(true);
-	filter2D->Draw(CompositeFilter);
+	////Output final image
+	//bufferSet->OutBuffer->Bind(false);
+	//bufferSet->Bloom.SetMultiSampeling(true);
+	//filter2D->Draw(CompositeFilter);
 
-	glBlendFunc(GL_ONE, GL_ONE);
-	glEnable(GL_BLEND);
-	if(bufferSet->EnableBloom)
-		filter2D->Draw(BloomAdd);
+	//glBlendFunc(GL_ONE, GL_ONE);
+	//glEnable(GL_BLEND);
+	//if(bufferSet->EnableBloom)
+	//	filter2D->Draw(BloomAdd);
 }

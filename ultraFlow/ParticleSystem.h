@@ -75,7 +75,7 @@ public:
 	ParticleAffectorBase* BaseAffector;
 	ParticleSystem(int MaxParticles);
 	~ParticleSystem(void);
-	virtual void Draw();
+	virtual void Draw(enum DrawingPass pass);
 	virtual void Update();
 	GLfloat ParticleSize;
 	void AppendAffector(ParticleAffector* affector);

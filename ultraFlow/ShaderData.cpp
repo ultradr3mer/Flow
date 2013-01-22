@@ -152,17 +152,18 @@ ShaderData::ShaderData(char* vertexsource, char* fragmentsource)
 
 ShaderData* ShaderData::FromPlainText(char* vertexSource, char* fragmentSource)
 {
-	ShaderData* Shader;
-	Shaders.InitReader(&Shader);
+	
+	Shaders.InitReader();
 	while(Shaders.Read())
 	{
-		if(strcmp(Shader->VertexName,vertexSource) == 0 &&
-			strcmp(Shader->FragmentName,fragmentSource) == 0)
+		if(strcmp(Shaders.Cur->VertexName,vertexSource) == 0 &&
+			strcmp(Shaders.Cur->FragmentName,fragmentSource) == 0)
 		{
-			return Shader;
+			return Shaders.Cur;
 		}
 	}
 
+	ShaderData* Shader;
 	/* Read our shaders into the appropriate buffers */
 	char* vertexsource = FileToBuf(FullFileName("shaders\\",vertexSource));
 	char* fragmentsource = FileToBuf(FullFileName("shaders\\",fragmentSource));
@@ -226,9 +227,10 @@ void ShaderData::ParseUniformInserts(ListContainer<UniformInsert>* list)
 		return;
 	
 	UniformInsert* insert = nullptr;
-	list->InitReader(&insert);
+	list->InitReader();
 	while(list->Read())
 	{
+		insert = list->Cur;
 		switch (insert->type)
 		{
 		case DataType1f:
