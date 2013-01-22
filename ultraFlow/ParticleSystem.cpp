@@ -55,6 +55,7 @@ void ParticleAffectorSpawner::Affect(Particle* particles, int count)
 
 
 	int SpawnedParticles = 0;
+	int rndFactor = RAND_MAX / MaxTexture;
 	for (int i = 0; i < count && SpawnedParticles < curParticlesToSpawn; i++)
 	{
 		if(particles[i].Life <= 0)
@@ -62,6 +63,7 @@ void ParticleAffectorSpawner::Affect(Particle* particles, int count)
 			particles[i].Life = 1;
 			particles[i].Position = gaussRand(Position, vec3(spawnSize));
 			particles[i].Vector = vec3(0);
+			particles[i].Texture = (float)(rand() / rndFactor);
 
 			particles[i].Vector = InitialVec + gaussRand(vec3(0), vec3(InitialVecRandom));
 
@@ -86,6 +88,7 @@ ParticleSystem::ParticleSystem(int MaxParticles)
 	particles = new Particle[MaxParticles];
 	particlePositions = new GLfloat[MaxParticles*3];
 	particleAlpha = new GLfloat[MaxParticles];
+	particleTexture = new GLfloat[MaxParticles];
 
 	//Mesh = MeshData::FromObj("plane.obj");
 	//Shader = ShaderData::FromPlainText("Particle.vert","Particle.frag");
@@ -103,8 +106,9 @@ ParticleSystem::ParticleSystem(int MaxParticles)
 	AppendAffector(BaseAffector);
 
 	ParticleSize = 10.0f;
+	MaxTexture = 1;
 
-	glGenBuffers(2,vbos);
+	glGenBuffers(3,vbos);
 }
 
 ParticleSystem::~ParticleSystem(void)
@@ -116,7 +120,7 @@ ParticleSystem::~ParticleSystem(void)
 	delete particles;
 	delete particlePositions;
 	delete particleAlpha;
-	glDeleteBuffers(2,vbos);
+	glDeleteBuffers(3,vbos);
 }
 
 void ParticleSystem::AppendAffector(ParticleAffector* affector)
@@ -132,15 +136,23 @@ void ParticleSystem::Draw(enum DrawingPass pass)
 	Material->Bind(DrawingPassTransparent);
 
 	//Upload Particle Data
+	//Position Data
 	glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
 	glBufferData(GL_ARRAY_BUFFER, curParticleCount * 3 * sizeof(GLfloat), particlePositions, GL_STATIC_DRAW);
 	glVertexAttribPointer(AttrPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(AttrPosition);
 
+	//Alpha Values
 	glBindBuffer(GL_ARRAY_BUFFER, vbos[1]);
 	glBufferData(GL_ARRAY_BUFFER, curParticleCount * sizeof(GLfloat), particleAlpha, GL_STATIC_DRAW);
 	glVertexAttribPointer(AttrAlpha, 1, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(AttrAlpha);
+
+	//Texture Data
+	glBindBuffer(GL_ARRAY_BUFFER, vbos[2]);
+	glBufferData(GL_ARRAY_BUFFER, curParticleCount * sizeof(GLfloat), particleTexture, GL_STATIC_DRAW);
+	glVertexAttribPointer(AttrTexCoord, 1, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(AttrTexCoord);
 
 	glEnable(GL_POINT_SPRITE);
 	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
@@ -155,6 +167,7 @@ void ParticleSystem::Draw(enum DrawingPass pass)
 	ShaderData::UniformMatrix4fv(MatModelView, mat4(1.0f));
 	//ShaderData::Uniform1f(FltAspect, curViewPort->Aspect);
 	ShaderData::Uniform1f(FltSize, ParticleSize);
+	ShaderData::Uniform1f(FltMaxTex, MaxTexture);
 
 	float alpha = 0;
 	vec4 position;
@@ -200,6 +213,7 @@ void ParticleSystem::Update()
 		particlePositions[curParticleCount*3+1] = particles[i].Position.y;
 		particlePositions[curParticleCount*3+2] = particles[i].Position.z;
 		particleAlpha[curParticleCount] = particles[i].Alpha;
+		particleTexture[curParticleCount] = particles[i].Texture;
 
 		curParticleCount++;
 	}

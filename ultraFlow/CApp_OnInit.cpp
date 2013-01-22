@@ -104,7 +104,8 @@ bool CApp::OnInit(int argc, char **argv) {
 	//setup Particle System
 	ParticleSystem* ps = new ParticleSystem(2000);
 	ps->Material = MaterialData::FromXml("particle.xmf");
-	ps->ParticleSize = 100.0f;
+	ps->ParticleSize = 20.0f;
+	ps->MaxTexture = 4;
 	scene->SceneDrawables.Add(ps);
 	
 	ParticleAffectorSpawner* spawner = new ParticleAffectorSpawner();
@@ -112,6 +113,7 @@ bool CApp::OnInit(int argc, char **argv) {
 	spawner->particlePerSecond = 200;
 	spawner->spawnSize = vec3(1.0f,1.0f,0.0f);
 	spawner->Position = vec3(0.0f,0.0f,1.0f);
+	spawner->MaxTexture = 4;
 	ps->AppendAffector(spawner);
 
 	ParticleAffectorGravity* grav = new ParticleAffectorGravity();

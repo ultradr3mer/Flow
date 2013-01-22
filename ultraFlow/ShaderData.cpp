@@ -37,7 +37,8 @@ char* UniformsStrings[] = {
 	"Size",
 	"Aspect",
 	"Alpha",
-	"State"
+	"State",
+	"MaxTexture"
 };
 
 int UniformCount = sizeof(UniformsStrings)/sizeof(UniformsStrings[0]);

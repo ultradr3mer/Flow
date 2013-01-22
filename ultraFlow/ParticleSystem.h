@@ -8,6 +8,9 @@ struct Particle
 	vec3 Vector;
 	float Alpha;
 
+	// texture id
+	int Texture;
+
 	// remaining lifetime 
 	float Life;
 };
@@ -46,6 +49,7 @@ public:
 	vec3 Position;
 	vec3 InitialVec;
 	vec3 InitialVecRandom;
+	float MaxTexture;
 };
 
 struct ParticleAffectorGravity : public ParticleAffector
@@ -69,8 +73,9 @@ private:
 	//ParticleData
 	GLfloat* particlePositions;
 	GLfloat* particleAlpha;
+	GLfloat* particleTexture;
 	GLint curParticleCount;
-	GLuint vbos[2];
+	GLuint vbos[3];
 public:
 	ParticleAffectorBase* BaseAffector;
 	ParticleSystem(int MaxParticles);
@@ -78,6 +83,7 @@ public:
 	virtual void Draw(enum DrawingPass pass);
 	virtual void Update();
 	GLfloat ParticleSize;
+	float MaxTexture;
 	void AppendAffector(ParticleAffector* affector);
 };
 #pragma endregion

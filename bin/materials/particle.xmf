@@ -1,5 +1,6 @@
 <material>
-	<textures diffuse="cursor.dds"/>
+	<textures diffuse="particles_blur2.dds"/>
 	<shader frag="Particle.frag" vert="Particle.vert"/>
 	<transparent/>
+	<additive/>
 </material>

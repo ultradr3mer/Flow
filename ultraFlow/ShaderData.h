@@ -37,6 +37,7 @@ enum Uniforms
 	FltAspect,
 	FltAlpha,
 	FltState,
+	FltMaxTex
 };
 
 enum AttributeIndices
