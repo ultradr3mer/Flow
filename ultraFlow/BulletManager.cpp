@@ -81,6 +81,7 @@ btCollisionShape* BulletManager::ShapeFromObj(char* source)
 	return fallShape;
 }
 
+
 void BulletManager::Step()
 {
 	long newFrameTime = SDL_GetTicks();

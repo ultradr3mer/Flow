@@ -39,7 +39,7 @@ void Model::Draw(enum DrawingPass pass)
 			return;
 
 		setupMatrices();
-		//ShaderData::ParseUniformInserts(&UniformInserts);
+		ShaderData::ParseUniformInserts(&UniformInserts);
 
 		glDrawElements(GL_TRIANGLES, Mesh->Length, GL_UNSIGNED_INT, 0);
 	}

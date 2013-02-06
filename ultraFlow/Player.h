@@ -3,25 +3,25 @@
 #include "ViewPort.h"
 #include "Model.h"
 #include "Scene.h"
+#include "Tool.h"
+#include "BrushTool.h"
 
 class Player :
 	public GameBase
 {
 private:
-	Model* Cursor;
 	Scene* scene;
-	vec3 smoothMove;
-	vec3 smoothRotate;
-	btRigidBody* pickedBody;
-	btPoint2PointConstraint* pickConstraint;
-	float gOldPickingDist;
+	ListContainer<Tool> Tools;
+	int curToolIndex;
 public:
-	ViewPort* View;
+	vec3 RotationVec;
 	vec3 MovingVec;
+	Tool* CurTool;
+	ViewPort* View;
 	Player(Scene* scene);
 	virtual ~Player(void);
 	virtual void Update(void);
-	void Fire();
-	void FireUp();
+	void Click(uint btn);
+	void ClickUp(uint btn);
 };
 

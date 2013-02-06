@@ -87,6 +87,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Base.h" />
+    <ClInclude Include="BrushTool.h" />
     <ClInclude Include="BulletManager.h" />
     <ClInclude Include="CApp.h" />
     <ClInclude Include="CubeMap.h" />
@@ -96,6 +97,8 @@
     <ClInclude Include="GameBase.h" />
     <ClInclude Include="GenFunc.h" />
     <ClInclude Include="ListContainer.h" />
+    <ClInclude Include="MapData.h" />
+    <ClInclude Include="MapMeshData.h" />
     <ClInclude Include="MaterialData.h" />
     <ClInclude Include="MeshData.h" />
     <ClInclude Include="Model.h" />
@@ -104,17 +107,21 @@
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="PhysicsModel.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlnEquation.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderData.h" />
     <ClInclude Include="Sun.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TextureData.h" />
+    <ClInclude Include="Tool.h" />
+    <ClInclude Include="TraceableTriangle.h" />
     <ClInclude Include="ViewPort.h" />
     <ClInclude Include="ViewPortIso.h" />
     <ClInclude Include="XmlParser.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Base.cpp" />
+    <ClCompile Include="BrushTool.cpp" />
     <ClCompile Include="BulletManager.cpp" />
     <ClCompile Include="CApp.cpp" />
     <ClCompile Include="CApp_OnCleanup.cpp" />
@@ -128,6 +135,8 @@
     <ClCompile Include="FrameBufferData.cpp" />
     <ClCompile Include="GameBase.cpp" />
     <ClCompile Include="GenFunc.cpp" />
+    <ClCompile Include="MapData.cpp" />
+    <ClCompile Include="MapMeshData.cpp" />
     <ClCompile Include="MaterialData.cpp" />
     <ClCompile Include="MeshData.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -136,11 +145,14 @@
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="PhysicsModel.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlnEquation.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ShaderData.cpp" />
     <ClCompile Include="Sun.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TextureData.cpp" />
+    <ClCompile Include="Tool.cpp" />
+    <ClCompile Include="TraceableTriangle.cpp" />
     <ClCompile Include="ViewPort.cpp" />
     <ClCompile Include="ViewPortIso.cpp" />
     <ClCompile Include="XmlParser.cpp" />

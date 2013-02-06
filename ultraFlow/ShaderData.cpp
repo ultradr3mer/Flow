@@ -24,6 +24,7 @@ char* UniformsStrings[] = {
 	"ModelView",
 	"ViewProjection",
 	"Origin",
+	"Size",
 	"Direction",
 	"RenderSize",
 	"EyePos",
@@ -34,7 +35,6 @@ char* UniformsStrings[] = {
 	"Ambient",
 	"NearZ",
 	"FarZ",
-	"Size",
 	"Aspect",
 	"Alpha",
 	"State"
@@ -152,14 +152,13 @@ ShaderData::ShaderData(char* vertexsource, char* fragmentsource)
 
 ShaderData* ShaderData::FromPlainText(char* vertexSource, char* fragmentSource)
 {
-	ShaderData* Shader;
-	Shaders.InitReader(&Shader);
+	Shaders.InitReader();
 	while(Shaders.Read())
 	{
-		if(strcmp(Shader->VertexName,vertexSource) == 0 &&
-			strcmp(Shader->FragmentName,fragmentSource) == 0)
+		if(strcmp(Shaders.Cur->VertexName,vertexSource) == 0 &&
+			strcmp(Shaders.Cur->FragmentName,fragmentSource) == 0)
 		{
-			return Shader;
+			return Shaders.Cur;
 		}
 	}
 
@@ -167,7 +166,7 @@ ShaderData* ShaderData::FromPlainText(char* vertexSource, char* fragmentSource)
 	char* vertexsource = FileToBuf(FullFileName("shaders\\",vertexSource));
 	char* fragmentsource = FileToBuf(FullFileName("shaders\\",fragmentSource));
 
-	Shader = new ShaderData(vertexsource,fragmentsource);
+	ShaderData* Shader = new ShaderData(vertexsource,fragmentsource);
 	strcpy(Shader->VertexName,vertexSource);
 	strcpy(Shader->FragmentName,fragmentSource);
 
@@ -224,11 +223,11 @@ void ShaderData::ParseUniformInserts(ListContainer<UniformInsert>* list)
 {
 	if(list->Length == 0)
 		return;
-	
-	UniformInsert* insert = nullptr;
-	list->InitReader(&insert);
+
+	list->InitReader();
 	while(list->Read())
 	{
+		UniformInsert* insert = list->Cur;
 		switch (insert->type)
 		{
 		case DataType1f:

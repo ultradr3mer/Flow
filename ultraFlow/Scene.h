@@ -3,6 +3,7 @@
 #include "Sun.h"
 #include "Filter2D.h"
 #include "CubeMap.h"
+#include "MapData.h"
 
 class Scene : public GameBase
 {
@@ -25,6 +26,7 @@ public:
 	ListContainer<UniformInsert> SsaoUniforms;
 
 	CubeMap* cubeMap;
+	MapData* Map;
 
 	mat4 ViewMat;
 	mat4 InvertedViewProjectionMat;

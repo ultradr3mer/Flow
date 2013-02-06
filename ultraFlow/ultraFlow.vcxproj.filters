@@ -43,15 +43,24 @@
     <Filter Include="Headerdateien\View">
       <UniqueIdentifier>{66ddd042-3a7a-4f09-a930-07bc4c07e4db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headerdateien\Game">
+      <UniqueIdentifier>{38ce771e-24b7-4807-bae8-83a1db8bf163}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Game">
+      <UniqueIdentifier>{db093942-c317-48aa-9f44-666fcc463c31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\Math">
+      <UniqueIdentifier>{afeae4f7-dca7-400c-be34-c75768d65b50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Math">
+      <UniqueIdentifier>{89f9d6de-03e3-4682-b5b0-1a69022485dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GenFunc.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Base.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="GameBase.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="DDSLoader.h">
@@ -87,51 +96,66 @@
     <ClInclude Include="ListContainer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="XmlParser.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="MaterialData.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="BulletManager.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="FrameBufferData.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Filter2D.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Sun.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="ViewPortIso.h">
       <Filter>Headerdateien\View</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="CubeMap.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="noiseutils.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="Tool.h">
+      <Filter>Headerdateien\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Filter2D.h">
+      <Filter>Headerdateien\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="GameBase.h">
+      <Filter>Headerdateien\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeMap.h">
+      <Filter>Headerdateien\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Headerdateien\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Headerdateien\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Sun.h">
+      <Filter>Headerdateien\Drawable\DefferedLights</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialData.h">
+      <Filter>Headerdateien\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameBufferData.h">
+      <Filter>Headerdateien\Loader</Filter>
+    </ClInclude>
     <ClInclude Include="Terrain.h">
+      <Filter>Headerdateien\Drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="MapData.h">
+      <Filter>Headerdateien\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="BrushTool.h">
+      <Filter>Headerdateien\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="XmlParser.h">
       <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="TraceableTriangle.h">
+      <Filter>Headerdateien\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="MapMeshData.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="PlnEquation.h">
+      <Filter>Headerdateien\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GenFunc.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Base.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="GameBase.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="DDSLoader.cpp">
@@ -179,41 +203,65 @@
     <ClCompile Include="CApp_OnDraw.cpp">
       <Filter>Quelldateien\App</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="XmlParser.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="MaterialData.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="BulletManager.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="FrameBufferData.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Filter2D.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="Sun.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="ViewPortIso.cpp">
       <Filter>Quelldateien\View</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="CubeMap.cpp">
-      <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="noiseutils.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="Base.cpp">
+      <Filter>Quelldateien\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Filter2D.cpp">
+      <Filter>Quelldateien\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="Sun.cpp">
+      <Filter>Quelldateien\Drawable\DefferedLights</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Quelldateien\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Quelldateien\Game</Filter>
+    </ClCompile>
     <ClCompile Include="Terrain.cpp">
+      <Filter>Quelldateien\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialData.cpp">
+      <Filter>Quelldateien\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeMap.cpp">
+      <Filter>Quelldateien\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="GameBase.cpp">
+      <Filter>Quelldateien\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameBufferData.cpp">
+      <Filter>Quelldateien\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="Tool.cpp">
+      <Filter>Quelldateien\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="MapData.cpp">
+      <Filter>Quelldateien\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="BrushTool.cpp">
+      <Filter>Quelldateien\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="TraceableTriangle.cpp">
+      <Filter>Quelldateien\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="MapMeshData.cpp">
       <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="PlnEquation.cpp">
+      <Filter>Quelldateien\Math</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

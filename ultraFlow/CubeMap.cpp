@@ -34,7 +34,7 @@ CubeMap::CubeMap(void)
 
 CubeMap::~CubeMap(void)
 {
-	GameObjList.Remove(this);
+	//GameObjList.Remove(this);
 	delete cubemapBufferSet;
 }
 

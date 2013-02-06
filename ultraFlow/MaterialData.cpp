@@ -17,39 +17,37 @@ MaterialData::~MaterialData(void)
 
 MaterialData* MaterialData::FromXml(char* source)
 {
-	MaterialData* material = nullptr;
-	Materials.InitReader(&material);
+	Materials.InitReader();
 	while(Materials.Read())
 	{
-		if(strcmp(source,material->Name) == 0)
-			return material;
+		if(strcmp(source,Materials.Cur->Name) == 0)
+			return Materials.Cur;
 	}
 
-	material = new MaterialData();
+	MaterialData* material = new MaterialData();
 	strcpy(material->Name,source);
 
 	XmlParser* xmlParser = XmlParser::FromFile(source);
 	XmlNode* rootNode = xmlParser->RootNode;
-	XmlAttribute* xmlAttribute;
 
 	//Read Textures
 	ListContainer<XmlAttribute>* textureList = &rootNode->ChildNode("textures")->Attributes;
-	textureList->InitReader(&xmlAttribute);
+	textureList->InitReader();
 	while (textureList->Read())
 	{
-		enum Uniforms uniform = GetUniformEnum(xmlAttribute->Name);
+		enum Uniforms uniform = GetUniformEnum(textureList->Cur->Name);
 		if(uniform != UniformsNull)
-			material->Textures.Add(TextureData::FromDDS(xmlAttribute->Value)->SetTarget(uniform));
+			material->Textures.Add(TextureData::FromDDS(textureList->Cur->Value)->SetTarget(uniform));
 	}
 
 	//Read Frame Buffer Textures
 	ListContainer<XmlAttribute>* fbBextureList = &rootNode->ChildNode("framebuffers")->Attributes;
-	fbBextureList->InitReader(&xmlAttribute);
+	fbBextureList->InitReader();
 	while (fbBextureList->Read())
 	{
-		enum Uniforms uniform = GetUniformEnum(xmlAttribute->Name);
+		enum Uniforms uniform = GetUniformEnum(fbBextureList->Cur->Name);
 		if(uniform != UniformsNull)
-			material->Textures.Add(new FbTextureBinder(xmlAttribute->Name,xmlAttribute->Value));
+			material->Textures.Add(new FbTextureBinder(fbBextureList->Cur->Name,fbBextureList->Cur->Value));
 	}
 
 	//Read Shader
@@ -117,11 +115,10 @@ bool MaterialData::Bind(enum DrawingPass pass)
 
 	ShaderData::Uniform2fv(VecRenderSize,CurRenderDim);
 
-	TextureData* curTexture = nullptr;
-	Textures.InitReader(&curTexture);
+	Textures.InitReader();
 	while(Textures.Read())
 	{
-		curTexture->Bind();
+		Textures.Cur->Bind();
 	}
 	return true;
 }

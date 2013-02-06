@@ -1,17 +1,6 @@
 #include "ViewPort.h"
 #include "GenFunc.h"
 
-PlnEquation::PlnEquation(vec3 point1, vec3 point2, vec3 point3)
-{
-	n = normalize(cross(point2-point1,point3-point1));
-	d = dot(point1,n);
-}
-
-bool PlnEquation::Check(vec3 point, float bias)
-{
-	return dot(point,n) < d + bias;
-}
-
 ViewPort* curViewPort;
 
 ViewPort::ViewPort(void)
@@ -29,7 +18,7 @@ ViewPort::ViewPort(void)
 
 ViewPort::~ViewPort(void)
 {
-	GameObjList.Remove(this);
+	//GameObjList.Remove(this);
 }
 
 void ViewPort::BuildPerspective()

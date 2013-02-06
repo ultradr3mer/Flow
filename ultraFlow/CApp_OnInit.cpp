@@ -21,6 +21,33 @@ bool CApp::OnInit(int argc, char **argv) {
 	//}
 	//fclose(pFile);
 
+	// Raytest
+	//TraceableTriangle tri = TraceableTriangle(
+	//	vec3(0.2f,-0.1f,-0.2f),
+	//	vec3(1.0f,0.3f,0.0f),
+	//	vec3(1.0f,0.3f,1.0f));
+	TraceableTriangle tri = TraceableTriangle(
+		vec3(0.0f,0.0f,-0.2f),
+		vec3(1.0f,0.0f,0.0f),
+		vec3(0.0f,0.5f,0.2f));
+	Ray ray = Ray(
+				vec3( 0.0f),
+				vec3( 0.0f, 0.0f, 2.0f)
+				);
+	int count = 1000;
+	float hits = 0;
+	for (int i = 0; i < count; i++)
+	{
+		for (int j = 0; j < count; j++)
+		{
+			ray.Origin = vec3( (float)i / count, (float)j / count, 2.0f);
+			tri.RayTest(&ray);
+			if(ray.Hit)
+				hits++;
+		}
+	}
+	hits /= count * count;
+
 	#pragma region sdl/opengl
 
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0) {
@@ -109,24 +136,28 @@ bool CApp::OnInit(int argc, char **argv) {
 
 	PhysicsModel* mod;
 
-	for (int i = 0; i < 20; i++)
-	{
-		mod = new PhysicsModel();
+	//for (int i = 0; i < 5; i++)
+	//{
+	//	mod = new PhysicsModel();
 
-		mod->Material = MaterialData::FromXml("sae_shuttle.xmf");
-		mod->Body = BulletManager::FromObj("sae_shuttle_pbox.obj");
-		mod->Mesh = MeshData::FromObj("sae_shuttle.obj");
+	//	mod->Material = MaterialData::FromXml("sae_shuttle.xmf");
+	//	mod->Body = BulletManager::FromObj("sae_shuttle_pbox.obj");
+	//	mod->Mesh = MeshData::FromObj("sae_shuttle.obj");
 
-		//mod->Material = MaterialData::FromXml("sphere.xmf");
-		//mod->Body = BulletManager::FromObj("sphere_pbox.obj");
-		//mod->Mesh = MeshData::FromObj("sphere.obj");
+	//	//mod->Material = MaterialData::FromXml("sphere.xmf");
+	//	//mod->Body = BulletManager::FromObj("sphere_pbox.obj");
+	//	//mod->Mesh = MeshData::FromObj("sphere.obj");
 
-		mod->Body->getWorldTransform().setOrigin(btVector3(0.0f,i+1.0f,0.0f));
-		scene->SceneDrawables.Add(mod);
-	}
+	//	mod->Body->getWorldTransform().setOrigin(btVector3(0.0f,i+1.0f,0.0f));
+	//	scene->SceneDrawables.Add(mod);
+	//}
 
 	SDL_WarpMouse(screenX/2,screenY/2);
 	SDL_ShowCursor(0);
+
+	// Map preset
+	scene->Map->AddBrush(new Brush(vec3(-2,0,-2),vec3(4,1,4),0,false));
+	scene->Map->AddBrush(new Brush(vec3(-2,0.0f,-1),vec3(2,2,2),0,false));
 
 	return true;
 }

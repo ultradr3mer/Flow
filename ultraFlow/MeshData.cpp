@@ -6,7 +6,7 @@ GLfloat textureBuffer[buffersize][2];
 GLfloat normalBuffer[buffersize][3];
 GLfloat tangentBuffer[buffersize][3];
 GLfloat biNormalBuffer[buffersize][3];
-GLuint indexBuffer[buffersize];
+uint indexBuffer[buffersize];
 float indexedPositionBuffer[buffersize*3];
 float indexedtextureBuffer[buffersize*2];
 float indexedNormalBuffer[buffersize*3];
@@ -25,18 +25,31 @@ ListContainer<MeshData> Meshes;// = ListContainer();
 
 MeshData::MeshData(void)
 {
-	updateError("MeshData ENTER MeshData");
+	hasBuffers = false;
+	UploadMeshData();
+
+	Meshes.Add(this);
+}
+
+void MeshData::UploadMeshData()
+{
+	updateError("MeshData ENTER Upload");
 	//GLchar *vertexsource, *fragmentsource;
 
-    /* Allocate and assign a Vertex Array Object to our handle */
-	if(useVertexArrays)
+	if(!hasBuffers)
 	{
-		glGenVertexArrays(1, &vao);
-		glBindVertexArray(vao);
-	}
+		/* Allocate and assign a Vertex Array Object to our handle */
+		if(useVertexArrays)
+		{
+			glGenVertexArrays(1, &vao);
+			glBindVertexArray(vao);
+		}
  
-    // generate buffers
-    glGenBuffers(6, vbo);
+		// generate buffers
+		glGenBuffers(6, vbo);
+
+		hasBuffers = true;
+	}
 
 	// Position data
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
@@ -74,9 +87,7 @@ MeshData::MeshData(void)
 	Length = dataLenghtIndex;
 	maxRadius = maxDistToCenter;
 
-	Clear();
-
-	updateError("MeshData MeshData");
+	updateError("MeshData Upload");
 }
 
 void MeshData::Clear()
@@ -87,27 +98,33 @@ void MeshData::Clear()
 
 MeshData* MeshData::FromObj(char* source)
 {
-	MeshData* Mesh = nullptr;
-	Meshes.InitReader(&Mesh);
+	Meshes.InitReader();
 	while (Meshes.Read())
 	{
-		if(strcmp(source,Mesh->Name) == 0)
-			return Mesh;
+		if(strcmp(source,Meshes.Cur->Name) == 0)
+			return Meshes.Cur;
 	}
-
 	ObjLoader::Load(source);
+	CalcBSphere();
 	GenerateTangent();
-	Mesh = new MeshData();
+	MeshData* Mesh = new MeshData();
 	strcpy(Mesh->Name,source);
-	Meshes.Add(Mesh);
 
 	return Mesh;
+}
+
+MeshData* MeshData::NewEmpty()
+{
+	Clear();
+	CalcBSphere();
+	return new MeshData();
 }
 
 MeshData::~MeshData(void)
 {
 	glDeleteBuffers(6, vbo);
 	glDeleteVertexArrays(1, &vao);
+	Meshes.Remove(this);
 	//glDisableVertexAttribArray(0);
     //glDisableVertexAttribArray(1);
 }
@@ -163,6 +180,19 @@ void MeshData::GenerateTangent(void)
 	// Result vectors
 	vec3 Tangent, BiNormal;
 
+	//Clean Up
+	for (int i = 0; i < dataLenght; i++)
+	{
+		tangentBuffer[i][0] = 0.0f;
+		tangentBuffer[i][1] = 0.0f;
+		tangentBuffer[i][2] = 0.0f;
+
+		biNormalBuffer[i][0] = 0.0f;
+		biNormalBuffer[i][1] = 0.0f;
+		biNormalBuffer[i][2] = 0.0f;
+	}
+
+	//Generation
 	for (int i = 0; i * 3 < dataLenghtIndex; i++)
 	{
 		for (int j = 0; j < 3; j++)
@@ -216,32 +246,44 @@ void MeshData::GenerateTangent(void)
 	}
 	// Normalizing Result
 	vec3 TmpVec;
-	for (int i = 0; i < dataLenghtIndex; i++)
+	for (int i = 0; i < dataLenght; i++)
 	{
-		CurIndex = indexBuffer[i];
-
 		//Normalize Tangent
 		TmpVec =vec3(
-			tangentBuffer[CurIndex][0],
-			tangentBuffer[CurIndex][1],
-			tangentBuffer[CurIndex][2]);
+			tangentBuffer[i][0],
+			tangentBuffer[i][1],
+			tangentBuffer[i][2]);
 
 		TmpVec = normalize(TmpVec);
 
-		tangentBuffer[CurIndex][0] = TmpVec.x;
-		tangentBuffer[CurIndex][1] = TmpVec.y;
-		tangentBuffer[CurIndex][2] = TmpVec.z;
+		tangentBuffer[i][0] = TmpVec.x;
+		tangentBuffer[i][1] = TmpVec.y;
+		tangentBuffer[i][2] = TmpVec.z;
 
 		//Normalize BiNormal
 		TmpVec =vec3(
-			biNormalBuffer[CurIndex][0],
-			biNormalBuffer[CurIndex][1],
-			biNormalBuffer[CurIndex][2]);
+			biNormalBuffer[i][0],
+			biNormalBuffer[i][1],
+			biNormalBuffer[i][2]);
 
 		TmpVec = normalize(TmpVec);
 
-		biNormalBuffer[CurIndex][0] = TmpVec.x;
-		biNormalBuffer[CurIndex][1] = TmpVec.y;
-		biNormalBuffer[CurIndex][2] = TmpVec.z;
+		biNormalBuffer[i][0] = TmpVec.x;
+		biNormalBuffer[i][1] = TmpVec.y;
+		biNormalBuffer[i][2] = TmpVec.z;
+	}
+}
+
+void MeshData::CalcBSphere()
+{
+	maxDistToCenter = 0;
+	for (int i = 0; i < dataLenght; i++)
+	{
+		GLfloat distToCenter = length(vec3(
+			positionBuffer[i][0],
+			positionBuffer[i][1],
+			positionBuffer[i][2]));
+
+		if(maxDistToCenter < distToCenter) maxDistToCenter = distToCenter;
 	}
 }

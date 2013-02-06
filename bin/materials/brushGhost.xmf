@@ -1,0 +1,4 @@
+<material>
+	<shader frag="brushGhost.frag" vert="brushGhost.vert"/>
+	<transparent/>
+</material>

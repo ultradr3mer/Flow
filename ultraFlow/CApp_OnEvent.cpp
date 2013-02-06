@@ -1,5 +1,8 @@
 #include "CApp.h"
 
+float lastMouseFire;
+float lastMouseFireUp;
+
 void CApp::OnEvent(SDL_Event* Event) {
 	int x,y;
 	switch (Event->type)
@@ -8,25 +11,27 @@ void CApp::OnEvent(SDL_Event* Event) {
 		Running = false;
 		break;
 	case SDL_MOUSEMOTION:
-		x = Event->motion.x-screenX/2;
-		y = Event->motion.y-screenY/2;
+		x = screenX/2-Event->motion.x;
+		y = screenY/2-Event->motion.y;
 		if(x != 0 || y != 0)
 		{
-			player->Rotation.y -= x / 1000.0f;
-			player->Rotation.x -= y / 1000.0f;
+			player->RotationVec.y += x / 1000.0f;
+			player->RotationVec.x += y / 1000.0f;
 		}
 		SDL_WarpMouse(screenX/2,screenY/2);
 		break;
 	case SDL_MOUSEBUTTONDOWN:
-		if(Event->button.button == SDL_BUTTON_LEFT )
+		if(lastMouseFire  + 0.05 < gameTime)
 		{
-			player->Fire();
+			player->Click(Event->button.button);
+			lastMouseFire = gameTime;
 		}
 		break;
 	case SDL_MOUSEBUTTONUP:
-		if(Event->button.button == SDL_BUTTON_LEFT )
+		if(lastMouseFireUp  + 0.05 < gameTime)
 		{
-			player->FireUp();
+			player->ClickUp(Event->button.button);
+			lastMouseFireUp = gameTime;
 		}
 		break;
 	case SDL_KEYDOWN:

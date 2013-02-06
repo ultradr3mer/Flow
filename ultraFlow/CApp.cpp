@@ -24,6 +24,7 @@ int CApp::OnExecute(int argc, char **argv) {
 		calculatedFrame= false;
 		while ((SDL_GetTicks() - GameBaseTime) > GameTickLength)
 		{
+			gameTime = SDL_GetTicks() / 1000.0f;
 			GameBaseTime += GameTickLength;
 			OnUpdate();
 			calculatedFrame = true;

@@ -18,12 +18,14 @@
 #include "Filter2D.h"
 #include "Sun.h"
 #include "Scene.h"
+#include "TraceableTriangle.h"
  
 class CApp {
     private:
         bool Running;
 		long frame;
 		int timebase;
+		float gameTime;
 		Player* player;
 		SDL_Surface* Surf_Display;
 		Uint32 GameBaseTime;

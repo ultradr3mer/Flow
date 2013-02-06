@@ -13,6 +13,8 @@ ObjLoader::~ObjLoader(void)
 
 void ObjLoader::Load(char* source)
 {
+	MeshData::Clear();
+
 	maxDistToCenter = 0;
 	char* data = FileToBuf(FullFileName("models\\",source));
 
@@ -47,13 +49,6 @@ void ObjLoader::Load(char* source)
 			indexedPositionBuffer[curPos+1] = (float)strtod(subline,NULL);
 			cutFromChar(subline,' ', line, &lineIndex);
 			indexedPositionBuffer[curPos+2] = (float)strtod(subline,NULL);
-
-			GLfloat distToCenter = length(vec3(
-				indexedPositionBuffer[curPos],
-				indexedPositionBuffer[curPos+1],
-				indexedPositionBuffer[curPos+2]));
-
-			if(maxDistToCenter < distToCenter) maxDistToCenter = distToCenter;
 
 			curPos += 3;
 		}
@@ -93,10 +88,12 @@ void ObjLoader::Load(char* source)
 				tmpPos[0] = indexedPositionBuffer[tmpIndex*3];
 				tmpPos[1] = indexedPositionBuffer[tmpIndex*3+1];
 				tmpPos[2] = indexedPositionBuffer[tmpIndex*3+2];
+
 				cutFromChar(subline2,'/', subline, &sublineIndex);
 				tmpIndex = (int)strtod(subline2,NULL)-1;
 				tmpTex[0] = indexedtextureBuffer[tmpIndex*2];
 				tmpTex[1] = indexedtextureBuffer[tmpIndex*2+1];
+
 				cutFromChar(subline2,'/', subline, &sublineIndex);
 				tmpIndex = (int)strtod(subline2,NULL)-1;
 				tmpNor[0] = indexedNormalBuffer[tmpIndex*3];

@@ -151,7 +151,7 @@ void ParticleSystem::Draw()
 	ShaderData::UniformMatrix4fv(MatViewProjection, curViewPort->ViewProjectionMatrix);
 	ShaderData::UniformMatrix4fv(MatModelView, mat4(1.0f));
 	//ShaderData::Uniform1f(FltAspect, curViewPort->Aspect);
-	ShaderData::Uniform1f(FltSize, ParticleSize);
+	ShaderData::Uniform1f(VecSize, ParticleSize);
 
 	float alpha = 0;
 	vec4 position;

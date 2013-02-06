@@ -79,23 +79,21 @@ bool XmlNode::IsNull()
 }
 XmlNode* XmlNode::ChildNode(char* Name)
 {
-	XmlNode* xmlNode = nullptr;
-	ChildNodes.InitReader(&xmlNode);
+	ChildNodes.InitReader();
 	while(ChildNodes.Read())
 	{
-		if(strcmp(xmlNode->Name,Name) == 0)
-			return xmlNode;
+		if(strcmp(ChildNodes.Cur->Name,Name) == 0)
+			return ChildNodes.Cur;
 	}
 	return &nullNode;
 }
 XmlAttribute* XmlNode::Attribute(char* Name)
 {
-	XmlAttribute* xmlAttribute = nullptr;
-	Attributes.InitReader(&xmlAttribute);
+	Attributes.InitReader();
 	while(Attributes.Read())
 	{
-		if(strcmp(xmlAttribute->Name,Name))
-			return xmlAttribute;
+		if(strcmp(Attributes.Cur->Name,Name))
+			return Attributes.Cur;
 	}
 	return &nullAttribute;
 }

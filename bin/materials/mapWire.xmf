@@ -1,0 +1,6 @@
+<material>
+	<shader frag="textureSimple.frag" vert="textureSimple.vert"/>
+	<shadowshader frag="shadow.frag" vert="simpleLight.vert"/>
+
+	<textures diffuse="wire.dds"/>
+</material>

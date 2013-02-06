@@ -55,21 +55,20 @@ void TextureData::Bind(void)
 
 TextureData* TextureData::FromDDS(char* source)
 {
-	TextureData* textureData = nullptr;
-	Textures.InitReader(&textureData);
+	Textures.InitReader();
 	while(Textures.Read())
 	{
-		if(strcasecmp(textureData->Name,source))
-			return textureData;
+		if(strcasecmp(Textures.Cur->Name,source))
+			return Textures.Cur;
 	}
 
-	textureData = new TextureData();
-	textureData->CreateData();
+	TextureData* Texture = new TextureData();
+	Texture->CreateData();
 	DDSLoader::loadDds(source);
-	strcpy(textureData->Name,source);
+	strcpy(Texture->Name,source);
 	//Textures.Add(textureData);
 
-	return textureData;
+	return Texture;
 }
 
 TextureData* TextureData::SetTarget(enum Uniforms target)

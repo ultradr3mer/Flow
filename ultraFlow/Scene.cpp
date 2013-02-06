@@ -39,20 +39,26 @@ Scene::Scene(void)
 
 	//Setup Cubemap
 	cubeMap = new CubeMap;
+
+	//Setup MapData
+	Map = new MapData();
+	//Map->AddBrush(new Brush(vec3(-10,-10,-1),vec3(20,20,1),1,false));
+	//Map->AddBrush(new Brush(vec3(0,0,0),vec3(1,1,1),1,false));
 }
 
 
 Scene::~Scene(void)
 {
+	delete Map;
 }
 
 void Scene::DrawPass(enum DrawingPass pass)
 {
-	Model* model = nullptr;
-	SceneDrawables.InitReader(&model);
+	SceneDrawables.InitReader();
+	Map->Draw(pass);
 	while (SceneDrawables.Read())
 	{
-		model->Draw(pass);
+		SceneDrawables.Cur->Draw(pass);
 	}
 }
 
@@ -64,24 +70,22 @@ void drawShadowPass()
 void Scene::DrawShadowBuffers()
 {
 	glEnable(GL_DEPTH_TEST); 
-	Sun* light = nullptr;
-	Lights.InitReader(&light);
+	Lights.InitReader();
 	while (Lights.Read())
 	{
 
-		light->UpdateShadowBuffer(drawShadowPass);
+		Lights.Cur->UpdateShadowBuffer(drawShadowPass);
 		//Draw(DrawingPassShadow);
 	}
 }
 
 void Scene::DrawDefferedLights()
 {
-	Sun* light;
-	Lights.InitReader(&light);
+	Lights.InitReader();
 	while (Lights.Read())
 	{
-		CurLight = light;
-		light->Draw();
+		CurLight = Lights.Cur;
+		CurLight->Draw();
 	}
 }
 
