@@ -23,7 +23,6 @@ private:
 	ListElement* nextElement;
 	ListElement* elementToRemove;
 	ListElement* currentElement;
-	T** IndexBuffer;
 
 	//Intern Movement
 	void goToElement(int index);
@@ -32,6 +31,7 @@ public:
 	bool PerformCleanup;
 	int Length;
 	T* Cur;
+	T** Index;
 
 	//Constructors
 	ListContainer(void);
@@ -39,6 +39,9 @@ public:
 
 	//Adding elements
 	void Add(T* content);
+
+	//Removes all elements and Adds the new one
+	void Set(T* content);
 
 	//Getting elements
 	T* Get(int index);
@@ -59,6 +62,7 @@ public:
 	void ClearDelete();
 
 	//Info
+	bool Contains(T* content);
 	int CalcLength();
 
 	//Indexing
@@ -94,15 +98,15 @@ inline ListContainer<T>::ListContainer(void)
 	firstElement = nullptr;
 	nextElement = nullptr;
 	Length = 0;
-	IndexBuffer = nullptr;
+	Index = nullptr;
 }
 
 //Deconstuctor
 template <class T>
 inline ListContainer<T>::~ListContainer(void)
 {
-	if(IndexBuffer != nullptr)
-		delete IndexBuffer;
+	if(Index != nullptr)
+		delete Index;
 
 	if(PerformCleanup)
 		ClearDelete();
@@ -126,16 +130,22 @@ inline void ListContainer<T>::Add(T* content)
 		lastElement = newElement;
 	}
 
-	//if(Length == 0)
-	//{
-	//	firstElement = new ListElement(content);
-	//}
-	//else
-	//{
-	//	goToElement(Length-1);
-	//	nextElement->NextElement = new ListElement(content);
-	//}
 	Length++;
+}
+
+//Removes all elements and Adds the new one
+template <class T>
+inline void ListContainer<T>::Set(T* content)
+{
+	if(PerformCleanup)
+		ClearDelete();
+	else
+		Clear();
+
+	firstElement = new ListElement(content);
+	lastElement = firstElement;
+
+	Length = 1;
 }
 
 //Sets nextElement to element at index
@@ -298,6 +308,7 @@ inline void ListContainer<T>::RemoveDelete(int index)
 {
 	int i = 0;
 	elementToRemove = nullptr;
+	T* contentToRemove = nullptr;
 	ListElement* curElement = firstElement;
 	ListElement* prevElement = nullptr;
 	InitReader();
@@ -316,7 +327,9 @@ inline void ListContainer<T>::RemoveDelete(int index)
 				firstElement = firstElement->NextElement;
 			}
 				
+			contentToRemove = (T*)curElement->Content;
 			delete curElement;
+			delete contentToRemove;
 			Length--;
 			break;
 		}
@@ -341,27 +354,25 @@ inline void ListContainer<T>::Clear()
 template <class T>
 inline T** ListContainer<T>::GetIndex()
 {
-	if(IndexBuffer != nullptr)
-		delete IndexBuffer;
+	if(Index != nullptr)
+		delete Index;
 
-	IndexBuffer = new T*[Length];
+	Index = new T*[Length];
 	int i = 0;
 
-	T* content = nullptr;
-	InitReader(&content);
+	InitReader();
 	while (Read())
 	{
-		IndexBuffer[i++] = content;
+		Index[i++] = Cur;
 	}
 
-	return IndexBuffer;
+	return Index;
 }
 
 //Deletes all elements
 template <typename T>
 inline void ListContainer<T>::ClearDelete(void)
 {
-	T* objToRemove = nullptr;
 	while (Length > 0)
 	{
 		RemoveDelete(0);
@@ -560,6 +571,22 @@ inline void ListContainer<T>::RemoveFirst(void)
 		lastElement = nullptr;
 
 	Length--;
+}
+
+//Finds out if the list contains this item
+template <class T>
+inline bool ListContainer<T>::Contains(T* content)
+{
+	nextElement = firstElement;
+	while (nextElement != nullptr)
+	{
+		if(nextElement->Content == content)
+			return true;
+
+		nextElement = nextElement->NextElement;
+	}
+
+	return false;
 }
 #pragma endregion
 

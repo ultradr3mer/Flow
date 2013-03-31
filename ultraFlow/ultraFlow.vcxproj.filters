@@ -135,9 +135,6 @@
     <ClInclude Include="Terrain.h">
       <Filter>Headerdateien\Drawable</Filter>
     </ClInclude>
-    <ClInclude Include="MapData.h">
-      <Filter>Headerdateien\Loader</Filter>
-    </ClInclude>
     <ClInclude Include="BrushTool.h">
       <Filter>Headerdateien\Game</Filter>
     </ClInclude>
@@ -147,11 +144,23 @@
     <ClInclude Include="TraceableTriangle.h">
       <Filter>Headerdateien\Math</Filter>
     </ClInclude>
-    <ClInclude Include="MapMeshData.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="PlnEquation.h">
       <Filter>Headerdateien\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="MapData.h">
+      <Filter>Headerdateien\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="MapMeshData.h">
+      <Filter>Headerdateien\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="Brush.h">
+      <Filter>Headerdateien\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Ray.h">
+      <Filter>Headerdateien\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Line2d.h">
+      <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -248,20 +257,26 @@
     <ClCompile Include="Tool.cpp">
       <Filter>Quelldateien\Game</Filter>
     </ClCompile>
-    <ClCompile Include="MapData.cpp">
-      <Filter>Quelldateien\Loader</Filter>
-    </ClCompile>
     <ClCompile Include="BrushTool.cpp">
       <Filter>Quelldateien\Game</Filter>
     </ClCompile>
     <ClCompile Include="TraceableTriangle.cpp">
       <Filter>Quelldateien\Math</Filter>
     </ClCompile>
-    <ClCompile Include="MapMeshData.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="PlnEquation.cpp">
       <Filter>Quelldateien\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="MapData.cpp">
+      <Filter>Quelldateien\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="MapMeshData.cpp">
+      <Filter>Quelldateien\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="Brush.cpp">
+      <Filter>Quelldateien\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Line2d.cpp">
+      <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

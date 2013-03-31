@@ -4,5 +4,5 @@
 	<shadowshader frag="shadow.frag" vert="simpleLight.vert"/>
 	<framebuffers defferedlightmap="defferedlightmap" reflections="defferedreflections"/>
 	
-	<textures diffuse="floor.dds" normal="floor_n.dds"/>
+	<textures diffuse="concrete.dds" normal="concrete_n.dds" shadinginfo="concrete_i.dds"/>
 </material>

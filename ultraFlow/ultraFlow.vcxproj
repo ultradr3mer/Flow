@@ -87,6 +87,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Base.h" />
+    <ClInclude Include="Brush.h" />
     <ClInclude Include="BrushTool.h" />
     <ClInclude Include="BulletManager.h" />
     <ClInclude Include="CApp.h" />
@@ -96,6 +97,7 @@
     <ClInclude Include="FrameBufferData.h" />
     <ClInclude Include="GameBase.h" />
     <ClInclude Include="GenFunc.h" />
+    <ClInclude Include="Line2d.h" />
     <ClInclude Include="ListContainer.h" />
     <ClInclude Include="MapData.h" />
     <ClInclude Include="MapMeshData.h" />
@@ -108,6 +110,7 @@
     <ClInclude Include="PhysicsModel.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlnEquation.h" />
+    <ClInclude Include="Ray.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderData.h" />
     <ClInclude Include="Sun.h" />
@@ -121,6 +124,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Base.cpp" />
+    <ClCompile Include="Brush.cpp" />
     <ClCompile Include="BrushTool.cpp" />
     <ClCompile Include="BulletManager.cpp" />
     <ClCompile Include="CApp.cpp" />
@@ -135,6 +139,7 @@
     <ClCompile Include="FrameBufferData.cpp" />
     <ClCompile Include="GameBase.cpp" />
     <ClCompile Include="GenFunc.cpp" />
+    <ClCompile Include="Line2d.cpp" />
     <ClCompile Include="MapData.cpp" />
     <ClCompile Include="MapMeshData.cpp" />
     <ClCompile Include="MaterialData.cpp" />

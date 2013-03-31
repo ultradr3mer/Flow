@@ -1,7 +1,6 @@
 #include "MapMeshData.h"
 
-MapTriangle mapTriangles[128000];
-uint mapTrianglesLength;
+//ListContainer<MapTriangle> mapTriangles;
 
 // Constructor
 SimpleTriangle::SimpleTriangle(vec3 point1, vec3 point2, vec3 point3,	
@@ -14,6 +13,18 @@ SimpleTriangle::SimpleTriangle(vec3 point1, vec3 point2, vec3 point3,
 	TexCoord[0] = texCoord1;
 	TexCoord[1] = texCoord2;
 	TexCoord[2] = texCoord3;
+}
+
+// Constructor
+SimpleTriangle::SimpleTriangle(vec3 points[3], vec2 texCoords[3])
+{
+	// Set Basic Data
+	Point[0] = points[0];
+	Point[1] = points[1];
+	Point[2] = points[2];
+	TexCoord[0] = texCoords[0];
+	TexCoord[1] = texCoords[1];
+	TexCoord[2] = texCoords[2];
 }
 
 // Constructor
@@ -32,27 +43,58 @@ MapTriangle::MapTriangle(vec3 point1, vec3 point2, vec3 point3,
 	InitTransformation();
 }
 
-void MapTriangle::GenerateAllSubTriangles()
+// Center Point
+vec3 SimpleTriangle::Center()
 {
-	for (int i = 0; i < mapTrianglesLength; i++)
+	return (Point[0]+Point[1]+Point[2])/3.0f;
+}
+
+// Copy data
+SimpleTriangle* SimpleTriangle::Copy()
+{
+	return new SimpleTriangle(Point,TexCoord);
+}
+
+
+// Normal
+vec3 SimpleTriangle::Normal()
+{
+	return normalize(cross(Point[1]-Point[0],Point[2]-Point[0]));
+}
+
+// Set Frontside
+void SimpleTriangle::SetFront(vec3 normal)
+{
+	vec3 curNormal = cross(Point[1]-Point[0],Point[2]-Point[0]);
+
+	// is normal correct?
+	if(dot(normal, curNormal) < 0)
 	{
-		mapTriangles[i].GenerateSubTriangles();
+		// Swap point 1 and 2
+		vec3 tmpPoint = Point[1];
+		Point[1] = Point[2];
+		Point[2] = tmpPoint;
+
+		vec2 tmpTex = TexCoord[1];
+		TexCoord[1] = TexCoord[2];
+		TexCoord[2] = tmpTex;
 	}
 }
 
-void MapTriangle::GenerateSubTriangles()
+void MapTriangle::GenerateSubTriangles(ListContainer<MapTriangle>* intersectionTriangles)
 {
+	SubTriangles.ClearDelete();
+
+	float threshold = 0.001f;
+
 	#pragma region local Variables
-	vec2 newPoints[2];
-	int newPointCount = 0;
-	vec3 origin, destination;
+	Ray lineRay;
+	ListContainer<Line2d> lines;
+	float lineSubdivs[64];
+	int lineSubdivCount = 0;
+	vec2 cutPoint;
+	vec2 lastLinePoint, nextLinePoint;
 	int nextIndex;
-	Ray ray;
-	MapTriangle curTri;
-	vec2 localPos;
-	bool exists;
-	vec2 lines[256];
-	uint lineDataCount = 0;
 
 	float borderSubdivs[3][64];
 	int borderSubdivLength[3];
@@ -63,102 +105,117 @@ void MapTriangle::GenerateSubTriangles()
 
 	// Find intersections
 	#pragma region intersections
-	for (int i = 0; i < mapTrianglesLength; i++)
+	intersectionTriangles->InitReader();
+	while (intersectionTriangles->Read())
 	{
-		curTri = mapTriangles[i];
-		newPointCount = 0;
-		if(IntersectionHelper(curTri))
+		Ray intersectionLine = GetIntersectionLine(intersectionTriangles->Cur);
+		intersectionLine.Origin = TransformToTangentSpace(intersectionLine.Origin);
+		intersectionLine.Destination = TransformToTangentSpace(intersectionLine.Destination);
+
+		// Save Line
+		if(intersectionLine.Hit && length(intersectionLine.Origin-intersectionLine.Destination) > threshold)
 		{
-			// Shoot rays at this triangle
-			for (int i = 0; i < 3; i++)
+			lines.Add(new Line2d(vec2(intersectionLine.Origin),vec2(intersectionLine.Destination)));
+		}
+	}
+	#pragma endregion
+
+	#pragma region local Variables
+	bool removedLine = true;
+	int linesLength;
+	vec2 lineA[2], lineB[2];
+	int lineADir, lineBDir;
+	PlnEquation linePln;
+	bool canBeConnected;
+	float checkResult;
+	Line2d* curLine;
+	#pragma endregion
+
+	#pragma region line cleanup
+	// Connect lines in a row
+	while(removedLine && lines.Length > 1)
+	{
+		removedLine = false;
+		lines.GetIndex();
+		linesLength = lines.Length;
+		for (int i = 1; i < linesLength; i++)
+		{
+			lineA[0] = lines.Index[i]->Origin;
+			lineA[1] = lines.Index[i]->Destination;
+
+			for (int j = i-1; j >= 0; j--)
 			{
-				// Ray Origin
-				origin = curTri.Point[i];
-
-				// Ray Destination
-				nextIndex = i+1;
-				if(nextIndex == 3)
-					nextIndex = 0;
-				destination = curTri.Point[nextIndex];
-
-				ray.Origin = origin;
-				ray.Destination = destination;
-
-				// Parallel -> no Hit
-				if(!IsParallel(&ray,0.001f))
+				if(lines.Index[j] != nullptr)
 				{
-					// Ray Test
-					RayTest(&ray);
-
-					// Parse Result
-					if(ray.Hit == true && ray.HitMult > 0.001f && ray.HitMult < 1.001f)
+					lineB[0] = lines.Index[j]->Origin;
+					lineB[1] = lines.Index[j]->Destination;
+					for (int k = 0; k < 4; k++)
 					{
-						localPos = ray.HitCoords;
-						exists = false;
-						for (int i = 0; i < newPointCount; i++)
+						lineADir = (k & 1) == 0 ? 0:1;
+						lineBDir = (k & 2) == 0 ? 0:1;
+
+						canBeConnected = (length(lineA[lineADir]-lineB[lineBDir])<threshold);
+
+						// check if both go in the same direction
+						if(canBeConnected)
 						{
-							if(length(newPoints[i]-localPos) < 0.001f)
-							{
-								exists = true;
-								break;
-							}
+							if(dot(
+								normalize(lineA[lineADir]-lineA[1-lineADir]),
+								normalize(lineB[1-lineBDir]-lineB[lineBDir])) 
+								< 1 -threshold)
+								canBeConnected = false;
 						}
 
-						if(!exists)
-							newPoints[newPointCount++] = localPos;
-					}
-				}
-			}
-
-			// Shoot rays at cur triangle
-			for (int i = 0; i < 3; i++)
-			{
-				// Ray Origin
-				origin = Point[i];
-
-				// Ray Destination
-				nextIndex = i+1;
-				if(nextIndex == 3)
-					nextIndex = 0;
-				destination = Point[nextIndex];
-
-				ray.Origin = origin;
-				ray.Destination = destination;
-
-				// Parallel -> no Hit
-				if(!curTri.IsParallel(&ray,0.001f))
-				{
-					// Ray Test
-					curTri.RayTest(&ray);
-
-					// Parse Result
-					if(ray.Hit == true && ray.HitMult > 0.0f && ray.HitMult < 1.0f)
-					{
-						localPos = vec2(TransformToTangentSpace(ray.HitPos()));
-						exists = false;
-						for (int i = 0; i < newPointCount; i++)
+						if(canBeConnected)
 						{
-							if(length(newPoints[i]-localPos) < 0.001f)
-							{
-								exists = true;
-								break;
-							}
+							checkResult = lines.Index[i]->Pln.Check(vec3(lineB[1-lineBDir],0.0f));
+							if(checkResult > threshold || checkResult < -threshold)
+								canBeConnected = false;
 						}
 
-						if(!exists)
+						if(canBeConnected)
 						{
-							newPoints[newPointCount++] = localPos;
-							borderSubdivs[i][borderSubdivLength[i]++] = ray.HitMult;
+							lines.Index[i]->Origin = lineA[1-lineADir];
+							lines.Index[i]->Destination = lineB[1-lineBDir];
+
+							lines.RemoveDelete(lines.Index[j]);
+							lines.Index[j] = nullptr;
+
+							removedLine = true;
 						}
 					}
 				}
 			}
+		}
+	}
 
-			// Save Line
-			if(newPointCount == 2)
+	//Split Crossing lines
+	for (int i = 0; i < lines.Length; i++)
+	{
+		lines.GetIndex();
+		curLine = lines.Index[i];
+		curLine->Threshold = -0.01f;
+		for (int j = i-1; j >= 0; j--)
+		{
+			if(curLine->Intersect(lines.Index[j]))
 			{
-				lines[lineDataCount++] = newPoints[0];
-				lines[lineDataCount++] = newPoints[1];
+				//Generate new lines / modyfy old ones
+				if(length(curLine->intersectionPoint-curLine->Destination) > threshold && 
+					length(curLine->Origin-curLine->intersectionPoint) > threshold)
+				{
+					lines.Add(new Line2d(curLine->intersectionPoint,curLine->Destination));
+					curLine->Destination = curLine->intersectionPoint;
+				}
+				if(length(curLine->intersectionPoint-lines.Index[j]->Destination) > threshold &&
+					length(lines.Index[j]->Origin-curLine->intersectionPoint) > threshold)
+				{
+					lines.Add(new Line2d(curLine->intersectionPoint,lines.Index[j]->Destination));
+					lines.Index[j]->Destination = curLine->intersectionPoint;
+				}
+
+				////Modify old ones
+				//curLine->Destination = curLine->intersectionPoint;
+				//lines.Index[j]->Destination = curLine->intersectionPoint;
 			}
 		}
 	}
@@ -171,8 +228,8 @@ void MapTriangle::GenerateSubTriangles()
 	float* curSubDivs;
 	#pragma endregion
 
-	// Asseble sub triangles
-	#pragma region assembling
+	// Generate borderlines
+	#pragma region borders
 
 	// Generate borderlines
 	for (int i = 0; i < 3; i++)
@@ -191,56 +248,240 @@ void MapTriangle::GenerateSubTriangles()
 		curDataLength = borderSubdivLength[i];
 		curSubDivs = borderSubdivs[i];
 		#pragma region stupid selection sort >.<
-		for (int i = 0; i < curDataLength; i++)
+		for (int j = 0; j < curDataLength; j++)
 		{
-			float a = curSubDivs[i];
-			for (int j = i+1; j < curDataLength; j++)
+			float a = curSubDivs[j];
+			for (int k = j+1; k < curDataLength; k++)
 			{
-				if(curSubDivs[j] < a)
+				if(curSubDivs[k] < a)
 				{
-					a = curSubDivs[j];
-					curSubDivs[j] = curSubDivs[i];
-					curSubDivs[i] = a;
+					a = curSubDivs[k];
+					curSubDivs[k] = curSubDivs[j];
+					curSubDivs[j] = a;
 				}
 			}
 		}
 		#pragma endregion
 
-		// Clean Mesh
-		for (int i = 0; i < lineDataCount; i++)
+		for (int j = 0; j < curDataLength; j++)
 		{
-			if(length(lines[i]-originTs) < 0.001f)
-				lines[i]=originTs;
-			if(length(lines[i]-destinationTs) < 0.001f)
-				lines[i]=destinationTs;
-		}
-
-		for (int i = 0; i < curDataLength; i++)
-		{
-			nextPoint = originTs + destinationTs-originTs * curSubDivs[i];
+			nextPoint = destinationTs * (1-curSubDivs[j]) + originTs * curSubDivs[j];
 
 			// Create Line
-			lines[lineDataCount++] = lastPoint;
-			lines[lineDataCount++] = nextPoint;
+			lines.Add(new Line2d(lastPoint,nextPoint));
+			//lines[lineDataCount++] = lastPoint;
+			//lines[lineDataCount++] = nextPoint;
 
 			lastPoint = nextPoint;
 
-			//// Clean Mesh
-			//for (int i = 0; i < lineDataCount; i++)
-			//{
-			//	if(length(lines[i]-lastPoint) < 0.001f)
-			//		lines[i]=lastPoint;
-			//}
-
 		}
 
-		lines[lineDataCount++] = lastPoint;
-		lines[lineDataCount++] = destinationTs;
+		lines.Add(new Line2d(lastPoint,destinationTs));
+		//lines[lineDataCount++] = lastPoint;
+		//lines[lineDataCount++] = destinationTs;
 	}
+	#pragma endregion
+
+	#pragma region local Variables
+	vec2 uniquePoints[256];
+	int uniquePointCount = 0;
+	bool pointExists = false;
+	vec2 currentTriangle[3];
+	TraceableTriangle* currentTrTriangle;
+	bool triangleIsValid;
+	vec3 currentTriangleWorldCoords[3];
+	vec2 currentTriangleTextureCorrds[3];
+	vec3 borderVectorsWorld[2];
+	vec2 borderVectorsTexture[2];
+	vec3 vecA,vecB;
+	vec2 vecTexA,vecTexB;
+	bool hasThisPoint;
+	bool isDuplicate;
+	vec3 curPoint;
+	vec3 helpVec;
+	vec2 helpVecTex;
+	ListContainer<TraceableTriangle> trSubTriangles;
+	#pragma endregion
+
+	// Asseble sub triangles
+	#pragma region assembling
+	lineRay = Ray();
+
+	// Find unique points
+	lines.InitReader();
+	while(lines.Read())
+	//for (int i = 0; i < lineDataCount; i++)
+	{
+		pointExists = false;
+		for (int j = 0; j < uniquePointCount; j++)
+		{
+			if(length(uniquePoints[j]-lines.Cur->Origin)<threshold)
+			{
+				pointExists = true;
+				break;
+			}
+		}
+		if(!pointExists)
+		{
+			uniquePoints[uniquePointCount++] = lines.Cur->Origin;
+		}
+
+		pointExists = false;
+		for (int j = 0; j < uniquePointCount; j++)
+		{
+			if(length(uniquePoints[j]-lines.Cur->Destination)<threshold)
+			{
+				pointExists = true;
+				break;
+			}
+		}
+		if(!pointExists)
+		{
+			uniquePoints[uniquePointCount++] = lines.Cur->Destination;
+		}
+	}
+
+	// generate all possible triangles
+	lines.GetIndex();
+	for (int i = 0; i < lines.Length; i++)
+	{
+		// Get first 2 Points from Current line Line
+		currentTriangle[0] = lines.Index[i]->Origin;
+		currentTriangle[1] = lines.Index[i]->Destination;
+
+		for (int j = 0; j < uniquePointCount; j++)
+		{
+			// Pick any Point as third one
+			currentTriangle[2] = uniquePoints[j];
+
+			// Create Tracable Triangle
+			currentTrTriangle = new TraceableTriangle(
+				vec3(currentTriangle[0],0.0f),
+				vec3(currentTriangle[1],0.0f),
+				vec3(currentTriangle[2],0.0f));
+
+			//currentTrTriangle->Threshold *= -1;
+
+			// Ceck if Current point is not part of current line
+			triangleIsValid = (length(uniquePoints[j]-currentTriangle[0])>threshold &&
+				length(uniquePoints[j]-currentTriangle[1])>threshold);
+
+
+			if(triangleIsValid)
+			{
+				// Check if surface content big enougth
+				if( length(cross(
+					currentTrTriangle->Point[1]-currentTrTriangle->Point[0],
+					currentTrTriangle->Point[2]-currentTrTriangle->Point[0]))
+					< threshold)
+					triangleIsValid = false;
+			}
+
+			// Check if Triangle Intersects with a line
+			if(triangleIsValid)
+			{
+				currentTrTriangle->Threshold = -0.0025f;
+				lineRay.Threshold  = 0;
+
+				for (int k = 0; k < lines.Length; k++)
+				{
+					vec2 first = lines.Index[k]->Origin;
+					vec2 second = lines.Index[k]->Destination;
+					vec2 dir = normalize(first-second)*Threshold;
+					lineRay.Origin = vec3(first-dir,0.0f);
+					lineRay.Destination = vec3(second+dir,0.0f);					
+					currentTrTriangle->PlaneInternTesting(&lineRay);
+					
+					if(lineRay.Hit)
+					{
+						triangleIsValid = false;
+						break;
+					}
+				}
+				currentTrTriangle->Threshold = 0.001f;
+			}
+
+			// Is this Triangle inside of another triangle or another triangle inside this?
+			if(triangleIsValid)
+			{
+				trSubTriangles.InitReader();
+				while(trSubTriangles.Read())
+				{
+					if(currentTrTriangle->PointTest(trSubTriangles.Cur->Center) ||
+						trSubTriangles.Cur->PointTest(currentTrTriangle->Center))
+					{
+						triangleIsValid = false;
+						break;
+					}
+				}
+			}
+
+			// Save Triangle ?
+			if(triangleIsValid)
+			{
+				vecA = Point[1]-Point[0];
+				vecB = Point[2]-Point[0];
+
+				vecTexA = TexCoord[1]-TexCoord[0];
+				vecTexB = TexCoord[2]-TexCoord[0];
+
+				// Generate World and Texture Coords
+				for (int k = 0; k < 3; k++)
+				{
+					currentTriangleWorldCoords[k] = Point[0]+vecA*currentTriangle[k].x+vecB*currentTriangle[k].y;
+					currentTriangleTextureCorrds[k] = TexCoord[0]+vecTexA*currentTriangle[k].x+vecTexB*currentTriangle[k].y;
+				}
+
+				// is Clockwise?
+				if(dot(cross(vecA,vecB),
+					cross(currentTriangleWorldCoords[1]-currentTriangleWorldCoords[0],
+					currentTriangleWorldCoords[2]-currentTriangleWorldCoords[0])) < 0)
+				{
+					helpVec = currentTriangleWorldCoords[0];
+					currentTriangleWorldCoords[0] = currentTriangleWorldCoords[1];
+					currentTriangleWorldCoords[1] = helpVec;
+
+					helpVecTex = currentTriangleTextureCorrds[0];
+					currentTriangleTextureCorrds[0] = currentTriangleTextureCorrds[1];
+					currentTriangleTextureCorrds[1] = helpVecTex;
+				}
+
+
+				//// Save new Lines
+
+				lines.Add(new Line2d(currentTriangle[1],currentTriangle[2]));
+				lines.Add(new Line2d(currentTriangle[2],currentTriangle[0]));
+
+				//if(lineDataCount >= 252)
+				//	printf("Error Generating Map Mesh");
+
+				//lines[lineDataCount++] = currentTriangle[1];
+				//lines[lineDataCount++] = currentTriangle[2];
+
+				//lines[lineDataCount++] = currentTriangle[2];
+				//lines[lineDataCount++] = currentTriangle[0];
+
+				lines.GetIndex();
+
+				// Save Tracable Triangle
+				trSubTriangles.Add(currentTrTriangle);
+
+				// Save Sub Triangle
+				SubTriangles.Add(new SimpleTriangle(
+					currentTriangleWorldCoords,
+					currentTriangleTextureCorrds));
+			}
+			else
+			{
+				delete currentTrTriangle;
+			}
+		}
+	}
+
 	#pragma endregion
 }
 
-bool MapTriangle::IntersectionHelper(MapTriangle tri)
+bool MapTriangle::IntersectionHelper(MapTriangle* tri)
 {
 	PlnEquation plane = PlnEquation(Point[0],Point[1],Point[2]);
 
@@ -251,9 +492,9 @@ bool MapTriangle::IntersectionHelper(MapTriangle tri)
 	float checkValue;
 	for (int i = 0; i < 3; i++)
 	{
-		checkValue = plane.Check(tri.Point[i]);
+		checkValue = plane.Check(tri->Point[i]);
 
-		if(checkValue > 0.0001)
+		if(checkValue > 0.001)
 		{
 			sidePos = true;
 			centerOnly = false;
@@ -261,12 +502,12 @@ bool MapTriangle::IntersectionHelper(MapTriangle tri)
 			if(sideNeg)
 				break;
 		}
-		else if(checkValue < -0.0001)
+		else if(checkValue < -0.001)
 		{
 			sideNeg = true;
 			centerOnly = false;
 
-			if(sideNeg)
+			if(sidePos)
 				break;
 		}
 		else
@@ -286,7 +527,7 @@ bool MapTriangle::IntersectionHelper(MapTriangle tri)
 		pointA = Point[j];
 		for (int k = 0; k < 3; k++)
 		{
-			pointB = tri.Point[k];
+			pointB = tri->Point[k];
 
 			if(pointA == pointB)
 			{
@@ -297,4 +538,6 @@ bool MapTriangle::IntersectionHelper(MapTriangle tri)
 			}
 		}
 	}
+
+	return true;
 }

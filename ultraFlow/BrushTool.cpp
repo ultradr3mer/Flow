@@ -15,6 +15,8 @@ BrushTool::BrushTool(Scene* scene)
 	placeMode = PlaceModeNone;
 
 	this->scene = scene;
+
+	GridRes = 4.0f;
 }
 
 BrushTool::~BrushTool(void)
@@ -27,39 +29,54 @@ void BrushTool::Update()
 	{
 		PerformMovement();
 
-		btVector3 from = BulletVec3FromVec3(&Position);
-		btVector3 to = BulletVec3FromVec3(&(Position + PointingDir*100.0f));
+		vec3 from = Position;
+		vec3 to = Position + PointingDir*100.0f;
 
-		btCollisionWorld::ClosestRayResultCallback	closestResults(from,to);
-		//closestResults.m_flags |= btTriangleRaycastCallback::kF_FilterBackfaces;
-		dynamicsWorld->rayTest(from,to,closestResults);
+		btVector3 btFrom = BulletVec3FromVec3(&from);
+		btVector3 btTo = BulletVec3FromVec3(&to);
+		btCollisionWorld::ClosestRayResultCallback	closestResults(btFrom,btTo);
+		Ray ray;
 
 		switch (placeMode)
 		{
 		case PlaceModeNone:
+			//closestResults.m_flags |= btTriangleRaycastCallback::kF_FilterBackfaces;
+			dynamicsWorld->rayTest(btFrom,btTo,closestResults);
+
 			if (closestResults.hasHit())
 			{
-				Cursor->Position = Vec3FromBulletVec3(&from.lerp(to,closestResults.m_closestHitFraction));
-				Cursor->Rotation = RotationFromNormal(Vec3FromBulletVec3(&closestResults.m_hitNormalWorld));
+				hitPos = Vec3FromBulletVec3(&btFrom.lerp(btTo,closestResults.m_closestHitFraction));
+				hitNorm = Vec3FromBulletVec3(&closestResults.m_hitNormalWorld);
 
 				// Snapping
-				Cursor->Position = round(Cursor->Position*2.0f)/2.0f;
-				Cursor->Rotation = round(Cursor->Rotation*4.0f)/4.0f;
+				hitPos = round(hitPos*GridRes)/GridRes;
+				hitNorm = round(hitNorm);
+
+				Cursor->Position = hitPos;
+				Cursor->Rotation = RotationFromNormal(brushNormal = hitNorm);
 			}
 			break;
 		case PlaceModeSizeXY:
-			if (closestResults.hasHit())
-			{
-				brushNormal = Vec3FromBulletVec3(&closestResults.m_hitNormalWorld);
+			ray = Ray(from,to);
+			pointingHelper.RayTest(&ray);
 
-				vec3 hitPos = Vec3FromBulletVec3(&from.lerp(to,closestResults.m_closestHitFraction));
-				brushDist = length(hitPos - Position);
-				brushSizeXy = hitPos - brushPosition;
-				brushSize = brushSizeXy;
-			}
+			hitPos = ray.HitPos();
+
+			// Snapping
+			hitPos = round(hitPos*GridRes)/GridRes;
+
+			brushDist = length(hitPos - Position);
+			brushSizeXy = hitPos - brushPosition;
+			brushSize = brushSizeXy;
 			break;
 		case PlaceModeSizeZ:
-			brushSize = brushSizeXy + brushNormal * (Rotation.x - xRot) * brushDist * 6.0f;
+			ray = Ray(from,to);
+			pointingHelper.RayTest(&ray);
+
+			// Snapping
+			ray.HitCoords.x = round(ray.HitCoords.x*GridRes)/GridRes;
+
+			brushSize = brushSizeXy + brushNormal * ray.HitCoords.x;
 			break;
 		default:
 			break;
@@ -69,7 +86,7 @@ void BrushTool::Update()
 		if(ghostVisible)
 		{
 			// Snapping
-			brushSize = round(brushSize*2.0f)/2.0f;
+			brushSize = round(brushSize*GridRes)/GridRes;
 
 			positiveSize = brushSize;
 			positiveSize *= sign(positiveSize);
@@ -81,22 +98,39 @@ void BrushTool::Update()
 
 void BrushTool::Click(uint btn)
 {
+	vec3 plnPoints[3];
+	mat4 tmpMat;
+
 	switch (placeMode)
 	{
 	case PlaceModeNone:
 		placeMode = PlaceModeSizeXY;
 
-		brushPosition = Cursor->Position;
+		brushPosition = hitPos;
 		//ghost->Position = brushPosition;
+
+		tmpMat = MatrixFromPosAng(hitPos,Cursor->Rotation);
+		plnPoints[0] = hitPos;
+		plnPoints[1] = vec3(tmpMat * vec4(1,0,0,1));
+		plnPoints[2] = vec3(tmpMat * vec4(0,0,1,1));
+		pointingHelper = TraceableTriangle(plnPoints);
 
 		scene->SceneDrawables.Add(ghost);
 		scene->SceneDrawables.Remove(Cursor);
 		ghostVisible = true;
 		break;
 	case PlaceModeSizeXY:
-		placeMode = PlaceModeSizeZ;
+		if(((int)(brushSizeXy.x != 0) +
+			(int)(brushSizeXy.y != 0) +
+			(int)(brushSizeXy.z != 0)) > 1)
+		{
+			placeMode = PlaceModeSizeZ;
 
-		xRot = Rotation.x;
+			plnPoints[0] = hitPos;
+			plnPoints[1] = hitPos+hitNorm;
+			plnPoints[2] = hitPos+normalize(cross(PointingDir,hitNorm));
+			pointingHelper = TraceableTriangle(plnPoints);
+		}
 		break;
 	case PlaceModeSizeZ:
 		placeMode = PlaceModeNone;

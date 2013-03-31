@@ -13,6 +13,7 @@ enum Uniforms
 	TexDiffuse5,
 	TexDiffuse6,
 	TexNormal,
+	TexShadingInfo,
 	TexDepth,
 	TexDeffLightmap,
 	TexShadowMap,

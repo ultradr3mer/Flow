@@ -26,27 +26,28 @@ bool CApp::OnInit(int argc, char **argv) {
 	//	vec3(0.2f,-0.1f,-0.2f),
 	//	vec3(1.0f,0.3f,0.0f),
 	//	vec3(1.0f,0.3f,1.0f));
-	TraceableTriangle tri = TraceableTriangle(
-		vec3(0.0f,0.0f,-0.2f),
-		vec3(1.0f,0.0f,0.0f),
-		vec3(0.0f,0.5f,0.2f));
-	Ray ray = Ray(
-				vec3( 0.0f),
-				vec3( 0.0f, 0.0f, 2.0f)
-				);
-	int count = 1000;
-	float hits = 0;
-	for (int i = 0; i < count; i++)
-	{
-		for (int j = 0; j < count; j++)
-		{
-			ray.Origin = vec3( (float)i / count, (float)j / count, 2.0f);
-			tri.RayTest(&ray);
-			if(ray.Hit)
-				hits++;
-		}
-	}
-	hits /= count * count;
+	//TraceableTriangle tri = TraceableTriangle(
+	//	vec3(0.0f,0.0f,0.0f),
+	//	vec3(1.0f,0.0f,0.0f),
+	//	vec3(0.0f,1.0f,0.0f));
+	//tri.EvenScaling(-0.1f);
+	//Ray ray = Ray(
+	//			vec3( 0.0f),
+	//			vec3( 0.0f, 0.0f, 2.0f)
+	//			);
+	//int count = 1000;
+	//float hits = 0;
+	//for (int i = 0; i < count; i++)
+	//{
+	//	for (int j = 0; j < count; j++)
+	//	{
+	//		ray.Origin = vec3( (float)i / count, (float)j / count, 2.0f);
+	//		tri.RayTest(&ray);
+	//		if(ray.Hit)
+	//			hits++;
+	//	}
+	//}
+	//hits /= count * count;
 
 	#pragma region sdl/opengl
 
@@ -156,8 +157,10 @@ bool CApp::OnInit(int argc, char **argv) {
 	SDL_ShowCursor(0);
 
 	// Map preset
-	scene->Map->AddBrush(new Brush(vec3(-2,0,-2),vec3(4,1,4),0,false));
-	scene->Map->AddBrush(new Brush(vec3(-2,0.0f,-1),vec3(2,2,2),0,false));
+	scene->Map->AddBrush(new Brush(vec3(-4,0.0f,-4),vec3(8,4,4),0,false));
+	scene->Map->AddBrush(new Brush(vec3(-2,0,0),vec3(4,1,2),0,false));
+	scene->Map->AddBrush(new Brush(vec3(-1,1,0),vec3(2,1,1),0,false));
+	
 
 	return true;
 }

@@ -19,6 +19,9 @@
 #include "Sun.h"
 #include "Scene.h"
 #include "TraceableTriangle.h"
+#include "PlnEquation.h"
+#include "Ray.h"
+#include "Line2d.h"
  
 class CApp {
     private:

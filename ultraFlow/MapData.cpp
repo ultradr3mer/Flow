@@ -6,8 +6,8 @@ MapData::MapData(void)
 	mapModel = new Model();
 
 	mapModel->Mesh = MeshData::NewEmpty();
-	mapModel->Material = MaterialData::FromXml("mapWire.xmf");
-	//mapModel->Material = MaterialData::FromXml("floor.xmf");
+	//mapModel->Material = MaterialData::FromXml("mapWire.xmf");
+	mapModel->Material = MaterialData::FromXml("floor.xmf");
 
 	//Drawables.Add(
 }
@@ -18,15 +18,16 @@ MapData::~MapData(void)
 
 void MapData::Draw(enum DrawingPass pass)
 {
-	glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-	mapModel->Draw(pass);
+	//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+	//mapModel->Draw(pass);
 	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+	mapModel->Draw(pass);
 }
 
 void MapData::AddBrush(Brush* newBrush)
 {
 	Brushes.Add(newBrush);
-	GenerateMeshFromBrushes();
+	GenerateMeshFromBrushes(newBrush);
 	MeshData::GenerateTangent();
 	MeshData::CalcBSphere();
 	mapModel->Mesh->UploadMeshData();
@@ -80,21 +81,20 @@ void MapData::updateCollisionModel()
 //uint brushIndices[8];
 //uint TextureIndices[8*3];
 
-vec3 brushPositions[8];
-vec2 brushTextureCoords[8*3];
+//vec3 brushPositions[8];
+//vec2 brushTextureCoords[8*3];
 
-void MapData::GenerateMeshFromBrushes()
+void MapData::GenerateMeshFromBrushes(Brush* newBrush)
 {
+	float threshold = 0.001f;
 	MeshData::Clear();
 
-	mapTrianglesLength = 0;
+	//mapTriangles.ClearDelete();
 
 	//mapPositionDataLength = 0;
 	//mapTextureDataLength = 0;
 	//mapPositionIndexDataLength = 0;
 	//mapTextureIndexDataLength = 0;
-
-	Brushes.InitReader();
 
 	vec3* tmpPos;
 	vec2* tmpTex;
@@ -104,66 +104,247 @@ void MapData::GenerateMeshFromBrushes()
 	vec3 curSize;
 	vec2 curTex;
 	bool assigned = false;
+	ListContainer<SimpleTriangle>* subTriangles;
+	ListContainer<SimpleTriangle> allSubTriangles;
+	ListContainer<Brush>* intersectingBrushes;
+	bool isHidden = false;
 
-	while (Brushes.Read())
+	//allSubTriangles.PerformCleanup = false;
+
+	// Prepare intersections on new Brush
+	newBrush->GenerateTriangles();
+	newBrush->PrepareIntersections(&Brushes);
+	intersectingBrushes = &newBrush->IntersectingBrushes;
+
+	// Prepare intersections on new Brushes Intersections
+	intersectingBrushes->GetIndex();
+	for (int i = 0; i < intersectingBrushes->Length; i++)
 	{
-		for (int i = 0; i < 8; i++)
+		intersectingBrushes->Index[i]->PrepareIntersections(&Brushes);
+	}
+
+	//Brushes.GetIndex();
+	//for (int i = 0; i < Brushes.Length; i++)
+	//{
+	//	Brushes.Index[i]->GenerateTriangles();
+	//	Brushes.Index[i]->PrepareIntersections(&Brushes);
+	//}
+
+	Brushes.GetIndex();
+	for (int i = 0; i < Brushes.Length; i++)
+	{
+		Brushes.Index[i]->PerformIntersections(&allSubTriangles);
+	}
+
+	#pragma region clean up
+	//Triangle merging / clean up
+	int allSubTrianglesLength;
+	bool triangleRemoved = true;
+	SimpleTriangle *triA, *triB;
+	vec3 curPoint;
+	int sharedPointCount;
+	int triAIndices[3], triBIndices[3];
+	bool canBeMerged;
+	vec3 uniquePointTsCoords;
+	TraceableTriangle curTri;
+	vec3 oldNormal;
+	bool isDuplicate;
+	bool canBeRotated;
+	// Continue as long as last run could merge 2 tris
+	while(triangleRemoved)
+	{
+		triangleRemoved = false;
+		allSubTriangles.GetIndex();
+		allSubTrianglesLength = allSubTriangles.Length;
+
+		// Get first Triangle
+		for (int i = 0; i < allSubTrianglesLength; i++)
 		{
-			curPos = Brushes.Cur->Position;
-			curSize = Brushes.Cur->Size;
+			triA = allSubTriangles.Index[i];
 
-			if((i & 1) == 0) curPos.x += curSize.x;
-			if((i & 2) == 0) curPos.y += curSize.y;
-			if((i & 4) == 0) curPos.z += curSize.z;
-
-			//brushIndices[i] = mapPositionDataLength;
-			//mapPositionBuffer[mapPositionDataLength++] = curPos;
-
-			brushPositions[i] = curPos;
-
-			//Generate Texture Coords
-			for (int j = 0; j < 3; j++)
+			// Grab another Triangle
+			for (int j = i-1; j >= 0; j--)
 			{
-				switch (j)
+				isDuplicate = false;
+
+				// Does Triangle still exist?
+				canBeMerged = (allSubTriangles.Index[j] != nullptr);
+
+				// Share same normal ?
+				if(canBeMerged)
 				{
-				case 0:
-					curTex = vec2(curPos.x*0.1f,curPos.z*0.1f);
-					break;
-				case 1:
-					curTex = vec2(curPos.x*0.1f,curPos.y*0.1f);
-					break;
-				case 2:
-					curTex = vec2(curPos.z*0.1f,curPos.y*0.1f);
-					break;
+					triB = allSubTriangles.Index[j];
+					if(dot(triA->Normal(),triB->Normal()) < 1-threshold)
+						canBeMerged = false;
+				}
+				
+				// Check if triangles share 2 Points
+				if(canBeMerged)
+				{
+					sharedPointCount = 0;
+					for (int k = 0; k < 3; k++)
+					{
+						for (int l = 0; l < 3; l++)
+						{
+							if(length(triA->Point[k]-triB->Point[l]) < threshold * 10.0f)
+							{
+								sharedPointCount++;
+
+								// Sharing 3 points means B will be removed
+								if(sharedPointCount > 2)
+								{
+									isDuplicate = true;
+									break;
+								}
+
+								// Save indices for later use
+								triAIndices[sharedPointCount] = k;
+								triBIndices[sharedPointCount] = l;
+								break;
+							}
+						}
+					}
+					if(sharedPointCount < 2)
+						canBeMerged = false;
 				}
 
-				//TextureIndices[i+j*8] = mapTextureDataLength;
-				//mapTextureBuffer[mapTextureDataLength++] = curTex;
+				// Remove Triangle B
+				if(isDuplicate)
+				{
+					allSubTriangles.Remove(triB);
+					allSubTriangles.Index[j] = nullptr;
 
-				brushTextureCoords[i+j*8] = curTex;
+					triangleRemoved = true;
+					canBeMerged = false;
+				}
+
+				// Translate to tangent space
+				if(canBeMerged)
+				{
+					// Get unused Indices
+					triAIndices[0] = 0;
+					for (int j = 0; j < 3; j++)
+					{
+						if(triAIndices[(j&1)+1] == triAIndices[0])
+							triAIndices[0]++;
+					}
+					triBIndices[0] = 0;
+					for (int j = 0; j < 3; j++)
+					{
+						if(triBIndices[(j&1)+1] == triBIndices[0])
+							triBIndices[0]++;
+					}
+
+					// Generate tracable triangle (Point 0 is unique, 1 and 2 are shared)
+					curTri = TraceableTriangle(
+						triA->Point[triAIndices[0]],
+						triA->Point[triAIndices[1]],
+						triA->Point[triAIndices[2]]);
+
+					// Translate the unique point of triangle b into tangent space
+					uniquePointTsCoords = curTri.TransformToTangentSpace(
+						triB->Point[triBIndices[0]]);
+
+					// Check if Point is in the plane of triA
+					if(uniquePointTsCoords.z < -threshold ||
+						uniquePointTsCoords.z > threshold) 
+						canBeMerged = false;
+				}
+
+				canBeRotated = canBeMerged;
+
+				// Check if one of the shared points is between the unique points
+				if(canBeMerged)
+				{
+					// Is in line with Point 0 - Point 1
+					if(uniquePointTsCoords.y > -threshold &&
+						uniquePointTsCoords.y < threshold &&
+						uniquePointTsCoords.x > 1.0f) 
+					{
+						// Extend Triangle A
+						oldNormal = triA->Normal();
+						triA->Point[triAIndices[1]] = triB->Point[triBIndices[0]];
+						triA->TexCoord[triAIndices[1]] = triB->TexCoord[triBIndices[0]];
+						triA->SetFront(oldNormal);
+
+						// Remove Triangle B
+						allSubTriangles.Remove(triB);
+						allSubTriangles.Index[j] = nullptr;
+
+						triangleRemoved = true;
+						canBeMerged = false;
+						canBeRotated = false;
+					}
+				}
+
+				if(canBeMerged)
+				{
+					// Is in line with Point 0 - Point 2
+					if(uniquePointTsCoords.x > -threshold &&
+						uniquePointTsCoords.x < threshold &&
+						uniquePointTsCoords.y > 1.0f) 
+					{
+						// Extend triangle A
+						oldNormal = triA->Normal();
+						triA->Point[triAIndices[2]] = triB->Point[triBIndices[0]];
+						triA->TexCoord[triAIndices[2]] = triB->TexCoord[triBIndices[0]];
+						triA->SetFront(oldNormal);
+
+						// Remove triangle B
+						allSubTriangles.Remove(triB);
+						allSubTriangles.Index[j] = nullptr;
+
+						triangleRemoved = true;
+						canBeRotated = false;
+					}
+				}
+
+				// Check if A and B form a convex shape
+				if(canBeRotated)
+				{
+					if(uniquePointTsCoords.y < threshold ||
+						uniquePointTsCoords.x < threshold)
+						canBeRotated = false;
+				}
+
+				// Rotate to find other merging possibilities
+				if(canBeRotated)
+				{
+					//oldNormal = triA->Normal();
+
+					// Rotate triangle A
+					triA->Point[triAIndices[2]] = triA->Point[triAIndices[0]];
+					triA->Point[triAIndices[0]] = triA->Point[triAIndices[1]];
+					triA->Point[triAIndices[1]] = triB->Point[triBIndices[0]];
+					triA->TexCoord[triAIndices[2]] = triA->TexCoord[triAIndices[0]];
+					triA->TexCoord[triAIndices[0]] = triA->TexCoord[triAIndices[1]];
+					triA->TexCoord[triAIndices[1]] = triB->TexCoord[triBIndices[0]];
+					
+					// Rotate triangle B
+					triB->Point[triBIndices[0]] = triB->Point[triBIndices[2]];
+					triB->Point[triBIndices[1]] = triA->Point[triAIndices[1]];
+					triB->Point[triBIndices[2]] = triA->Point[triAIndices[2]];
+					triB->TexCoord[triBIndices[0]] = triB->TexCoord[triBIndices[2]];
+					triB->TexCoord[triBIndices[1]] = triA->TexCoord[triAIndices[1]];
+					triB->TexCoord[triBIndices[2]] = triA->TexCoord[triAIndices[2]];
+
+					//// Recalculate outside
+					//triA->SetFront(oldNormal);
+					//triB->SetFront(oldNormal);
+				}
 			}
 		}
-
-		//Tris
-		makeFace(0,1,2,3,1);
-		makeFace(5,4,7,6,1);
-
-		makeFace(1,0,5,4,0);
-		makeFace(2,3,6,7,0);
-
-		makeFace(0,2,4,6,2);
-		makeFace(3,1,7,5,2);
 	}
-	// Perform Operations Per Triangle
-	MapTriangle::GenerateAllSubTriangles();
+	#pragma endregion
 
-	for (int i = 0; i < mapTrianglesLength; i++)
+	allSubTriangles.InitReader();
+	while(allSubTriangles.Read())
 	{
 		//Get Triangle Positions
-		tmpPos = mapTriangles[i].Point;
+		tmpPos = allSubTriangles.Cur->Point;
 
 		//Get Triangle Texture Coords
-		tmpTex = mapTriangles[i].TexCoord;
+		tmpTex = allSubTriangles.Cur->TexCoord;
 
 		tmpNor = normalize(cross(tmpPos[1]-tmpPos[0],tmpPos[2]-tmpPos[0]));
 
@@ -215,39 +396,12 @@ void MapData::GenerateMeshFromBrushes()
 				//save index
 				indexBuffer[dataLenghtIndex++] = dataLenght++;
 			}
-		}
+		}	
 	}
-}
 
-void MapData::makeFace(int index0, int index1, int index2, int index3, int textureMapping)
-{
-	//mapPositionIndexBuffer[mapPositionIndexDataLength++] = brushIndices[index0];
-	//mapPositionIndexBuffer[mapPositionIndexDataLength++] = brushIndices[index1];
-	//mapPositionIndexBuffer[mapPositionIndexDataLength++] = brushIndices[index2];
-	//mapTextureIndexBuffer[mapTextureIndexDataLength++] = TextureIndices[index0+8*textureMapping];
-	//mapTextureIndexBuffer[mapTextureIndexDataLength++] = TextureIndices[index1+8*textureMapping];
-	//mapTextureIndexBuffer[mapTextureIndexDataLength++] = TextureIndices[index2+8*textureMapping];
 
-	//mapPositionIndexBuffer[mapPositionIndexDataLength++] = brushIndices[index1];
-	//mapPositionIndexBuffer[mapPositionIndexDataLength++] = brushIndices[index3];
-	//mapPositionIndexBuffer[mapPositionIndexDataLength++] = brushIndices[index2];
-	//mapTextureIndexBuffer[mapTextureIndexDataLength++] = TextureIndices[index1+8*textureMapping];
-	//mapTextureIndexBuffer[mapTextureIndexDataLength++] = TextureIndices[index3+8*textureMapping];
-	//mapTextureIndexBuffer[mapTextureIndexDataLength++] = TextureIndices[index2+8*textureMapping];
-
-	mapTriangles[mapTrianglesLength++] = MapTriangle(
-		brushPositions[index0],
-		brushPositions[index1],
-		brushPositions[index2],
-		brushTextureCoords[index0+8*textureMapping],
-		brushTextureCoords[index1+8*textureMapping],
-		brushTextureCoords[index2+8*textureMapping]);
-
-	mapTriangles[mapTrianglesLength++] = MapTriangle(
-		brushPositions[index1],
-		brushPositions[index3],
-		brushPositions[index2],
-		brushTextureCoords[index1+8*textureMapping],
-		brushTextureCoords[index3+8*textureMapping],
-		brushTextureCoords[index2+8*textureMapping]);
+	//for (int i = 0; i < Brushes.Length; i++)
+	//{
+	//	Brushes.Index[i]->CleanupIntersections();
+	//}
 }

@@ -14,6 +14,7 @@ char* UniformsStrings[] = {
 	"Diffuse5",
 	"Diffuse6",
 	"Normal",
+	"ShadingInfo",
 	"Depth",
 	"DefferedLightmap",
 	"Shadowmap",

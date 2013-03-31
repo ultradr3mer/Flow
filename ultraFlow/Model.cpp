@@ -33,10 +33,10 @@ void Model::Draw(enum DrawingPass pass)
 {
 	if(pass == DrawingPassSolidForced || curViewPort->FrustumCheck(Position, Mesh->maxRadius))
 	{
-		Mesh->Bind();
-
 		if(!Material->Bind(pass))
 			return;
+
+		Mesh->Bind();
 
 		setupMatrices();
 		ShaderData::ParseUniformInserts(&UniformInserts);

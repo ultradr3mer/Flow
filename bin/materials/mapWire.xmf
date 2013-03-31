@@ -3,4 +3,5 @@
 	<shadowshader frag="shadow.frag" vert="simpleLight.vert"/>
 
 	<textures diffuse="wire.dds"/>
+	<transparent/>
 </material>

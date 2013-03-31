@@ -1,6 +1,7 @@
 #pragma once
 #include "tool.h"
 #include "ShaderData.h"
+#include "TraceableTriangle.h"
 
 enum PlaceMode
 {
@@ -26,9 +27,14 @@ private:
 	vec3 positiveSize;
 	vec3 positivePosition;
 
+	TraceableTriangle pointingHelper;
+
 	float brushDist;
-	float xRot;
+	vec3 hitPos;
+	vec3 hitNorm;
 public:
+	float GridRes;
+
 	BrushTool(Scene* scene);
 	virtual ~BrushTool(void);
 	virtual void Update();

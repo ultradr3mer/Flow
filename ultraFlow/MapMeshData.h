@@ -2,6 +2,7 @@
 #include "Base.h"
 #include "TraceableTriangle.h"
 #include "PlnEquation.h"
+#include "Line2d.h"
 
 struct SimpleTriangle
 {
@@ -10,6 +11,14 @@ struct SimpleTriangle
 
 	SimpleTriangle(vec3 point1, vec3 point2, vec3 point3, 
 		vec2 texCoord1, vec2 texCoord2, vec2 texCoord3);
+
+	SimpleTriangle(vec3 points[3], vec2 texCoords[3]);
+	//inline ~SimpleTriangle(){};
+
+	vec3 Center();
+	vec3 Normal();
+	SimpleTriangle* Copy();
+	void SetFront(vec3 normal);
 };
 
 struct MapTriangle : public TraceableTriangle
@@ -23,10 +32,8 @@ struct MapTriangle : public TraceableTriangle
 
 	inline MapTriangle(){}
 
-	void GenerateSubTriangles();
-	static void GenerateAllSubTriangles();
-	bool IntersectionHelper(MapTriangle tri);
+	void GenerateSubTriangles(ListContainer<MapTriangle>* intersectionTriangles);
+	bool IntersectionHelper(MapTriangle* tri);
 };
 
-extern MapTriangle mapTriangles[128000];
-extern uint mapTrianglesLength;
+//extern ListContainer<MapTriangle> mapTriangles;

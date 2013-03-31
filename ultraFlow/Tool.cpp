@@ -30,9 +30,9 @@ Tool::Tool()
 	Cursor->Material = MaterialData::FromXml("cursor.xmf");
 	Cursor->Position = vec3(0,1,0);
 
-	Acceleration = 0.002f;
-	Friction =  0.98f;
-	RotationBlur = 0.7f;
+	Acceleration = 0.005f;
+	Friction =  0.90f;
+	RotationBlur = 0.5f;
 
 	equiped = false;
 }
